@@ -9,10 +9,11 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 interface Values {
   firstName: string;
@@ -22,6 +23,7 @@ interface Values {
 }
 
 export default function SignUp() {
+  const navigation = useNavigate();
   const [timestamp] = React.useState(Date.now().toString());
   const formik = useFormik<Values>({
     initialValues: {
@@ -40,11 +42,14 @@ export default function SignUp() {
         .min(8, "Password should be of minimum 8 characters length")
         .required("Password is required"),
     }),
-    onSubmit: (values) => {
-      createUserWithEmailAndPassword(auth, values.email, values.password).then(
-        console.log
-      );
-    },
+    onSubmit: (values) =>
+      createUserWithEmailAndPassword(auth, values.email, values.password)
+        .then((userCredential) =>
+          updateProfile(userCredential.user, {
+            displayName: `${values.firstName} ${values.lastName}`,
+          })
+        )
+        .then(() => navigation("/")),
   });
 
   return (
@@ -78,6 +83,12 @@ export default function SignUp() {
               id="firstName"
               label="First Name"
               autoFocus
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
+              helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -88,6 +99,10 @@ export default function SignUp() {
               label="Last Name"
               name="lastName"
               autoComplete="family-name"
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && formik.errors.lastName}
             />
           </Grid>
           <Grid item xs={12}>
