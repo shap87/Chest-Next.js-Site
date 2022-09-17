@@ -10,10 +10,11 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { doc, setDoc } from "firebase/firestore";
 
 interface Values {
   firstName: string;
@@ -46,8 +47,13 @@ export default function SignUp() {
       createUserWithEmailAndPassword(auth, values.email, values.password)
         .then((userCredential) =>
           updateProfile(userCredential.user, {
-            displayName: `${values.firstName} ${values.lastName}`,
-          })
+            displayName: [values.firstName, values.lastName].join(" "),
+          }).then(() =>
+            setDoc(doc(firestore, "users", userCredential.user.uid), {
+              firstName: values.firstName,
+              lastName: values.lastName,
+            })
+          )
         )
         .then(() => navigation("/")),
   });
