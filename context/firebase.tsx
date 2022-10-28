@@ -1,3 +1,21 @@
+import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
+import {
+  browserLocalPersistence,
+  connectAuthEmulator,
+  getAuth,
+  initializeAuth,
+  onAuthStateChanged,
+} from "firebase/auth";
+import {
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from "firebase/firestore";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from "firebase/app-check";
+import { initializeAnalytics } from "firebase/analytics";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import {
   createContext,
   PropsWithChildren,
@@ -5,28 +23,18 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  initializeApp,
-  FirebaseApp,
-  FirebaseOptions,
-} from "firebase/app";
-// import {
-//   initializeAppCheck,
-//   ReCaptchaEnterpriseProvider,
-// } from "firebase/app-check";
-import {
-  browserLocalPersistence,
-  browserPopupRedirectResolver,
-  connectAuthEmulator,
-  initializeAuth,
-  User,
-} from "firebase/auth";
-import {
-  connectFirestoreEmulator,
-  getFirestore,
-} from "firebase/firestore/lite";
-// import { useRouter } from "next/router";
 import Splash from "../component/Splash";
+import { Timestamp } from "firebase/firestore";
+import SuperJSON from "superjson";
+
+SuperJSON.registerCustom<Timestamp, number>(
+  {
+    isApplicable: (v): v is Timestamp => v?.constructor.name === "Timestamp",
+    serialize: (v) => v.toDate().getTime(),
+    deserialize: (v) => Timestamp.fromMillis(v),
+  },
+  "firestore.Timestamp"
+);
 
 const options: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -39,66 +47,53 @@ const options: FirebaseOptions = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-interface Firebase {
-  app: FirebaseApp;
-  // appCheck: AppCheck;
-  // analytics: Analytics;
-  // auth: Auth;
-  user: User | null;
-  // firestore: Firestore;
-}
-
-export const FirebaseContext = createContext<Firebase>(null!);
-
+export const FirebaseContext = createContext<FirebaseApp>(null!);
 export const useFirebase = () => useContext(FirebaseContext);
-// export const useAppCheck = () => useContext(FirebaseContext).appCheck;
-// export const useAnalytics = () => useContext(FirebaseContext).analytics;
-// export const useAuth = () => useContext(FirebaseContext).auth;
-export const useUser = () => useContext(FirebaseContext).user;
-// export const useFirestore = () => useContext(FirebaseContext).firestore;
 
 export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
-  const [user, setUser] = useState<Firebase["user"]>(undefined!);
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const app = initializeApp(options);
-
+  const [app, setApp] = useState<FirebaseApp>(null!);
   useEffect(() => {
-    // const appCheck = initializeAppCheck(app, {
-    //   provider: new ReCaptchaEnterpriseProvider(
-    //     process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_PROVIDER as string
-    //   ),
-    //   isTokenAutoRefreshEnabled: true, // Set to true to allow auto-refresh.
-    // });
-    // analytics = initializeAnalytics(app, {
-    //   config: {
-    //     send_page_view: false,
-    //   },
-    // });
-
-    const auth = initializeAuth(app, {
-      persistence: browserLocalPersistence,
-      popupRedirectResolver: browserPopupRedirectResolver,
-    });
-    // connectAuthEmulator(auth, "http://localhost:9099", {
-    //   disableWarnings: true,
-    // });
-    const firestore = getFirestore(app);
-    // connectFirestoreEmulator(firestore, "localhost", 8080);
-    return auth.onAuthStateChanged((user) => {
-      setUser(user);
-      setLoaded(true);
-    });
+    try {
+      const app = initializeApp(options);
+      const auth = initializeAuth(app, {
+        persistence: browserLocalPersistence,
+        //   popupRedirectResolver: browserPopupRedirectResolver,
+      });
+      connectAuthEmulator(auth, "http://localhost:9099", {
+        disableWarnings: true,
+      });
+      const firestore = initializeFirestore(app, {});
+      connectFirestoreEmulator(firestore, "localhost", 8080);
+      const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(
+          process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_PROVIDER as string
+        ),
+        isTokenAutoRefreshEnabled: true, // Set to true to allow auto-refresh.
+      });
+      const analytics = initializeAnalytics(app, {
+        config: {
+          send_page_view: false,
+        },
+      });
+      const functions = getFunctions(app);
+      connectFunctionsEmulator(functions, "localhost", 5001);
+      setApp(app);
+    } catch {}
   }, []);
-
-  if (!loaded) return <Splash />;
-
-  return (
-    <FirebaseContext.Provider
-      value={{
-        app,
-        user,
-      }}
-      {...props}
-    />
-  );
+  return <FirebaseContext.Provider value={app} {...props} />;
 };
+
+export function FirebaseReady(props: PropsWithChildren<{}>) {
+  const app = useFirebase();
+  if (!app) return <Splash />;
+  return <>{props.children}</>;
+}
+export function AuthStateReady(props: PropsWithChildren<{}>) {
+  const [isReady, setIsReady] = useState(false);
+  const app = useFirebase();
+  useEffect(() => {
+    if (app) onAuthStateChanged(getAuth(), () => setIsReady(true));
+  }, [app]);
+  if (!isReady) return <Splash />;
+  return <>{props.children}</>;
+}

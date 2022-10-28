@@ -1,4 +1,8 @@
 import * as firebaseAdmin from 'firebase-admin'
+import { Timestamp } from "@google-cloud/firestore";
+
+// @ts-ignore
+Timestamp.prototype.toJSON = () => Date.now();
 
 if (!firebaseAdmin.apps.length) {
     firebaseAdmin.initializeApp({

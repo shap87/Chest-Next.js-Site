@@ -5,7 +5,7 @@ import {
   isSignInWithEmailLink,
 } from "firebase/auth";
 import { useFormik } from "formik";
-// import * as yup from "yup";
+import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
@@ -22,8 +22,9 @@ import {
   Link,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-// import Link from "../component/Link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { FirebaseReady } from "../context/firebase";
+import Head from "next/head";
 
 function Form() {
   const [timestamp] = useState(Date.now().toString());
@@ -32,12 +33,12 @@ function Form() {
     initialValues: {
       email: `ayoub+chestr${timestamp}@oudmane.me`,
     },
-    // validationSchema: yup.object({
-    //   email: yup
-    //     .string()
-    //     .email("Enter a valid email")
-    //     .required("Email is required"),
-    // }),
+    validationSchema: yup.object({
+      email: yup
+        .string()
+        .email("Enter a valid email")
+        .required("Email is required"),
+    }),
     onSubmit: (values, formikHelpers) =>
       sendSignInLinkToEmail(auth, values.email, {
         handleCodeInApp: true,
@@ -140,8 +141,8 @@ export function Footer() {
     </Typography>
   );
 }
-export default function SignUp() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(!false);
+function SignUpComponent() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const auth = getAuth();
   const router = useRouter();
 
@@ -154,11 +155,11 @@ export default function SignUp() {
       signInWithEmailLink(auth, email!, window.location.href)
         .then(() => {
           window.localStorage.removeItem("emailForSignIn");
-          router.push("/home");
+          router.push("/setup/name");
         })
         .catch(console.error);
     }
-  }, [auth, router]);
+  }, []);
 
   return (
     <>
@@ -219,6 +220,19 @@ export default function SignUp() {
           <Form />
         </Box>
       </SwipeableDrawer>
+    </>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <>
+      <Head>
+        <title>Join Chestr</title>
+      </Head>
+      <FirebaseReady>
+        <SignUpComponent />
+      </FirebaseReady>
     </>
   );
 }
