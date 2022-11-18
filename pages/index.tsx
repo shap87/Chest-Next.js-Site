@@ -34,7 +34,7 @@ export default function Home() {
               <div className='w-full md:w-[44%] order-1 md:order-3 mb-10 md:0'>
                 <H1>Snappy Fast <br /> Shopping Wishlist</H1>
                 <Paragraph classname='max-w-[432px]'>
-                  Save items into wishlists from any online store, and get notified every time there's a discount.
+                  Save items into wishlists from any online store, and get notified every time there&apos;s a discount.
                 </Paragraph>
                 <Button href='#' type='second'>
                   <img src={'./chrome.svg'} alt='' />
