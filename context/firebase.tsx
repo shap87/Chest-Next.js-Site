@@ -23,7 +23,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import Splash from "../component/Splash";
+import Splash from "../components/Splash";
 import { Timestamp } from "firebase/firestore";
 import SuperJSON from "superjson";
 

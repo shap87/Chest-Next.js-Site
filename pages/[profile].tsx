@@ -33,7 +33,7 @@ import {
   useProfile,
   Profile,
 } from "../context/profile";
-import NewFolderSwipeableDrawer from "../component/NewFolderSwipeableDrawer";
+import NewFolderSwipeableDrawer from "../components/NewFolderSwipeableDrawer";
 import { useCallback, useRef } from "react";
 import Link from "next/link";
 import type { Folder, Product } from "@chestrapp/firebase";
