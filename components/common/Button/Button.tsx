@@ -8,7 +8,7 @@ import styles from "./Button.module.scss";
 
 interface IButton {
   children: any,
-  href: string,
+  href?: string,
   classname?: string,
   type?: string,
   target?: string,
