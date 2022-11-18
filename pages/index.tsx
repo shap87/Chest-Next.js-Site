@@ -36,7 +36,7 @@ export default function Home() {
                 <Paragraph classname='max-w-[432px]'>
                   Save items into wishlists from any online store, and get notified every time there&apos;s a discount.
                 </Paragraph>
-                <Button href='#' type='second'>
+                <Button target='_blank' href='https://chrome.google.com/webstore/detail/chestr-universal-shopping/aknpjjjjbhhpbdeboefcnnbafldhckej?hl=en&authuser=0' type='second'>
                   <img src={'./chrome.svg'} alt='' />
                   Get Chestr - It’s Free
                 </Button>

@@ -11,13 +11,14 @@ interface IButton {
   href: string,
   classname?: string,
   type?: string,
+  target?: string,
 }
 
-export const Button = ({ children, href, classname, type }: IButton) => {
+export const Button = ({ children, href, target, classname, type }: IButton) => {
 
   return href
     ? <Link href={href}>
-      <a className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
+      <a target={target} className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
         {children}
       </a>
     </Link>
