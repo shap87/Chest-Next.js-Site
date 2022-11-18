@@ -5,3 +5,11 @@
 * {
   @apply text-primary;
 }
+
+img {
+  @apply w-full;
+}
+
+.box-shadow {
+  box-shadow: 0 64px 51px rgba(0, 0, 0, 0.07);
+}
