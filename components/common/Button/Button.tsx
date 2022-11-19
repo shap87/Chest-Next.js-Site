@@ -12,9 +12,11 @@ interface IButton {
   classname?: string,
   type?: string,
   target?: string,
+  disabled?: boolean,
+  htmlType?: "button" | "submit" | "reset" | undefined,
 }
 
-export const Button = ({ children, href, target, classname, type }: IButton) => {
+export const Button = ({ disabled, children, href, target, classname, type, htmlType }: IButton) => {
 
   return href
     ? <Link href={href}>
@@ -22,7 +24,10 @@ export const Button = ({ children, href, target, classname, type }: IButton) => 
         {children}
       </a>
     </Link>
-    : <button type='button' className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
+    : <button
+      type={htmlType ? htmlType : 'button'}
+      disabled={disabled}
+      className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
       {children}
     </button>
 }

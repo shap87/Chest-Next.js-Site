@@ -6,4 +6,7 @@
   img {
     @apply w-5 mr-3;
   }
+  &:disabled{
+    @apply opacity-50 pointer-events-none select-none;
+  }
 }

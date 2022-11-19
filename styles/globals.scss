@@ -19,9 +19,9 @@ a {
 }
 
 .field {
-  @apply mb-7 relative;
+  @apply mb-6 md:mb-8 relative;
   label {
-    @apply text-sm mb-2 font-medium;
+    @apply block text-sm mb-2 font-medium;
   }
   input {
     @apply w-full text-base py-2 px-3 border border-[#D0D5DD] rounded-md transition-all;
@@ -37,5 +37,14 @@ a {
   }
   .field-error {
     @apply absolute left-0 -bottom-1 text-xs text-[#ff0000] translate-y-full;
+  }
+}
+
+.swiper {
+  .swiper-pagination-bullet {
+    @apply bg-[#FFEBF6] rounded-full w-[7%] opacity-100 h-[6px];
+    &-active {
+      @apply bg-[#FF9AD4];
+    }
   }
 }
