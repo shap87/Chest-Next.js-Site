@@ -16,6 +16,9 @@ img {
 
 a {
   @apply underline;
+  &:hover, &:active {
+    @apply no-underline;
+  }
 }
 
 .field {
