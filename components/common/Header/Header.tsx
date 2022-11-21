@@ -22,7 +22,7 @@ export const Header = () => {
             <img src={'./logo.svg'} alt='' />
           </a>
           {showLogin
-            ? <Button href='#' classname='!px-5 !py-3'>Login</Button>
+            ? <Button href='/get-started' classname='!px-5 !py-3'>Login</Button>
             : <Button href='#' classname='!px-5 !py-3'>Sign Up</Button>}
         </div>
       </div>

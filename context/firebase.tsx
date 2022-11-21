@@ -1,10 +1,13 @@
-import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
+import { FirebaseApp, initializeApp } from "firebase/app";
 import {
   browserLocalPersistence,
+  browserPopupRedirectResolver,
   connectAuthEmulator,
   getAuth,
+  GoogleAuthProvider,
   initializeAuth,
   onAuthStateChanged,
+  signInWithPopup,
 } from "firebase/auth";
 import {
   connectFirestoreEmulator,
@@ -27,6 +30,8 @@ import Splash from "../components/Splash";
 import { Timestamp } from "firebase/firestore";
 import SuperJSON from "superjson";
 
+import { firebaseConfig } from "./firebaseConfig";
+
 SuperJSON.registerCustom<Timestamp, number>(
   {
     isApplicable: (v): v is Timestamp => v?.constructor.name === "Timestamp",
@@ -36,64 +41,76 @@ SuperJSON.registerCustom<Timestamp, number>(
   "firestore.Timestamp"
 );
 
-const options: FirebaseOptions = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
-
 export const FirebaseContext = createContext<FirebaseApp>(null!);
 export const useFirebase = () => useContext(FirebaseContext);
 
 export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
   const [app, setApp] = useState<FirebaseApp>(null!);
+
   useEffect(() => {
     try {
-      const app = initializeApp(options);
+      const app = initializeApp(firebaseConfig);
       const auth = initializeAuth(app, {
         persistence: browserLocalPersistence,
-        //   popupRedirectResolver: browserPopupRedirectResolver,
+        popupRedirectResolver: browserPopupRedirectResolver,
       });
-      connectAuthEmulator(auth, "http://localhost:9099", {
-        disableWarnings: true,
-      });
+      // connectAuthEmulator(auth, "http://localhost:9099", {
+      //   disableWarnings: true,
+      // });
       const firestore = initializeFirestore(app, {});
-      connectFirestoreEmulator(firestore, "localhost", 8080);
-      const appCheck = initializeAppCheck(app, {
-        provider: new ReCaptchaEnterpriseProvider(
-          process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_PROVIDER as string
-        ),
-        isTokenAutoRefreshEnabled: true, // Set to true to allow auto-refresh.
-      });
+
+      // connectFirestoreEmulator(firestore, "localhost", 8080);
+      // const appCheck = initializeAppCheck(app, {
+      //   provider: new ReCaptchaEnterpriseProvider(
+      //     process.env.NEXT_PUBLIC_RECAPTCHA_ENTERPRISE_PROVIDER as string
+      //   ),
+      //   isTokenAutoRefreshEnabled: true, // Set to true to allow auto-refresh.
+      // });
+
       const analytics = initializeAnalytics(app, {
         config: {
           send_page_view: false,
         },
       });
+
       const functions = getFunctions(app);
-      connectFunctionsEmulator(functions, "localhost", 5001);
+
+      // connectFunctionsEmulator(functions, "localhost", 5001);
+
       setApp(app);
     } catch {}
   }, []);
+
   return <FirebaseContext.Provider value={app} {...props} />;
 };
 
 export function FirebaseReady(props: PropsWithChildren<{}>) {
   const app = useFirebase();
+
   if (!app) return <Splash />;
+
   return <>{props.children}</>;
 }
+
 export function AuthStateReady(props: PropsWithChildren<{}>) {
   const [isReady, setIsReady] = useState(false);
+
   const app = useFirebase();
+
   useEffect(() => {
-    if (app) onAuthStateChanged(getAuth(), () => setIsReady(true));
+    if (app) onAuthStateChanged(getAuth(app), () => setIsReady(true));
   }, [app]);
+
   if (!isReady) return <Splash />;
+
   return <>{props.children}</>;
 }
+
+export const signInWithGoogleUser = (app: FirebaseApp) => {
+  const auth = getAuth(app);
+  console.log(auth);
+
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  return signInWithPopup(auth, provider);
+};

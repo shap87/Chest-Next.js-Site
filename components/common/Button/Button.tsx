@@ -5,29 +5,48 @@ import cn from "classnames";
 // assets
 import styles from "./Button.module.scss";
 
-
 interface IButton {
-  children: any,
-  href?: string,
-  classname?: string,
-  type?: string,
-  target?: string,
-  disabled?: boolean,
-  htmlType?: "button" | "submit" | "reset" | undefined,
+  children: any;
+  href?: string;
+  classname?: string;
+  type?: string;
+  target?: string;
+  disabled?: boolean;
+  htmlType?: "button" | "submit" | "reset" | undefined;
+  onClick?: () => void;
 }
 
-export const Button = ({ disabled, children, href, target, classname, type, htmlType }: IButton) => {
-
-  return href
-    ? <Link href={href}>
-      <a target={target} className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
+export const Button = ({
+  disabled,
+  children,
+  href,
+  target,
+  classname,
+  type,
+  htmlType,
+  onClick
+}: IButton) => {
+  return href ? (
+    <Link href={href}>
+      <a
+        target={target}
+        className={cn(styles.btn, classname, {
+          [styles.btnSecond]: type === "second",
+        })}
+      >
         {children}
       </a>
     </Link>
-    : <button
-      type={htmlType ? htmlType : 'button'}
+  ) : (
+    <button
+      type={htmlType ? htmlType : "button"}
       disabled={disabled}
-      className={cn(styles.btn, classname, { [styles.btnSecond]: type === 'second' })}>
+      className={cn(styles.btn, classname, {
+        [styles.btnSecond]: type === "second",
+      })}
+      onClick={onClick}
+    >
       {children}
     </button>
-}
+  );
+};
