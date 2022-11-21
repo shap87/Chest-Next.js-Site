@@ -11,7 +11,7 @@ export const Header = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.asPath.includes(routes.getStarted)) setShowLogin(false);
+    if (router.asPath.includes(routes.login)) setShowLogin(false);
   }, [])
 
   return (
@@ -22,7 +22,7 @@ export const Header = () => {
             <img src={'./logo.svg'} alt='' />
           </a>
           {showLogin
-            ? <Button href='/get-started' classname='!px-5 !py-3'>Login</Button>
+            ? <Button href={routes.login} classname='!px-5 !py-3'>Login</Button>
             : <Button href='#' classname='!px-5 !py-3'>Sign Up</Button>}
         </div>
       </div>

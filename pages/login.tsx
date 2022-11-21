@@ -12,7 +12,7 @@ import { Layout } from "../components/common/Layout/Layout";
 import { H5 } from "../components/common/H5/H5";
 
 // assets
-import styles from "../styles/get-started.module.scss";
+import styles from "../styles/login.module.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 import { signInWithGoogleUser, useFirebase } from "../context/firebase";
@@ -23,7 +23,7 @@ const validationSchemaLogin = yup.object().shape({
     .required("Email is required"),
 });
 
-export default function GetStarted() {
+export default function Login() {
   const firebaseApp = useFirebase()
 
   const handleSignInWithGoogle = () => {
