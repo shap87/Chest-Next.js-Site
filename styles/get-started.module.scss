@@ -1,0 +1,12 @@
+.slide {
+  @apply mb-10 md:mb-12;
+  .image {
+    @apply rounded-lg border-[10px] border-[#F9FAFB];
+    img {
+      @apply rounded-[10px];
+    }
+  }
+  .desc {
+    @apply mt-5 md:mt-10 text-base text-[#667085] max-w-[268px] mx-auto;
+  }
+}

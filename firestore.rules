@@ -7,9 +7,49 @@ service cloud.firestore {
     function isMe(uid) {
       return signedIn() && request.auth.uid == uid;
     }
-    match /users/{user} {
-      allow read, write: if signedIn();
-      allow update: if isMe(user);
+    function isMine(resource) {
+      return signedIn() && request.auth.uid == resource.data.userId;
+    }
+    function isInPublicFolder(resource) {
+      return resource.data.folderId == null || get(/databases/$(database)/documents/folders/$(resource.data.folderId)).data.visibility == 0
+    }
+    function publicOrOwned(resource) {
+      return signedIn() && (isMine(resource) || isInPublicFolder(resource));
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create, update: if isMe(userId);
+    }
+    match /products/{productId} {
+      allow read: if publicOrOwned(resource);
+      allow create: if isMine(request.resource);
+      allow update: if isMine(request.resource) && isMine(resource);
+      allow delete: if isMine(resource);
+      function canReadProduct() {
+        return publicOrOwned(get(/databases/$(database)/documents/products/$(productId)))
+      }
+      match /comments/{commentId} {
+        allow read: if canReadProduct();
+        allow create: if canReadProduct() && isMine(request.resource);
+        // Disable editing comments
+        // allow update: if canReadProduct() && isMine(request.resource) && isMine(resource);
+        allow update: if false;
+        allow delete: if canReadProduct() && isMine(resource);
+      }
+      match /likes/{likeId} {
+        allow read: if canReadProduct();
+        allow create: if canReadProduct() && isMine(request.resource);
+        // let's not allow updating likes, nothing to update
+        // allow update: if canReadProduct() && isMine(request.resource) && isMine(resource);
+        allow update: if false;
+        allow delete: if canReadProduct() && isMine(resource);
+      }
+    }
+    match /folders/{folderId} {
+      allow read: if signedIn();
+      allow create: if isMine(request.resource);
+      allow update: if isMine(request.resource) && isMine(resource);
     }
     match /{document=**} {
       allow read, write: if false;
