@@ -1,0 +1,18 @@
+.logged {
+  @apply py-4 md:py-4;
+  box-shadow: 0 4px 8px -2px rgba(16, 24, 40, 0.05),
+              0px 2px 4px -2px rgba(16, 24, 40, 0.04);
+  .logo {
+    @apply md:w-[160px];
+  }
+}
+
+.nav {
+  li {
+    @apply cursor-pointer transition-all hover:opacity-70;
+  }
+}
+
+/* Rectangle 36048 */
+
+
