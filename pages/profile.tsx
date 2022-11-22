@@ -84,7 +84,7 @@ export default function Profile() {
                   <div className={styles.desc}>
                     <H5>Get the extension</H5>
                     <Paragraph>
-                      If you don't have the chrome extension, get it <Link href='#'><a>here</a></Link>
+                      If you don&apos;t have the chrome extension, get it <Link href='#'><a>here</a></Link>
                     </Paragraph>
                     <Link href='#'>
                       <a className='no-underline font-semibold flex items-center group'>
