@@ -1,3 +1,35 @@
+.folders {
+  .folder {
+    @apply overflow-hidden relative bg-[#FCFCFD] border-2 border-transparent rounded-md w-40 h-40 flex flex-col transition-all cursor-pointer;
+    box-shadow: 0 3.76446px 7.52892px -1.88223px rgba(16, 24, 40, 0.05),
+                0px 1.88223px 3.76446px -1.88223px rgba(16, 24, 40, 0.03);
+    &:hover, &:active, &.active {
+      @apply border-[#FF0098];
+      h6, p {
+        @apply text-[#FF0098];
+      }
+    }
+  }
+  .lock {
+    @apply w-4;
+  }
+  .checkbox {
+    @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white;
+  }
+  .info {
+    @apply p-2 border-t border-[#F2F4F7] flex items-center justify-between;
+  }
+  .image {
+    @apply h-[100px] object-cover;
+  }
+  h6 {
+    @apply mb-0 font-semibold text-base text-[#475467] transition-all;
+  }
+  p {
+    @apply mb-0 text-sm transition-all;
+  }
+}
+
 .steps {
   li {
     @apply flex items-start mb-5 md:mb-10;

@@ -1,5 +1,6 @@
 // libs
 import Link from "next/link";
+import cn from "classnames";
 
 //components
 import { H5 } from "../components/common/H5/H5";
@@ -15,12 +16,40 @@ import styles from "../styles/profile.module.scss";
 export default function Profile() {
   return (
     <Layout
-      title='Home | Chestr'
-      description="Save items into wishlists from any online store, and get notified every time there's a discount.">
-      <section className='py-12 md:py-28'>
+      title='Profile | Chestr'
+      description="Profile | Chestr">
+      <section className='py-4 md:py-8'>
+        <div className='container'>
+          <H6>Folders</H6>
+          <div className={cn('flex flex-wrap items-center gap-12', styles.folders)}>
+            <div className={styles.folder}>
+              <span className={styles.checkbox} />
+              <img className={styles.image} src={'./images/folder-1.jpg'} alt='' />
+              <div className={styles.info}>
+                <div className={styles.desc}>
+                  <H6>All</H6>
+                  <Paragraph>0 items</Paragraph>
+                </div>
+              </div>
+            </div>
+            <div className={styles.folder}>
+              <span className={styles.checkbox} />
+              <img className={styles.image} src={'./images/chestr-bg.png'} alt='' />
+              <div className={styles.info}>
+                <div className={styles.desc}>
+                  <H6>Private</H6>
+                  <Paragraph>0 items</Paragraph>
+                </div>
+                <img className={styles.lock} src={'./lock.svg'} alt='' />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className='py-4 md:py-8'>
         <div className='container'>
           <H6>Products</H6>
-          <div className='flex items-center mb-5 md:mb-10'>
+          <div className='flex items-center'>
             <label className='flex-1 relative'>
               <img className='absolute z-10 w-4 left-4 top-1/2 -translate-y-1/2' src={'./search.svg'} alt='' />
               <input className='pl-10' type='search' placeholder='Search (⌘+K)' />
@@ -29,6 +58,10 @@ export default function Profile() {
               <img className='w-4 !mr-0 group-hover:invert' src={'./filter.svg'} alt='' />
             </Button>
           </div>
+        </div>
+      </section>
+      <section className='pt-4 md:pt-8 pb-12 md:pb-28'>
+        <div className='container'>
           <div className='flex flex-wrap items-center justify-between'>
             <div className='w-full md:w-[48%] mb-10 md:0'>
               <H4>Get started in three easy steps.</H4>
