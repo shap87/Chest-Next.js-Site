@@ -13,11 +13,11 @@ export default function Home() {
         <div className='container'>
           <div className='flex flex-wrap items-center justify-between'>
             <div className='w-full md:w-[50%] order-2'>
-              <img className='box-shadow' src={'./images/browser.jpg'} alt='' />
+              <img className='box-shadow rounded-xl' src={'./images/browser.jpg'} alt='' />
             </div>
             <div className='w-full md:w-[44%] order-1 md:order-3 mb-10 md:0'>
               <H1>Snappy Fast <br /> Shopping Wishlist</H1>
-              <Paragraph classname='max-w-[432px]'>
+              <Paragraph classname='text-lg md:text-xl mb-4 md:mb-8 max-w-[432px]'>
                 Save items into wishlists from any online store, and get notified every time there&apos;s a discount.
               </Paragraph>
               <Button target='_blank'

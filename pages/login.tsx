@@ -9,13 +9,15 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Paragraph } from "../components/common/Paragraph/Paragraph";
 import { Button } from "../components/common/Button/Button";
 import { Layout } from "../components/common/Layout/Layout";
-import { H5 } from "../components/common/H5/H5";
+import { H4 } from "../components/common/H4/H4";
 
 // assets
-import styles from "../styles/get-started.module.scss";
+import styles from "../styles/login.module.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 import { signInWithGoogleUser, useFirebase } from "../context/firebase";
+import { useRouter } from "next/router";
+
 const validationSchemaLogin = yup.object().shape({
   email: yup
     .string()
@@ -23,12 +25,14 @@ const validationSchemaLogin = yup.object().shape({
     .required("Email is required"),
 });
 
-export default function GetStarted() {
+export default function Login() {
+  const router = useRouter();
   const firebaseApp = useFirebase()
 
   const handleSignInWithGoogle = () => {
     signInWithGoogleUser(firebaseApp).then((res) => {
       console.log(res.user);
+      router.push('profile')
     }).catch((error) => {
       console.log(error.message)
     })
@@ -80,7 +84,7 @@ export default function GetStarted() {
             </div>
             <div className="text-left w-full md:w-[34%] order-1 md:order-3 mb-10 md:0">
               <div className="md:max-w-[344px]">
-                <H5>Login</H5>
+                <H4>Login</H4>
                 <Button classname="w-full !py-2 !border-[#D0D5DD]" onClick={handleSignInWithGoogle}>
                   <img src={"./google.svg"} alt="" />
                   Get Chestr - It’s Free
@@ -130,11 +134,11 @@ export default function GetStarted() {
           <Paragraph classname="mt-16 md:mt-36 text-[#98A2B3] !text-xs max-w-[310px] mx-auto">
             By continuing, you agree to the{" "}
             <Link href="#">
-              <a>Terms and Conditions</a>
+              <a className='text-primary text-xs'>Terms and Conditions</a>
             </Link>{" "}
             and{" "}
             <Link href="#">
-              <a>Privacy Policy</a>
+              <a className='text-primary text-xs'>Privacy Policy</a>
             </Link>
             .
           </Paragraph>

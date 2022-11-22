@@ -15,7 +15,7 @@ img {
 }
 
 a {
-  @apply underline;
+  @apply underline text-[#CC0174] text-base;
   &:hover, &:active {
     @apply no-underline;
   }
@@ -26,20 +26,21 @@ a {
   label {
     @apply block text-sm mb-2 font-medium;
   }
-  input {
-    @apply w-full text-base py-2 px-3 border border-[#D0D5DD] rounded-md transition-all;
-    &::placeholder {
-      @apply text-[#667085];
-    }
-    &:hover, &:active {
-      @apply border-primary;
-    }
-    &:focus {
-      @apply border-second;
-    }
-  }
   .field-error {
     @apply absolute left-0 -bottom-1 text-xs text-[#ff0000] translate-y-full;
+  }
+}
+
+input {
+  @apply w-full text-base py-2 px-3 border border-[#D0D5DD] rounded-md transition-all;
+  &::placeholder {
+    @apply text-[#667085];
+  }
+  &:hover, &:active {
+    @apply border-primary;
+  }
+  &:focus {
+    @apply border-second;
   }
 }
 

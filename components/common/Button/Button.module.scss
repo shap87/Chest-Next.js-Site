@@ -1,5 +1,5 @@
 .btn {
-  @apply inline-flex items-center justify-center py-4 px-7 text-base font-semibold border border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
+  @apply inline-flex items-center justify-center py-4 px-7 text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
   &.btnSecond {
     @apply bg-[#E0007F] text-white border-[#E0007F] text-lg hover:bg-transparent hover:text-[#E0007F];
   }

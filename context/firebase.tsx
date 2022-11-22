@@ -108,9 +108,9 @@ export function AuthStateReady(props: PropsWithChildren<{}>) {
 
 export const signInWithGoogleUser = (app: FirebaseApp) => {
   const auth = getAuth(app);
-  console.log(auth);
 
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
+
   return signInWithPopup(auth, provider);
 };
