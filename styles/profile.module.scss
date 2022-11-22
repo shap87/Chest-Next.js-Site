@@ -1,3 +1,8 @@
+.avatar {
+  box-shadow: 0 5.61111px 11.2222px -2.80556px rgba(16, 24, 40, 0.05),
+              0px 2.80556px 5.61111px -2.80556px rgba(16, 24, 40, 0.04);
+}
+
 .folders {
   .folder {
     @apply overflow-hidden relative bg-[#FCFCFD] border-2 border-transparent rounded-md w-40 h-40 flex flex-col transition-all cursor-pointer;

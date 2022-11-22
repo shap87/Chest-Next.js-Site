@@ -20,6 +20,19 @@ export default function Profile() {
       description="Profile | Chestr">
       <section className='py-4 md:py-8'>
         <div className='container'>
+          <div className='flex items-center'>
+            <img
+              className={cn('border-4 border-white w-[100px] h-[100px] rounded-full object-cover', styles.avatar)}
+              src={'./images/avatar.png'} alt='' />
+            <div className='ml-5'>
+              <H5 classname='font-normal mb-1'>Faruk Shuaibu</H5>
+              <H6 classname='mb-0'>@ligma001</H6>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className='py-4 md:py-8'>
+        <div className='container'>
           <H6>Folders</H6>
           <div className={cn('flex flex-wrap items-center gap-12', styles.folders)}>
             <div className={styles.folder}>
