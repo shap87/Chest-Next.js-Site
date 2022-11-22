@@ -25,7 +25,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
   return (
     <div className="md:max-w-[344px]">
       <H4>Sign Up</H4>
-      <Button classname="w-full !py-2 !border-[#D0D5DD]">
+      <Button classname="w-full !border-[#D0D5DD]">
         <img src={"./google.svg"} alt="" />
         Continue with Google
       </Button>
@@ -75,7 +75,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
               disabled={!isValid}
               classname="w-full !py-2 !text-base"
               target="_blank"
-              type="second"
+              color='pink'
             >
               Continue
             </Button>

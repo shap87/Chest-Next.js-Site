@@ -36,11 +36,11 @@ export default function Login() {
   };
 
   return (
-    <Layout title="Get Started | Chestr" description='"Get Started | Chestr"'>
+    <Layout title="Login | Chestr" description="Login | Chestr">
       <GetStartedLayout>
         <div className="md:max-w-[344px]">
           <H4>Login</H4>
-          <Button classname="w-full !py-2 !border-[#D0D5DD]" onClick={handleSignInWithGoogle}>
+          <Button classname="w-full !border-[#D0D5DD]" onClick={handleSignInWithGoogle}>
             <img src={"./google.svg"} alt="" />
             Get Chestr - It’s Free
           </Button>
@@ -74,9 +74,9 @@ export default function Login() {
                 <Button
                   htmlType="submit"
                   disabled={!isValid}
-                  classname="w-full !py-2 !text-base"
+                  classname="w-full !text-base"
                   target="_blank"
-                  type="second"
+                  color='pink'
                 >
                   Continue
                 </Button>

@@ -10,7 +10,11 @@ import { routes } from "../../../utils/routes";
 // assets
 import styles from "./Header.module.scss";
 
-export const Header = () => {
+interface IHeader {
+  noButton: boolean | undefined
+}
+
+export const Header = ({ noButton }: IHeader) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isLogged, setIsLogged] = useState<boolean>(false);
 
@@ -44,8 +48,11 @@ export const Header = () => {
                 <img src={'./chest.svg'} alt='' />
               </li>
             </ul>
-            : isLogin ? <Button href={routes.login} classname='!px-5 !py-3'>Login</Button>
-              : <Button href={routes.signUp} classname='!px-5 !py-3'>Sign Up</Button>}
+            : !noButton
+              ? isLogin
+                ? <Button href={routes.login} classname='!py-3'>Login</Button>
+                : <Button href={routes.signUp} classname='!py-3'>Sign Up</Button>
+              : ''}
         </div>
       </div>
     </header>

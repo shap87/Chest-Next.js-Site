@@ -14,7 +14,7 @@ export default function Login() {
   const [step, setStep] = useState('');
 
   return (
-    <Layout title="Get Started | Chestr" description='"Get Started | Chestr"'>
+    <Layout title="Sign Up | Chestr" description="Sign Up | Chestr">
       <GetStartedLayout>
         {step === 'check-email'
           ? <CheckYourEmail setStep={setStep} />
