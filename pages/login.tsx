@@ -16,6 +16,7 @@ import styles from "../styles/login.module.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 import { signInWithGoogleUser, useFirebase } from "../context/firebase";
+import { useRouter } from "next/router";
 
 const validationSchemaLogin = yup.object().shape({
   email: yup
@@ -25,11 +26,13 @@ const validationSchemaLogin = yup.object().shape({
 });
 
 export default function Login() {
+  const router = useRouter();
   const firebaseApp = useFirebase()
 
   const handleSignInWithGoogle = () => {
     signInWithGoogleUser(firebaseApp).then((res) => {
       console.log(res.user);
+      router.push('profile')
     }).catch((error) => {
       console.log(error.message)
     })
