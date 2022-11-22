@@ -15,7 +15,7 @@ img {
 }
 
 a {
-  @apply underline;
+  @apply underline text-[#CC0174] text-base;
   &:hover, &:active {
     @apply no-underline;
   }

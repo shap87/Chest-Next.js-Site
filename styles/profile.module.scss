@@ -1,0 +1,11 @@
+.steps {
+  li {
+    @apply flex items-start mb-5 md:mb-10;
+  }
+  .icon {
+    @apply w-12;
+  }
+  .desc {
+    @apply ml-3 pt-3;
+  }
+}

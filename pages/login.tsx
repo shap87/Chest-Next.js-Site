@@ -16,6 +16,7 @@ import styles from "../styles/login.module.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 import { signInWithGoogleUser, useFirebase } from "../context/firebase";
+
 const validationSchemaLogin = yup.object().shape({
   email: yup
     .string()
@@ -130,11 +131,11 @@ export default function Login() {
           <Paragraph classname="mt-16 md:mt-36 text-[#98A2B3] !text-xs max-w-[310px] mx-auto">
             By continuing, you agree to the{" "}
             <Link href="#">
-              <a>Terms and Conditions</a>
+              <a className='text-primary'>Terms and Conditions</a>
             </Link>{" "}
             and{" "}
             <Link href="#">
-              <a>Privacy Policy</a>
+              <a className='text-primary'>Privacy Policy</a>
             </Link>
             .
           </Paragraph>

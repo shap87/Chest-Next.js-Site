@@ -1,8 +1,14 @@
+// libs
+import Link from "next/link";
+
 //components
-import { H1 } from "../components/common/H1/H1";
+import { H5 } from "../components/common/H5/H5";
+import { H6 } from "../components/common/H6/H6";
 import { Paragraph } from "../components/common/Paragraph/Paragraph";
-import { Button } from "../components/common/Button/Button";
 import { Layout } from "../components/common/Layout/Layout";
+
+// assets
+import styles from "../styles/profile.module.scss";
 
 export default function Profile() {
   return (
@@ -12,20 +18,47 @@ export default function Profile() {
       <section className='py-12 md:py-28'>
         <div className='container'>
           <div className='flex flex-wrap items-center justify-between'>
-            <div className='w-full md:w-[50%] order-2'>
-              <img className='box-shadow' src={'./images/browser.jpg'} alt='' />
+            <div className='w-full md:w-[48%] mb-10 md:0'>
+              <H5>Get started in three easy steps.</H5>
+              <ul className={styles.steps}>
+                <li>
+                  <img className={styles.icon} src={'./extension.svg'} alt='' />
+                  <div className={styles.desc}>
+                    <H6>Get the extension</H6>
+                    <Paragraph>
+                      If you don't have the chrome extension, get it <Link href='#'><a>here</a></Link>
+                    </Paragraph>
+                    <Link href='#'>
+                      <a className='no-underline font-semibold flex items-center group'>
+                        Get chrome extension
+                        <img className='ml-3 w-[12px] group-hover:ml-4 transition-all' src={'./arrow-right.svg'}
+                             alt='' />
+                      </a>
+                    </Link>
+                  </div>
+                </li>
+                <li>
+                  <img className={styles.icon} src={'./pin.svg'} alt='' />
+                  <div className={styles.desc}>
+                    <H6>Pin the extension</H6>
+                    <Paragraph>
+                      Pin the extension to your chrome tab bar for easy access </Paragraph>
+                  </div>
+                </li>
+                <li>
+                  <img className={styles.icon} src={'./chest-icon.svg'} alt='' />
+                  <div className={styles.desc}>
+                    <H6>Click to save</H6>
+                    <Paragraph>
+                      Click on the extension on any online store to save an item </Paragraph>
+                  </div>
+                </li>
+              </ul>
             </div>
-            <div className='w-full md:w-[44%] order-1 md:order-3 mb-10 md:0'>
-              <H1>Snappy Fast <br /> Shopping Wishlist</H1>
-              <Paragraph classname='max-w-[432px]'>
-                Save items into wishlists from any online store, and get notified every time there&apos;s a discount.
-              </Paragraph>
-              <Button target='_blank'
-                      href='https://chrome.google.com/webstore/detail/chestr-universal-shopping/aknpjjjjbhhpbdeboefcnnbafldhckej?hl=en&authuser=0'
-                      type='second'>
-                <img src={'./chrome.svg'} alt='' />
-                Get Chestr - It’s Free
-              </Button>
+            <div className='w-full md:w-[48%]'>
+              <div className='rounded-md md:rounded-2xl p-4 border-[#F9FAFB] bg-[#F9FAFB]'>
+                <img className='rounded-md md:rounded-2xl' src={'./images/get-started-2.jpg'} alt='' />
+              </div>
             </div>
           </div>
         </div>
