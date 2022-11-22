@@ -45,7 +45,7 @@ export const Header = () => {
               </li>
             </ul>
             : isLogin ? <Button href={routes.login} classname='!px-5 !py-3'>Login</Button>
-              : <Button href='#' classname='!px-5 !py-3'>Sign Up</Button>}
+              : <Button href={routes.signUp} classname='!px-5 !py-3'>Sign Up</Button>}
         </div>
       </div>
     </header>

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useFirebase } from "../../context/firebase";
+import { routes } from "../../utils/routes";
 
 const UnprotectedRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const UnprotectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (user) {
-      router.push("/profile");
+      router.push(routes.profile);
     }
   }, [user]);
 

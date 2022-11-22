@@ -2,6 +2,7 @@ import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useFirebase } from "../../context/firebase";
+import { routes } from "../../utils/routes";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -10,8 +11,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = getAuth(app).currentUser;
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
+    if (!user && router.asPath !== routes.signUp) {
+      router.push(routes.login);
     }
   }, [user]);
 
