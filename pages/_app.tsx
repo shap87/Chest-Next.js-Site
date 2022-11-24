@@ -1,6 +1,7 @@
+/*global chrome*/
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { AuthStateReady, FirebaseContextProvider } from "../context/firebase";
@@ -14,6 +15,20 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   const noAuthRequired = useMemo(() => ["", "/", "/login"], []);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage(
+      "aknpjjjjbhhpbdeboefcnnbafldhckej",
+      "version",
+      (response: any) => {
+        if (!response) {
+          console.log("No extension");
+          return;
+        }
+        console.log("Extension version: ", response.version);
+      }
+    );
+  }, []);
 
   return (
     <QueryClientProvider client={new QueryClient()}>

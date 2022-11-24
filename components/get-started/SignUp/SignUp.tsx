@@ -30,7 +30,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
     signInWithGoogleUser(firebaseApp)
       .then((res) => {
         console.log(res.user);
-        router.push(routes.profile);
+        router.push(routes.welcome);
       })
       .catch((error) => {
         console.log(error.message);
