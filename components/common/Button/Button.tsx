@@ -9,30 +9,29 @@ interface IButton {
   children: any;
   href?: string;
   classname?: string;
-  type?: string;
+  color?: "pink" | "light-pink" | undefined;
   target?: string;
   disabled?: boolean;
   htmlType?: "button" | "submit" | "reset" | undefined;
   onClick?: () => void;
 }
 
-export const Button = ({
-  disabled,
-  children,
-  href,
-  target,
-  classname,
-  type,
-  htmlType,
-  onClick
-}: IButton) => {
+export const Button = (
+  {
+    disabled,
+    children,
+    href,
+    target,
+    classname,
+    color,
+    htmlType,
+    onClick
+  }: IButton) => {
   return href ? (
     <Link href={href}>
       <a
         target={target}
-        className={cn(styles.btn, classname, {
-          [styles.btnSecond]: type === "second",
-        })}
+        className={cn(styles.btn, classname, color && styles[color])}
       >
         {children}
       </a>
@@ -41,9 +40,7 @@ export const Button = ({
     <button
       type={htmlType ? htmlType : "button"}
       disabled={disabled}
-      className={cn(styles.btn, classname, {
-        [styles.btnSecond]: type === "second",
-      })}
+      className={cn(styles.btn, classname, color && styles[color])}
       onClick={onClick}
     >
       {children}

@@ -20,9 +20,11 @@ export default function Home() {
               <Paragraph classname='text-lg md:text-xl mb-4 md:mb-8 max-w-[432px]'>
                 Save items into wishlists from any online store, and get notified every time there&apos;s a discount.
               </Paragraph>
-              <Button target='_blank'
-                      href='https://chrome.google.com/webstore/detail/chestr-universal-shopping/aknpjjjjbhhpbdeboefcnnbafldhckej?hl=en&authuser=0'
-                      type='second'>
+              <Button
+                classname='!py-4 !px-7 !text-lg'
+                target='_blank'
+                href='https://chrome.google.com/webstore/detail/chestr-universal-shopping/aknpjjjjbhhpbdeboefcnnbafldhckej?hl=en&authuser=0'
+                color='pink'>
                 <img src={'./chrome.svg'} alt='' />
                 Get Chestr - It’s Free
               </Button>

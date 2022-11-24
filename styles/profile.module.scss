@@ -10,13 +10,16 @@
                 0px 1.88223px 3.76446px -1.88223px rgba(16, 24, 40, 0.03);
     &:hover, &:active, &.active {
       @apply border-[#FF0098];
+      .lock {
+        @apply brightness-100;
+      }
       h6, p {
         @apply text-[#FF0098];
       }
     }
   }
   .lock {
-    @apply w-4;
+    @apply w-4 brightness-0;
   }
   .checkbox {
     @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white;

@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, PropsWithChildren, useContext, useEffect } from "react";
 import type { Folder } from "@chestrapp/firebase";
 import {
   collection,
@@ -35,6 +35,7 @@ export function ProfileContextProvider({
         createdAt: serverTimestamp(),
       }
     );
+
   return (
     <ProfileContext.Provider
       value={{
