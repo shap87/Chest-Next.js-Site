@@ -17,7 +17,7 @@ interface IHeader {
 export const Header = ({ noButton }: IHeader) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isLogged, setIsLogged] = useState<boolean>(false);
-
+  
   const router = useRouter();
 
   useEffect(() => {
@@ -50,8 +50,8 @@ export const Header = ({ noButton }: IHeader) => {
             </ul>
             : !noButton
               ? isLogin
-                ? <Button href={routes.login} classname='!py-3'>Login</Button>
-                : <Button href={routes.signUp} classname='!py-3'>Sign Up</Button>
+                ? <Button href={routes.login} classname='!py-3' onClick={() => router.push('login')}>Login</Button>
+                : <Button href={routes.signUp} classname='!py-3' onClick={() => router.push('sign-up')}>Sign Up</Button>
               : ''}
         </div>
       </div>

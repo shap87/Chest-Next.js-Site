@@ -8,6 +8,7 @@ import {
   initializeAuth,
   onAuthStateChanged,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import {
   connectFirestoreEmulator,
@@ -105,6 +106,8 @@ export function AuthStateReady(props: PropsWithChildren<{}>) {
 
   return <>{props.children}</>;
 }
+
+export const logout = (app: FirebaseApp) => signOut(getAuth(app));
 
 export const signInWithGoogleUser = (app: FirebaseApp) => {
   const auth = getAuth(app);
