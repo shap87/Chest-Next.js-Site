@@ -5,7 +5,7 @@ import { Header } from "../Header/Header";
 
 interface ILayout {
   children: any
-  classname: string
+  classname?: string
   title: string
   description: string
   noButton?: boolean | undefined
