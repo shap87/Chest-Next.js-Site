@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import { useMemo, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import { AuthStateReady, FirebaseContextProvider } from "../context/firebase";
+import {
+  AuthStateReady,
+  FirebaseContextProvider,
+} from "../context/firebase";
 
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import UnprotectedRoute from "../components/UnprotectedRoute/UnprotectedRoute";
@@ -16,19 +19,20 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const noAuthRequired = useMemo(() => ["", "/", "/login"], []);
 
-  useEffect(() => {
-    // chrome.runtime.sendMessage(
-    //   "aknpjjjjbhhpbdeboefcnnbafldhckej",
-    //   "version",
-    //   (response: any) => {
-    //     if (!response) {
-    //       console.log("No extension");
-    //       return;
-    //     }
-    //     console.log("Extension version: ", response.version);
-    //   }
-    // );
-  }, []);
+  /* Google extension detection */
+  // useEffect(() => {
+  //   chrome.runtime.sendMessage(
+  //     "aknpjjjjbhhpbdeboefcnnbafldhckej",
+  //     "version",
+  //     (response: any) => {
+  //       if (!response) {
+  //         console.log("No extension");
+  //         return;
+  //       }
+  //       console.log("Extension version: ", response.version);
+  //     }
+  //   );
+  // }, []);
 
   return (
     <QueryClientProvider client={new QueryClient()}>
