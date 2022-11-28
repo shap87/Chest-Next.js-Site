@@ -16,13 +16,13 @@ import styles from "../styles/profile.module.scss";
 import { logout, useFirebase } from "../context/firebase";
 
 export default function Profile() {
-  // const firebaseApp = useFirebase();
+  const firebaseApp = useFirebase();
 
-  // useEffect(() => {
-  //   console.log("logout");
+  useEffect(() => {
+    console.log("logout");
 
-  //   logout(firebaseApp);
-  // }, []);
+    logout(firebaseApp);
+  }, []);
 
   return (
     <Layout title="Profile | Chestr" description="Profile | Chestr">

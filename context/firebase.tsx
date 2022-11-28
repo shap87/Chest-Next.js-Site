@@ -1,12 +1,23 @@
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
+  ActionCodeSettings,
   browserLocalPersistence,
   browserPopupRedirectResolver,
   connectAuthEmulator,
   getAuth,
   GoogleAuthProvider,
   initializeAuth,
+  isSignInWithEmailLink,
   onAuthStateChanged,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -20,16 +31,10 @@ import {
 } from "firebase/app-check";
 import { initializeAnalytics } from "firebase/analytics";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import Splash from "../components/Splash";
 import { Timestamp } from "firebase/firestore";
 import SuperJSON from "superjson";
+
+import Splash from "../components/Splash";
 
 import { firebaseConfig } from "./firebaseConfig";
 
@@ -116,4 +121,19 @@ export const signInWithGoogleUser = (app: FirebaseApp) => {
   provider.setCustomParameters({ prompt: "select_account" });
 
   return signInWithPopup(auth, provider);
+};
+
+export const signInWithEmail = (
+  app: FirebaseApp,
+  email: string,
+  link: string
+) => {
+  const auth = getAuth(app);
+
+  const actionCodeSettings: ActionCodeSettings = {
+    url: link,
+    handleCodeInApp: true,
+  };
+
+  return sendSignInLinkToEmail(auth, email, actionCodeSettings);
 };
