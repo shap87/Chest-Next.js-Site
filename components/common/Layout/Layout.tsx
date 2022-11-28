@@ -5,12 +5,13 @@ import { Header } from "../Header/Header";
 
 interface ILayout {
   children: any
+  classname: string
   title: string
   description: string
   noButton?: boolean | undefined
 }
 
-export const Layout = ({ children, title, description, noButton }: ILayout) => {
+export const Layout = ({ classname, children, title, description, noButton }: ILayout) => {
   return (
     <>
       <Head>
@@ -19,7 +20,7 @@ export const Layout = ({ children, title, description, noButton }: ILayout) => {
         <link rel="icon" href={"/favicon.ico"} />
       </Head>
       <Header noButton={noButton} />
-      <main>
+      <main className={classname}>
         {children}
       </main>
     </>

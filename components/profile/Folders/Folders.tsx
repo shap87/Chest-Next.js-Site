@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // libs
 import cn from "classnames";
@@ -6,12 +6,40 @@ import cn from "classnames";
 // components
 import { H6 } from "../../common/H6/H6";
 import { Paragraph } from "../../common/Paragraph/Paragraph";
+import { useWindowSize } from "../../../utils/useWindowSize";
 
 // assets
 import styles from "../../../styles/profile.module.scss";
 
+const folders = [
+  { image: "./images/folder-1.jpg", title: 'All', count: 0, type: 'default' },
+  { image: "./images/chestr-bg.png", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-2.jpg", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-1.jpg", title: 'All', count: 0, type: 'default' },
+  { image: "./images/chestr-bg.png", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-2.jpg", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-1.jpg", title: 'All', count: 0, type: 'default' },
+  { image: "./images/chestr-bg.png", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-2.jpg", title: 'Private', count: 0, type: 'private' },
+]
+
 export const Folders = () => {
   const [showAll, setShowAll] = useState(false);
+  const [count, setCount] = useState(6);
+  const { width }: any = useWindowSize();
+
+  useEffect(() => {
+    if (width < 640) {
+      setCount(2)
+    } else if (width < 768) {
+      setCount(3)
+    } else if (width < 1024) {
+      setCount(4)
+    } else {
+      setCount(5)
+    }
+  }, [width])
+
 
   return (
     <section className="py-4 md:py-8">
@@ -38,36 +66,18 @@ export const Folders = () => {
             </div>}
         </div>
         <div
-          className={cn("flex flex-wrap items-center gap-12", styles.folders)}>
-          <div className={styles.folder}>
+          className={cn("flex flex-wrap items-center justify-between gap-y-12", styles.folders)}>
+          {folders.slice(0, showAll ? folders.length : count).map((folder) => <div className={styles.folder}>
             <span className={styles.checkbox} />
-            <img
-              className={styles.image}
-              src={"./images/folder-1.jpg"}
-              alt=""
-            />
+            <img className={styles.image} src={folder.image} alt="" />
             <div className={styles.info}>
               <div className={styles.desc}>
-                <H6>All</H6>
-                <Paragraph>0 items</Paragraph>
+                <H6>{folder.title}</H6>
+                <Paragraph>{folder.count} items</Paragraph>
               </div>
+              {folder.type === 'private' && <img className={styles.lock} src={"./lock.svg"} alt="" />}
             </div>
-          </div>
-          <div className={styles.folder}>
-            <span className={styles.checkbox} />
-            <img
-              className={styles.image}
-              src={"./images/chestr-bg.png"}
-              alt=""
-            />
-            <div className={styles.info}>
-              <div className={styles.desc}>
-                <H6>Private</H6>
-                <Paragraph>0 items</Paragraph>
-              </div>
-              <img className={styles.lock} src={"./lock.svg"} alt="" />
-            </div>
-          </div>
+          </div>)}
         </div>
       </div>
     </section>

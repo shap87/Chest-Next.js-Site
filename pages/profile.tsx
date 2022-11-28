@@ -5,7 +5,7 @@ import { User, Folders, Products, Steps } from "../components/profile";
 export default function Profile() {
 
   return (
-    <Layout title="Profile | Chestr" description="Profile | Chestr">
+    <Layout classname='profile-page' title="Profile | Chestr" description="Profile | Chestr">
       <User />
       <Folders />
       <Products />
