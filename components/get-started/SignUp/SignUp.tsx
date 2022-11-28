@@ -1,5 +1,4 @@
 // libs
-import { useEffect } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import * as yup from "yup";
@@ -14,17 +13,12 @@ import {
   useFirebase,
 } from "../../../context/firebase";
 import { routes } from "../../../utils/routes";
-import {
-  getAuth,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
 
 interface ISignUp {
-  setStep: (value: string) => void;
+  setStep: any;
 }
 
-const validationSchemaLogin = yup.object().shape({
+const validationSchemaSignUp = yup.object().shape({
   email: yup
     .string()
     .email("Invalid email format")
@@ -34,26 +28,8 @@ const validationSchemaLogin = yup.object().shape({
 
 export const SignUp = ({ setStep }: ISignUp) => {
   const router = useRouter();
-  const firebaseApp = useFirebase();
 
-  useEffect(() => {
-    const auth = getAuth(firebaseApp);
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      let email = window.localStorage.getItem("emailForSignIn");
-      if (!email) {
-        email = window.prompt("Please provide your email for confirmation");
-      }
-      signInWithEmailLink(auth, email!, window.location.href)
-        .then(() => {
-          window.localStorage.removeItem("emailForSignIn");
-          console.log("Success");
-          router.push(routes.welcome);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, []);
+  const firebaseApp = useFirebase();
 
   const handleSignUpWithGoogle = () => {
     signInWithGoogleUser(firebaseApp)
@@ -70,10 +46,14 @@ export const SignUp = ({ setStep }: ISignUp) => {
     signInWithEmail(
       firebaseApp,
       email,
-      `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}/sign-up`!
+      `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}sign-up?isEmailLink=1`!
     )
       .then(() => {
-        setStep("check-email");
+        window.localStorage.setItem("emailForSignIn", email);
+        setStep({
+          email,
+          state: "check-email",
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -96,11 +76,11 @@ export const SignUp = ({ setStep }: ISignUp) => {
         <div className="flex-grow border-t border-[#EAECF0]" />
       </div>
       <Formik
-        validationSchema={validationSchemaLogin}
+        validationSchema={validationSchemaSignUp}
         initialValues={{ email: "", name: "" }}
         onSubmit={(values) => handleSignUpWithEmail(values.email)}
       >
-        {({ isValid, values }) => (
+        {({ isValid }) => (
           <Form>
             <div className="field">
               <label htmlFor="email">Name*</label>

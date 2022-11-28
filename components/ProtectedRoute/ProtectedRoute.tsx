@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = getAuth(app).currentUser;
 
   useEffect(() => {
-    if (!user && router.asPath !== routes.signUp) {
+    if (!user) {
       router.push(routes.login);
     }
   }, [user]);
