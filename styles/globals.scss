@@ -44,6 +44,21 @@ input {
   }
 }
 
+.list {
+  @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-[248px] translate-y-full border border-[#EAECF0];
+  box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05),
+              0 2px 4px rgba(16, 24, 40, 0.04);
+  li {
+    @apply py-3 px-4 text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main;
+    &:not(:last-child) {
+      @apply border-b border-[#EAECF0];
+    }
+    img {
+      @apply w-4;
+    }
+  }
+}
+
 .swiper {
   .swiper-pagination-bullet {
     @apply bg-[#FFEBF6] rounded-full w-[7%] opacity-100 h-[6px];

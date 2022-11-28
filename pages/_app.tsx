@@ -17,17 +17,17 @@ export default function App({ Component, pageProps }: AppProps) {
   const noAuthRequired = useMemo(() => ["", "/", "/login"], []);
 
   useEffect(() => {
-    chrome.runtime.sendMessage(
-      "aknpjjjjbhhpbdeboefcnnbafldhckej",
-      "version",
-      (response: any) => {
-        if (!response) {
-          console.log("No extension");
-          return;
-        }
-        console.log("Extension version: ", response.version);
-      }
-    );
+    // chrome.runtime.sendMessage(
+    //   "aknpjjjjbhhpbdeboefcnnbafldhckej",
+    //   "version",
+    //   (response: any) => {
+    //     if (!response) {
+    //       console.log("No extension");
+    //       return;
+    //     }
+    //     console.log("Extension version: ", response.version);
+    //   }
+    // );
   }, []);
 
   return (
