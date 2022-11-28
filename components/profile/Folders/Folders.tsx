@@ -69,17 +69,18 @@ export const Folders = () => {
         </div>
         <div
           className={cn("flex flex-wrap items-center justify-between gap-y-12", styles.folders)}>
-          {folders.slice(0, showAll ? folders.length : count).map((folder) => <div className={styles.folder}>
-            <span className={styles.checkbox} />
-            <img className={styles.image} src={folder.image} alt="" />
-            <div className={styles.info}>
-              <div className={styles.desc}>
-                <H6>{folder.title}</H6>
-                <Paragraph>{folder.count} items</Paragraph>
+          {folders.slice(0, showAll ? folders.length : count).map((folder, index) =>
+            <div key={index} className={styles.folder}>
+              <span className={styles.checkbox} />
+              <img className={styles.image} src={folder.image} alt="" />
+              <div className={styles.info}>
+                <div className={styles.desc}>
+                  <H6>{folder.title}</H6>
+                  <Paragraph>{folder.count} items</Paragraph>
+                </div>
+                {folder.type === 'private' && <img className={styles.lock} src={"./lock.svg"} alt="" />}
               </div>
-              {folder.type === 'private' && <img className={styles.lock} src={"./lock.svg"} alt="" />}
-            </div>
-          </div>)}
+            </div>)}
         </div>
       </div>
     </section>
