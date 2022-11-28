@@ -21,6 +21,8 @@ const folders = [
   { image: "./images/folder-1.jpg", title: 'All', count: 0, type: 'default' },
   { image: "./images/chestr-bg.png", title: 'Private', count: 0, type: 'private' },
   { image: "./images/folder-2.jpg", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/folder-2.jpg", title: 'Private', count: 0, type: 'private' },
+  { image: "./images/chestr-bg.png", title: 'Private', count: 0, type: 'private' },
 ]
 
 export const Folders = () => {
