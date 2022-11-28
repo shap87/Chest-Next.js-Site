@@ -46,7 +46,7 @@ export default function Login() {
       signInWithEmailLink(auth, email!, window.location.href)
         .then(() => {
           window.localStorage.removeItem("emailForSignIn");
-          console.log("Success");
+          console.log("Success - Home");
           router.push(routes.home);
         })
         .catch((error) => {
@@ -73,7 +73,7 @@ export default function Login() {
       `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}/login`!
     )
       .then(() => {
-        // setStep("check-email");
+        window.localStorage.setItem("emailForSignIn", email);
       })
       .catch((error) => {
         console.log(error);

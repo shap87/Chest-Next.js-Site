@@ -130,6 +130,8 @@ export const signInWithEmail = (
 ) => {
   const auth = getAuth(app);
 
+  console.log(link);
+
   const actionCodeSettings: ActionCodeSettings = {
     url: link,
     handleCodeInApp: true,
