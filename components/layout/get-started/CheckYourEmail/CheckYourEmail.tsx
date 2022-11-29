@@ -1,6 +1,5 @@
 // components
-import { H4 } from "../../common/H4/H4";
-import { Paragraph } from "../../common/Paragraph/Paragraph";
+import { H4,Paragraph } from "../../../common";
 
 interface ICheckYourEmail {
   setStep: any;
