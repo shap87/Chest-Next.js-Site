@@ -70,7 +70,10 @@ export const User = () => {
         </div>
       </section>
 
-      <EditProfileModal show={showEditProfileModal} />
+      <EditProfileModal
+        show={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+      />
     </>
   );
 };

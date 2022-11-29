@@ -16,7 +16,8 @@ img {
 
 a {
   @apply underline text-[#CC0174] text-base;
-  &:hover, &:active {
+  &:hover,
+  &:active {
     @apply no-underline;
   }
 }
@@ -36,7 +37,8 @@ input {
   &::placeholder {
     @apply text-[#667085];
   }
-  &:hover, &:active {
+  &:hover,
+  &:active {
     @apply border-primary;
   }
   &:focus {
@@ -46,8 +48,7 @@ input {
 
 .list {
   @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-[248px] translate-y-full border border-[#EAECF0];
-  box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05),
-              0 2px 4px rgba(16, 24, 40, 0.04);
+  box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05), 0 2px 4px rgba(16, 24, 40, 0.04);
   li {
     @apply py-3 px-4 text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main;
     &:not(:last-child) {
@@ -72,4 +73,18 @@ input {
   .container {
     max-width: 1000px;
   }
+}
+
+@font-face {
+  font-family: "Inter-Medium";
+  src: url("../assets/fonts/Inter-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter-Semibold";
+  src: url("../assets/fonts/Inter-SemiBold.ttf");
+  font-weight: 600;
+  font-style: normal;
 }

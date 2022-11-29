@@ -4,15 +4,14 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 
 // components
-import { H4 } from "../../common/H4/H4";
-import { Button } from "../../common/Button/Button";
+import { Button, H4 } from "../../../common";
 
 import {
   signInWithEmail,
   signInWithGoogleUser,
   useFirebase,
-} from "../../../context/firebase";
-import { routes } from "../../../utils/routes";
+} from "../../../../context/firebase";
+import { routes } from "../../../../utils/routes";
 
 interface ISignUp {
   setStep: any;

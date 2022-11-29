@@ -8,3 +8,4 @@ export { Layout } from "./Layout/Layout";
 export { LoadingSpinner } from "./LodaingSpinner/LoadingSpinner";
 export { Modal } from "./Modal/Modal";
 export { Paragraph } from "./Paragraph/Paragraph";
+export { ModalBaseLayout } from "./ModalBaseLayout/ModalBaseLayout";

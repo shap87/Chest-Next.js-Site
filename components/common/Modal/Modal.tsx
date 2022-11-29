@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
+import React, { FC, useEffect, useState } from "react";
 
 interface ModalProps {
   children: React.ReactNode;
@@ -14,10 +14,18 @@ export const Modal: FC<ModalProps> = ({ children, containerId, show }) => {
     setIsBrowser(true);
   }, []);
 
+  const modalContent = (
+    <>
+      <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black/[0.55] z-10">
+        {children}
+      </div>
+    </>
+  );
+
   if (isBrowser) {
     if (show) {
       return ReactDOM.createPortal(
-        children,
+        modalContent,
         document.getElementById(containerId)!
       );
     } else {
