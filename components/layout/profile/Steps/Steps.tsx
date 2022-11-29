@@ -2,12 +2,10 @@
 import Link from "next/link";
 
 // components
-import { H4 } from "../../common/H4/H4";
-import { H5 } from "../../common/H5/H5";
-import { Paragraph } from "../../common/Paragraph/Paragraph";
+import { H4, H5, Paragraph } from "../../../common";
 
 // assets
-import styles from "../../../styles/profile.module.scss";
+import styles from "../../../../styles/profile.module.scss";
 
 export const Steps = () => {
   return (
@@ -49,11 +47,7 @@ export const Steps = () => {
                 </div>
               </li>
               <li>
-                <img
-                  className={styles.icon}
-                  src={"./chest-icon.svg"}
-                  alt=""
-                />
+                <img className={styles.icon} src={"./chest-icon.svg"} alt="" />
                 <div className={styles.desc}>
                   <H5>Click to save</H5>
                   <Paragraph>
@@ -75,5 +69,5 @@ export const Steps = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

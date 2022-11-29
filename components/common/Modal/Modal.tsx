@@ -2,11 +2,12 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 
 interface ModalProps {
-  content: React.ReactNode;
+  children: React.ReactNode;
   containerId: string;
+  show: boolean;
 }
 
-export const Modal: FC<ModalProps> = ({ content, containerId }) => {
+export const Modal: FC<ModalProps> = ({ children, containerId, show }) => {
   const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
@@ -14,10 +15,14 @@ export const Modal: FC<ModalProps> = ({ content, containerId }) => {
   }, []);
 
   if (isBrowser) {
-    return ReactDOM.createPortal(
-      content,
-      document.getElementById(containerId)!
-    );
+    if (show) {
+      return ReactDOM.createPortal(
+        children,
+        document.getElementById(containerId)!
+      );
+    } else {
+      return null;
+    }
   } else {
     return null;
   }

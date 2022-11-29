@@ -4,7 +4,7 @@ import { Pagination } from "swiper";
 import Link from "next/link";
 
 // components
-import { Paragraph } from "../../common/Paragraph/Paragraph";
+import { Paragraph } from "../../../common";
 
 // assets
 import styles from "./GetStarted.module.scss";
@@ -60,15 +60,15 @@ export const GetStartedLayout = ({ children }: any) => {
         <Paragraph classname="mt-16 md:mt-36 text-[#98A2B3] !text-xs max-w-[310px] mx-auto">
           By continuing, you agree to the{" "}
           <Link href="#">
-            <a className='text-primary text-xs'>Terms and Conditions</a>
+            <a className="text-primary text-xs">Terms and Conditions</a>
           </Link>{" "}
           and{" "}
           <Link href="#">
-            <a className='text-primary text-xs'>Privacy Policy</a>
+            <a className="text-primary text-xs">Privacy Policy</a>
           </Link>
           .
         </Paragraph>
       </div>
     </section>
-  )
-}
+  );
+};

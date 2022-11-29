@@ -45,6 +45,8 @@ export default function App({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
             </ProtectedRoute>
           )}
+
+          <div id="edit-profile-dialog"></div>
         </AuthStateReady>
       </FirebaseContextProvider>
     </QueryClientProvider>

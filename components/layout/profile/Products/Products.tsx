@@ -1,6 +1,5 @@
 // components
-import { H6 } from "../../common/H6/H6";
-import { Button } from "../../common/Button/Button";
+import { Button, H6 } from "../../../common";
 
 export const Products = () => {
   return (
@@ -14,11 +13,7 @@ export const Products = () => {
               src={"./search.svg"}
               alt=""
             />
-            <input
-              className="pl-10"
-              type="search"
-              placeholder="Search (⌘+K)"
-            />
+            <input className="pl-10" type="search" placeholder="Search (⌘+K)" />
           </label>
           <Button classname="ml-4 md:ml-10 !p-3 !border-[#D0D5DD] group">
             <img
@@ -30,5 +25,5 @@ export const Products = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

@@ -7,7 +7,7 @@ import cn from "classnames";
 import { Button } from "../Button/Button";
 import { routes } from "../../../utils/routes";
 import { logout, useFirebase } from "../../../context/firebase";
-import { LoadingSpinner } from "../LoadingSpinner";
+import { LoadingSpinner } from "../LodaingSpinner/LoadingSpinner";
 
 // assets
 import styles from "./Header.module.scss";
