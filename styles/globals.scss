@@ -33,7 +33,7 @@ a {
 }
 
 input {
-  @apply w-full text-base py-2 px-3 border border-[#D0D5DD] rounded-md transition-all;
+  @apply w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all;
   &::placeholder {
     @apply text-[#667085];
   }

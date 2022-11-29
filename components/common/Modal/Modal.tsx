@@ -16,7 +16,7 @@ export const Modal: FC<ModalProps> = ({ children, containerId, show }) => {
 
   const modalContent = (
     <>
-      <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black/[0.55] z-10">
+      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black/[0.55] z-10">
         {children}
       </div>
     </>

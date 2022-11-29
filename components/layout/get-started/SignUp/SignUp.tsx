@@ -82,7 +82,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
         {({ isValid }) => (
           <Form>
             <div className="field">
-              <label htmlFor="email">Name*</label>
+              <label htmlFor="name">Name*</label>
               <Field type="text" name="name" placeholder="Enter your name" />
               <ErrorMessage className="field-error" name="name" component="p" />
             </div>

@@ -10,8 +10,7 @@ import styles from "../../../../styles/profile.module.scss";
 import { EditProfileModal } from "../../../dialogs";
 
 export const User = () => {
-  const [showEditProfileModal, setShowEditProfileModal] =
-    useState<boolean>(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState<boolean>(false);
 
   return (
     <>
@@ -31,8 +30,8 @@ export const User = () => {
                 <H5 classname="font-normal mb-1">Faruk Shuaibu</H5>
                 <H6 classname="mb-0">@ligma001</H6>
               </div>
-              <div className="relative p-2 group ml-6 group">
-                <div className="group-hover:rotate-180 transition-all cursor-pointer">
+              <div className="relative p-2 group ml-6 group cursor-pointer">
+                <div className="group-hover:rotate-180 transition-all">
                   <img className="w-3" src={"./arrow-select.svg"} alt="" />
                 </div>
                 <ul className="list hidden group-hover:block">
@@ -52,7 +51,8 @@ export const User = () => {
               </div>
             </div>
             <div className="relative pt-2 pb-2 group ml-2">
-              <div className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
+              <div
+                className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
                 <img className="w-3" src={"./plus.svg"} alt="" />
               </div>
               <ul className="list hidden group-hover:block">
@@ -69,7 +69,6 @@ export const User = () => {
           </div>
         </div>
       </section>
-
       <EditProfileModal
         show={showEditProfileModal}
         onClose={() => setShowEditProfileModal(false)}
