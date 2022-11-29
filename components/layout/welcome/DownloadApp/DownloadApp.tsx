@@ -1,7 +1,5 @@
 // components
-import { H1 } from "../../common/H1/H1";
-import { Paragraph } from "../../common/Paragraph/Paragraph";
-import { Button } from "../../common/Button/Button";
+import { H1, Paragraph, Button } from "../../../common";
 
 interface IDownloadApp {
   setIsReminderStep: (value: boolean) => void
