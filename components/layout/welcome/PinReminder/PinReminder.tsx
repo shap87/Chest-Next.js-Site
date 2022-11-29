@@ -2,10 +2,8 @@
 import cn from "classnames";
 
 // components
-import { H1 } from "../../common/H1/H1";
-import { Paragraph } from "../../common/Paragraph/Paragraph";
-import { Button } from "../../common/Button/Button";
-import { routes } from "../../../utils/routes";
+import { H1,Paragraph,Button } from "../../../common";
+import { routes } from "../../../../utils/routes";
 
 // assets
 import styles from "./PinReminder.module.scss";
