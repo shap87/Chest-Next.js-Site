@@ -1,10 +1,10 @@
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useFirebase } from "../../context/firebase";
-import { routes } from "../../utils/routes";
+import { useFirebase } from "../../../context/firebase";
+import { routes } from "../../../utils/routes";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const app = useFirebase();
 
@@ -18,5 +18,3 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   return <>{children}</>;
 };
-
-export default ProtectedRoute;

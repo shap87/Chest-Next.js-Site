@@ -14,7 +14,7 @@ import {
   useFirebase,
 } from "../context/firebase";
 import { routes } from "../utils/routes";
-import { GetStartedLayout } from "../components/get-started/GetStartedLayout/GetStartedLayout";
+import { GetStartedLayout } from "../components/layout/get-started/GetStartedLayout/GetStartedLayout";
 
 // assets
 import "swiper/css";

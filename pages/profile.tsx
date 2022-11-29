@@ -1,6 +1,6 @@
 //components
 import { Layout } from "../components/common/Layout/Layout";
-import { User, Folders, Products, Steps } from "../components/profile";
+import { User, Folders, Products, Steps } from "../components/layout/profile";
 
 export default function Profile() {
 

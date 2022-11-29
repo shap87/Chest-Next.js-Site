@@ -1,7 +1,7 @@
 //components
 import { Layout } from "../components/common/Layout/Layout";
-import { DownloadApp } from "../components/welcome/DownloadApp/DownloadApp";
-import { PinReminder } from "../components/welcome/PinReminder/PinReminder";
+import { DownloadApp } from "../components/layout/welcome/DownloadApp/DownloadApp";
+import { PinReminder } from "../components/layout/welcome/PinReminder/PinReminder";
 import { useState } from "react";
 
 export default function Login() {

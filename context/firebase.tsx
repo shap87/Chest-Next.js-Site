@@ -34,7 +34,7 @@ import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { Timestamp } from "firebase/firestore";
 import SuperJSON from "superjson";
 
-import Splash from "../components/Splash";
+import Splash from "../components/layout/Splash";
 
 import { firebaseConfig } from "./firebaseConfig";
 

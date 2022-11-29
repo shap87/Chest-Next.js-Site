@@ -1,13 +1,12 @@
 /*global chrome*/
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { AuthStateReady, FirebaseContextProvider } from "../context/firebase";
 
-import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
-import UnprotectedRoute from "../components/UnprotectedRoute/UnprotectedRoute";
+import { ProtectedRoute, UnprotectedRoute } from "../components/routes";
 
 import "../styles/globals.scss";
 
