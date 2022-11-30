@@ -180,6 +180,12 @@ export const Folders = () => {
                 folders[index].selected = !folder.selected;
                 setFolders([...folders]);
               }}>
+              <div className={styles.settings}>
+                <img
+                  className="w-1 group-hover:opacity-60 transition-all"
+                  src={"./dots.svg"}
+                  alt="" />
+              </div>
               <span className={styles.checkbox} />
               <img className={styles.image} src={folder.image} alt="" />
               <div className={styles.info}>
