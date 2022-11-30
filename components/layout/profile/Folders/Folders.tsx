@@ -9,65 +9,103 @@ import cn from "classnames";
 import styles from "../../../../styles/profile.module.scss";
 import { H6, Paragraph } from "../../../common";
 import { useWindowSize } from "../../../../utils/useWindowSize";
+import { SelectedPanel } from "../SelectedPanel/SelectedPanel";
 
-const folders = [
-  { image: "./images/folder-1.jpg", title: "All", count: 0, type: "default" },
+const initialFolders = [
   {
-    image: "./images/chestr-bg.png",
-    title: "Private",
+    image: "./images/folder-1.jpg",
+    title: "All",
     count: 0,
-    type: "private",
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-  },
-  { image: "./images/folder-1.jpg", title: "All", count: 0, type: "default" },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-  },
-  { image: "./images/folder-1.jpg", title: "All", count: 0, type: "default" },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
+    type: "default",
+    selected: false
   },
   {
     image: "./images/chestr-bg.png",
     title: "Private",
     count: 0,
     type: "private",
+    selected: false
+  },
+  {
+    image: "./images/folder-2.jpg",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
+  },
+  {
+    image: "./images/folder-1.jpg",
+    title: "All",
+    count: 0,
+    type: "default",
+    selected: false
+  },
+  {
+    image: "./images/chestr-bg.png",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
+  },
+  {
+    image: "./images/folder-2.jpg",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
+  },
+  {
+    image: "./images/folder-1.jpg",
+    title: "All",
+    count: 0,
+    type: "default",
+    selected: false
+  },
+  {
+    image: "./images/chestr-bg.png",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false,
+  },
+  {
+    image: "./images/folder-2.jpg",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
+  },
+  {
+    image: "./images/folder-2.jpg",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
+  },
+  {
+    image: "./images/chestr-bg.png",
+    title: "Private",
+    count: 0,
+    type: "private",
+    selected: false
   },
 ];
 
+interface IFolder {
+  image: string,
+  title: string,
+  count: number,
+  type: string,
+  selected: boolean,
+}
+
 export const Folders = () => {
-  const [showAll, setShowAll] = useState(false);
-  const [count, setCount] = useState(6);
   const { width }: any = useWindowSize();
+
+  const [showAll, setShowAll] = useState(false);
+  const [countSelected, setCountSelected] = useState(0);
+  const [count, setCount] = useState(6);
+  const [folders, setFolders] = useState<IFolder[]>(initialFolders);
 
   useEffect(() => {
     if (width < 640) {
@@ -81,9 +119,30 @@ export const Folders = () => {
     }
   }, [width]);
 
+  useEffect(() => {
+    setCountSelected(folders.filter((folder: IFolder) => folder.selected).length)
+  }, [folders]);
+
+  const removeSelected = () => {
+    folders.map(item => {
+      item.selected = false;
+      return item
+    })
+    setCountSelected(0);
+  }
+
+  const selectAll = () => {
+    folders.map(item => {
+      item.selected = true;
+      return item
+    })
+    setCountSelected(folders.length);
+  }
+
   return (
     <section className="py-4 md:py-8">
       <div className="container">
+        {countSelected ? <SelectedPanel selectAll={selectAll} removeSelected={removeSelected} countSelected={countSelected} /> : null}
         <div className="flex justify-between items-center">
           <H6>Folders</H6>
           {showAll ? (
@@ -112,29 +171,27 @@ export const Folders = () => {
             </div>
           )}
         </div>
-        <div
-          className={cn(
-            "flex flex-wrap items-center justify-between gap-y-12",
-            styles.folders
-          )}
-        >
-          {folders
-            .slice(0, showAll ? folders.length : count)
-            .map((folder, index) => (
-              <div key={index} className={styles.folder}>
-                <span className={styles.checkbox} />
-                <img className={styles.image} src={folder.image} alt="" />
-                <div className={styles.info}>
-                  <div className={styles.desc}>
-                    <H6>{folder.title}</H6>
-                    <Paragraph>{folder.count} items</Paragraph>
-                  </div>
-                  {folder.type === "private" && (
-                    <img className={styles.lock} src={"./lock.svg"} alt="" />
-                  )}
+        <div className={cn("flex flex-wrap items-center justify-between gap-y-12", styles.folders)}>
+          {folders.slice(0, showAll ? folders.length : count).map((folder: IFolder, index: number) => (
+            <div
+              key={index}
+              className={cn(styles.folder, { [styles.selected]: folder.selected })}
+              onClick={() => {
+                folders[index].selected = !folder.selected;
+                setFolders([...folders]);
+              }}>
+              <span className={styles.checkbox} />
+              <img className={styles.image} src={folder.image} alt="" />
+              <div className={styles.info}>
+                <div className={styles.desc}>
+                  <H6>{folder.title}</H6>
+                  <Paragraph>{folder.count} items</Paragraph>
                 </div>
+                {folder.type === "private" && (
+                  <img className={styles.lock} src={"./lock.svg"} alt="" />
+                )}
               </div>
-            ))}
+            </div>))}
         </div>
       </div>
     </section>

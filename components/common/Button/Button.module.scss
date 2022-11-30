@@ -1,5 +1,5 @@
 .btn {
-  @apply inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
+  @apply select-none inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
   &.pink {
     @apply bg-[#E0007F] text-white border-[#E0007F] hover:bg-transparent hover:text-[#E0007F];
   }
