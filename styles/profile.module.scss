@@ -34,6 +34,9 @@
   .lock {
     @apply w-4 brightness-0;
   }
+  .settings {
+    @apply absolute left-3 top-3;
+  }
   .checkbox {
     @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white;
     &:before {
