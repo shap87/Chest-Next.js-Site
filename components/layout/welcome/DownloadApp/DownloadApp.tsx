@@ -25,7 +25,7 @@ export const DownloadApp = ({ setIsReminderStep }: IDownloadApp) => {
             </div>
             <img className='mt-4 md:mt-8 mb-6 md:mb-8' src={"./images/qr-code.jpg"} alt="" />
           </div>
-          <Button href="#" classname='w-full mb-8 md:mb-16' color='light-pink'>
+          <Button href="#" classname='w-full mb-8 md:mb-16' color='light-pink' icon="icon-left">
             <img src={"./apple.svg"} alt="" />
             Download on App Store
           </Button>

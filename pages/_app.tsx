@@ -43,7 +43,6 @@ export default function App({ Component, pageProps }: AppProps) {
           ) : (
             <ProtectedRoute>
               <Component {...pageProps} />
-              <div id="edit-profile-dialog"></div>
             </ProtectedRoute>
           )}
         </AuthStateReady>

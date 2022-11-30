@@ -65,6 +65,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
       <Button
         classname="w-full !border-[#D0D5DD]"
         onClick={handleSignUpWithGoogle}
+        icon="icon-left"
       >
         <img src={"./google.svg"} alt="" />
         Continue with Google

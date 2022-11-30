@@ -4,13 +4,14 @@ import cn from "classnames";
 
 // components
 import { H5, H6 } from "../../../common";
+import { EditProfileModal, SettingsModal } from "../../../dialogs";
 
 // assets
 import styles from "../../../../styles/profile.module.scss";
-import { EditProfileModal } from "../../../dialogs";
 
 export const User = () => {
   const [showEditProfileModal, setShowEditProfileModal] = useState<boolean>(false);
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
 
   return (
     <>
@@ -43,7 +44,7 @@ export const User = () => {
                     Share
                     <img src={"./share.svg"} alt="" />
                   </li>
-                  <li>
+                  <li onClick={() => setShowSettingsModal(true)}>
                     Settings
                     <img src={"./settings.svg"} alt="" />
                   </li>
@@ -72,6 +73,10 @@ export const User = () => {
       <EditProfileModal
         show={showEditProfileModal}
         onClose={() => setShowEditProfileModal(false)}
+      />
+      <SettingsModal
+        show={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
       />
     </>
   );

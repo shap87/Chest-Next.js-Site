@@ -10,7 +10,7 @@ import {
 import { routes } from "../utils/routes";
 
 //components
-import { Layout } from "../components/common/Layout/Layout";
+import { Layout } from "../components/common";
 import { GetStartedLayout } from "../components/layout/get-started/GetStartedLayout/GetStartedLayout";
 import { CheckYourEmail } from "../components/layout/get-started/CheckYourEmail/CheckYourEmail";
 import { SignUp } from "../components/layout/get-started/SignUp/SignUp";
