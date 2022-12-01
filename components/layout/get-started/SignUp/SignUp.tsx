@@ -12,6 +12,7 @@ import {
   useFirebase,
 } from "../../../../context/firebase";
 import { routes } from "../../../../utils/routes";
+import { generateUsernameHelper } from "../../../../utils/helpers/generateUsernameHelper";
 
 interface ISignUp {
   setStep: any;
@@ -41,14 +42,17 @@ export const SignUp = ({ setStep }: ISignUp) => {
       });
   };
 
-  const handleSignUpWithEmail = (email: string) => {
+  const handleSignUpWithEmail = (email: string, name: string) => {
     signInWithEmail(
       firebaseApp,
       email,
-      `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}sign-up?isEmailLink=1`!
+      `${
+        process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL
+      }sign-up?isEmailLink=1`!
     )
       .then(() => {
         window.localStorage.setItem("emailForSignIn", email);
+        window.localStorage.setItem("nameForSignIn", name);
         setStep({
           email,
           state: "check-email",
@@ -78,7 +82,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
       <Formik
         validationSchema={validationSchemaSignUp}
         initialValues={{ email: "", name: "" }}
-        onSubmit={(values) => handleSignUpWithEmail(values.email)}
+        onSubmit={(values) => handleSignUpWithEmail(values.email, values.name)}
       >
         {({ isValid }) => (
           <Form>
