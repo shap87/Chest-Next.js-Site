@@ -1,8 +1,5 @@
 //components
-import { H1 } from "../components/common/H1/H1";
-import { Paragraph } from "../components/common/Paragraph/Paragraph";
-import { Button } from "../components/common/Button/Button";
-import { Layout } from "../components/common/Layout/Layout";
+import { H1, Paragraph, Button, Layout } from "../components/common";
 
 export default function Home() {
   return (
@@ -24,7 +21,8 @@ export default function Home() {
                 classname='!py-4 !px-7 !text-lg'
                 target='_blank'
                 href='https://chrome.google.com/webstore/detail/chestr-universal-shopping/aknpjjjjbhhpbdeboefcnnbafldhckej?hl=en&authuser=0'
-                color='pink'>
+                color='pink'
+                icon="icon-left">
                 <img src={'./chrome.svg'} alt='' />
                 Get Chestr - It’s Free
               </Button>

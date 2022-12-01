@@ -5,16 +5,14 @@ import * as yup from "yup";
 import { useRouter } from "next/router";
 
 //components
-import { Button } from "../components/common/Button/Button";
-import { Layout } from "../components/common/Layout/Layout";
-import { H4 } from "../components/common/H4/H4";
+import { Button, Layout, H4 } from "../components/common";
 import {
   signInWithEmail,
   signInWithGoogleUser,
   useFirebase,
 } from "../context/firebase";
 import { routes } from "../utils/routes";
-import { GetStartedLayout } from "../components/get-started/GetStartedLayout/GetStartedLayout";
+import { GetStartedLayout } from "../components/layout/get-started/GetStartedLayout/GetStartedLayout";
 
 // assets
 import "swiper/css";
@@ -88,7 +86,7 @@ export default function Login() {
           <Button
             classname="w-full !border-[#D0D5DD]"
             onClick={handleSignInWithGoogle}
-          >
+            icon="icon-left">
             <img src={"./google.svg"} alt="" />
             Get Chestr - It’s Free
           </Button>
@@ -122,8 +120,7 @@ export default function Login() {
                   disabled={!isValid}
                   classname="w-full !text-base"
                   target="_blank"
-                  color="pink"
-                >
+                  color="pink">
                   Continue
                 </Button>
               </Form>

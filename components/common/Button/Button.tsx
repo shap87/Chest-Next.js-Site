@@ -9,8 +9,9 @@ interface IButton {
   children: any;
   href?: string;
   classname?: string;
-  color?: "pink" | "light-pink" | undefined;
+  color?: "pink" | "light-pink" | "red" | undefined;
   target?: string;
+  icon?: "icon-left" | "icon-right";
   disabled?: boolean;
   htmlType?: "button" | "submit" | "reset" | undefined;
   onClick?: () => void;
@@ -25,13 +26,14 @@ export const Button = (
     classname,
     color,
     htmlType,
-    onClick
+    onClick,
+    icon
   }: IButton) => {
   return href ? (
     <Link href={href}>
       <a
         target={target}
-        className={cn(styles.btn, classname, color && styles[color])}
+        className={cn(styles.btn, classname, color && styles[color], icon && styles[icon])}
       >
         {children}
       </a>
@@ -40,9 +42,8 @@ export const Button = (
     <button
       type={htmlType ? htmlType : "button"}
       disabled={disabled}
-      className={cn(styles.btn, classname, color && styles[color])}
-      onClick={onClick}
-    >
+      className={cn(styles.btn, classname, color && styles[color], icon && styles[icon])}
+      onClick={onClick}>
       {children}
     </button>
   );

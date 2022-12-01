@@ -1,13 +1,23 @@
 .btn {
-  @apply inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
+  @apply select-none inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
   &.pink {
     @apply bg-[#E0007F] text-white border-[#E0007F] hover:bg-transparent hover:text-[#E0007F];
   }
   &.light-pink {
     @apply bg-[#FFEBF6] text-[#CC0174] border-[#FFEBF6] hover:border-[#CC0174];
   }
-  img {
-    @apply w-5 mr-3;
+  &.red {
+    @apply text-[#B42318] border-[#B42318] hover:text-white hover:bg-[#B42318];
+  }
+  &.icon-left {
+    img, svg {
+      @apply w-5 mr-3;
+    }
+  }
+  &.icon-right {
+    img, svg {
+      @apply w-5 ml-3;
+    }
   }
   &:disabled {
     @apply opacity-50 pointer-events-none select-none;

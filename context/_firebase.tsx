@@ -5,11 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  initializeApp,
-  FirebaseApp,
-  FirebaseOptions,
-} from "firebase/app";
+import { initializeApp, FirebaseApp, FirebaseOptions } from "firebase/app";
 // import {
 //   initializeAppCheck,
 //   ReCaptchaEnterpriseProvider,
@@ -26,7 +22,7 @@ import {
   getFirestore,
 } from "firebase/firestore/lite";
 // import { useRouter } from "next/router";
-import Splash from "../components/Splash";
+import Splash from "../components/layout/Splash";
 
 const options: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

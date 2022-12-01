@@ -10,11 +10,11 @@ import {
 import { routes } from "../utils/routes";
 
 //components
-import { Layout } from "../components/common/Layout/Layout";
-import { GetStartedLayout } from "../components/get-started/GetStartedLayout/GetStartedLayout";
-import { CheckYourEmail } from "../components/get-started/CheckYourEmail/CheckYourEmail";
-import { SignUp } from "../components/get-started/SignUp/SignUp";
-import Splash from "../components/Splash";
+import { Layout } from "../components/common";
+import { GetStartedLayout } from "../components/layout/get-started/GetStartedLayout/GetStartedLayout";
+import { CheckYourEmail } from "../components/layout/get-started/CheckYourEmail/CheckYourEmail";
+import { SignUp } from "../components/layout/get-started/SignUp/SignUp";
+import Splash from "../components/layout/Splash";
 
 // assets
 import "swiper/css";

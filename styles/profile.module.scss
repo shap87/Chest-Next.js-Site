@@ -3,12 +3,17 @@
               0px 2.80556px 5.61111px -2.80556px rgba(16, 24, 40, 0.04);
 }
 
+.selected {
+  box-shadow: 0 12px 16px -4px rgba(16, 24, 40, 0.04),
+              0 4px 6px -2px rgba(16, 24, 40, 0.015);
+}
+
 .folders {
   .folder {
     @apply w-[48%] sm:w-[32%] md:w-[22%] lg:w-[18%] overflow-hidden relative bg-[#FCFCFD] border-2 border-transparent rounded-md h-40 flex flex-col transition-all cursor-pointer;
     box-shadow: 0 3.76446px 7.52892px -1.88223px rgba(16, 24, 40, 0.05),
                 0px 1.88223px 3.76446px -1.88223px rgba(16, 24, 40, 0.03);
-    &:hover, &:active, &.active {
+    &:hover, &:active, &.active, &.selected {
       @apply border-[#FF0098];
       .lock {
         @apply brightness-100;
@@ -17,12 +22,27 @@
         @apply text-[#FF0098];
       }
     }
+    &.selected {
+      .checkbox {
+        @apply border-[#FF46AF];
+        &:before {
+          @apply block;
+        }
+      }
+    }
   }
   .lock {
     @apply w-4 brightness-0;
   }
+  .settings {
+    @apply absolute left-3 top-3;
+  }
   .checkbox {
     @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white;
+    &:before {
+      content: "";
+      @apply hidden absolute z-10 left-1/2 top-1/2 w-[60%] h-[60%] -translate-y-1/2 -translate-x-1/2 bg-[#FF46AF] rounded-full;
+    }
   }
   .info {
     @apply p-2 border-t border-[#F2F4F7] flex items-center justify-between;
