@@ -1,5 +1,5 @@
 // libs
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cn from "classnames";
 
 // components
@@ -8,12 +8,43 @@ import { EditProfileModal, SettingsModal } from "../../../dialogs";
 
 // assets
 import styles from "../../../../styles/profile.module.scss";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { useFirebase } from "../../../../context/firebase";
+import { string } from "yup";
 
 export const User = () => {
+  const firebaseApp = useFirebase();
+
   const [loading, setLoading] = useState<boolean>(false);
-  const [showEditProfileModal, setShowEditProfileModal] = useState<boolean>(false);
+  const [showEditProfileModal, setShowEditProfileModal] =
+    useState<boolean>(false);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const [share, setShare] = useState<boolean>(false);
+
+  const [userData, setUserData] = useState<{
+    username: string;
+    name: string;
+    uid: string;
+  }>({
+    name: "",
+    uid: "",
+    username: "",
+  });
+
+  useEffect(() => {
+    const user = getAuth(firebaseApp).currentUser;
+    const db = getFirestore(firebaseApp);
+    getDoc(doc(db, "users", user?.uid!)).then((querySnapshot) => {
+      const data = querySnapshot.data();
+
+      setUserData({
+        username: data?.username,
+        name: data?.name,
+        uid: user?.uid!,
+      });
+    });
+  }, []);
 
   return (
     <>
@@ -31,8 +62,8 @@ export const User = () => {
                 alt=""
               />
               <div className="ml-5">
-                <H5 classname="font-normal mb-1">Faruk Shuaibu</H5>
-                <H6 classname="mb-0">@ligma001</H6>
+                <H5 classname="font-normal mb-1">{userData?.name}</H5>
+                <H6 classname="mb-0">@{userData?.username}</H6>
               </div>
               <div className="relative p-2 group ml-6 group cursor-pointer">
                 <div className="group-hover:rotate-180 transition-all">
@@ -43,13 +74,17 @@ export const User = () => {
                     Edit profile
                     <img src={"./edit.svg"} alt="" />
                   </li>
-                  <li onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}#id`);
-                    setShare(true);
-                    setTimeout(() => {
-                      setShare(false)
-                    }, 3000)
-                  }}>
+                  <li
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}#id`
+                      );
+                      setShare(true);
+                      setTimeout(() => {
+                        setShare(false);
+                      }, 3000);
+                    }}
+                  >
                     Share
                     <img src={"./share.svg"} alt="" />
                   </li>
@@ -61,8 +96,7 @@ export const User = () => {
               </div>
             </div>
             <div className="relative pt-2 pb-2 group ml-2">
-              <div
-                className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
+              <div className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
                 <img className="w-3" src={"./plus.svg"} alt="" />
               </div>
               <ul className="list hidden group-hover:block">
@@ -79,20 +113,28 @@ export const User = () => {
           </div>
         </div>
       </section>
+
       <EditProfileModal
+        userData={userData!}
         show={showEditProfileModal}
-        onClose={() => setShowEditProfileModal(false)} />
+        onClose={() => setShowEditProfileModal(false)}
+      />
       <SettingsModal
         show={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
-        setLoading={setLoading} />
-      {share && <div className="fixed z-50 bottom-8 md:top-24 left-1/2 -translate-x-1/2">
-        <div
-          className="bg-[#FFF4FA] py-2 px-5 flex justify-center items-center border border-[#FF9AD4] rounded-[10px]">
-          <img className="w-5 mr-4" src={"./share-link.svg"} alt="" />
-          <H6 classname="text-[#FF0098] !mb-0 whitespace-nowrap">Profile link copied</H6>
+        setLoading={setLoading}
+      />
+
+      {share && (
+        <div className="fixed z-50 bottom-8 md:top-24 left-1/2 -translate-x-1/2">
+          <div className="bg-[#FFF4FA] py-2 px-5 flex justify-center items-center border border-[#FF9AD4] rounded-[10px]">
+            <img className="w-5 mr-4" src={"./share-link.svg"} alt="" />
+            <H6 classname="text-[#FF0098] !mb-0 whitespace-nowrap">
+              Profile link copied
+            </H6>
+          </div>
         </div>
-      </div>}
+      )}
     </>
   );
 };

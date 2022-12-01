@@ -11,8 +11,8 @@ import {
   signInWithGoogleUser,
   useFirebase,
 } from "../../../../context/firebase";
+
 import { routes } from "../../../../utils/routes";
-import { generateUsernameHelper } from "../../../../utils/helpers/generateUsernameHelper";
 
 interface ISignUp {
   setStep: any;
