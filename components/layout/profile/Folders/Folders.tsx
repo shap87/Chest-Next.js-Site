@@ -1,111 +1,53 @@
-import { useEffect, useState } from "react";
-
-// libs
-import cn from "classnames";
-
+import {useEffect, useState} from 'react';
+import cn from 'classnames';
+import {useAuthUser} from '@react-query-firebase/auth';
+import {useFirestoreQueryData} from '@react-query-firebase/firestore';
+import {query, collection, where} from 'firebase/firestore';
 // components
-
+import {H6, Paragraph} from '../../../common';
+import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
+// hooks
+import {useAuth, useFirestore} from '../../../../context/firebase';
+import {useWindowSize} from '../../../../utils/useWindowSize';
 // assets
-import styles from "../../../../styles/profile.module.scss";
-import { H6, Paragraph } from "../../../common";
-import { useWindowSize } from "../../../../utils/useWindowSize";
-import { SelectedPanel } from "../SelectedPanel/SelectedPanel";
+import styles from '../../../../styles/profile.module.scss';
 
-const initialFolders = [
-  {
-    image: "./images/folder-1.jpg",
-    title: "All",
-    count: 0,
-    type: "default",
-    selected: false
-  },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/folder-1.jpg",
-    title: "All",
-    count: 0,
-    type: "default",
-    selected: false
-  },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/folder-1.jpg",
-    title: "All",
-    count: 0,
-    type: "default",
-    selected: false
-  },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false,
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/folder-2.jpg",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-  {
-    image: "./images/chestr-bg.png",
-    title: "Private",
-    count: 0,
-    type: "private",
-    selected: false
-  },
-];
-
+// TODO: to refactor the types, add createdAt/Entity
 interface IFolder {
-  image: string,
-  title: string,
-  count: number,
-  type: string,
-  selected: boolean,
+  id: string;
+  userId: string;
+  imageUrl: string;
+  name: string;
+  visibility: 0 | 1;
+  parent: string;
+  numItems: number;
+  viewItems: number;
 }
 
 export const Folders = () => {
-  const { width }: any = useWindowSize();
+  const {width} = useWindowSize();
 
   const [showAll, setShowAll] = useState(false);
-  const [countSelected, setCountSelected] = useState(0);
   const [count, setCount] = useState(6);
-  const [folders, setFolders] = useState<IFolder[]>(initialFolders);
+  const [selectedFolders, setSelectedFolders] = useState<{
+    [key: string]: IFolder;
+  }>({});
+
+  const auth = useAuth();
+  const firestore = useFirestore();
+  const user = useAuthUser(['user'], auth);
+
+  // Define a query reference using the Firebase SDK
+  const ref = query(
+    collection(firestore, 'folders'),
+    where('userId', '==', user.data?.uid ?? ''),
+  );
+
+  // Provide the query to the hook
+  const foldersQuery = useFirestoreQueryData(
+    ['folders', {userId: user.data?.uid}],
+    ref,
+  );
 
   useEffect(() => {
     if (width < 640) {
@@ -119,79 +61,107 @@ export const Folders = () => {
     }
   }, [width]);
 
-  useEffect(() => {
-    setCountSelected(folders.filter((folder: IFolder) => folder.selected).length)
-  }, [folders]);
-
-  const removeSelected = () => {
-    folders.map(item => {
-      item.selected = false;
-      return item
-    })
-    setCountSelected(0);
+  if (foldersQuery.isLoading) {
+    return <div>Loading...</div>;
   }
 
-  const selectAll = () => {
-    folders.map(item => {
-      item.selected = true;
-      return item
-    })
-    setCountSelected(folders.length);
-  }
+  const countSelected = Object.keys(selectedFolders).length;
 
   return (
     <section className="py-4 md:py-8">
       <div className="container">
-        {countSelected ? <SelectedPanel selectAll={selectAll} removeSelected={removeSelected} countSelected={countSelected} /> : null}
+        {countSelected ? (
+          <SelectedPanel
+            selectAll={() => {}}
+            removeSelected={() => {}}
+            countSelected={countSelected}
+          />
+        ) : null}
         <div className="flex justify-between items-center">
           <H6>Folders</H6>
           {showAll ? (
             <div
               className="font-semibold text-[#98A2B3] text-sm flex items-center cursor-pointer group select-none"
-              onClick={() => setShowAll(!showAll)}
-            >
+              onClick={() => setShowAll(!showAll)}>
               Hide
               <img
                 className="w-3 ml-2 opacity-60 rotate-180 group-hover:rotate-0 transition-all"
-                src={"./arrow-select.svg"}
-                alt=""
+                src={'/arrow-select.svg'}
+                alt="arrow select"
               />
             </div>
           ) : (
             <div
               className="font-semibold text-[#98A2B3] text-sm flex items-center cursor-pointer group select-none"
-              onClick={() => setShowAll(!showAll)}
-            >
+              onClick={() => setShowAll(!showAll)}>
               Show All
               <img
                 className="w-3 ml-2 opacity-60 group-hover:rotate-180 transition-all"
-                src={"./arrow-select.svg"}
-                alt=""
+                src={'/arrow-select.svg'}
+                alt="arrow select"
               />
             </div>
           )}
         </div>
-        <div className={cn("flex flex-wrap items-center justify-between gap-y-12", styles.folders)}>
-          {folders.slice(0, showAll ? folders.length : count).map((folder: IFolder, index: number) => (
-            <div
-              key={index}
-              className={cn(styles.folder, { [styles.selected]: folder.selected })}
-              onClick={() => {
-                folders[index].selected = !folder.selected;
-                setFolders([...folders]);
-              }}>
-              <span className={styles.checkbox} />
-              <img className={styles.image} src={folder.image} alt="" />
-              <div className={styles.info}>
-                <div className={styles.desc}>
-                  <H6>{folder.title}</H6>
-                  <Paragraph>{folder.count} items</Paragraph>
+        <div
+          className={cn(
+            'flex flex-wrap items-center justify-between gap-y-12',
+            styles.folders,
+          )}>
+          {foldersQuery.data
+            ?.slice(0, showAll ? foldersQuery.data?.length ?? Infinity : count)
+            ?.map(folder => {
+              const selected = Object.prototype.hasOwnProperty.call(
+                selectedFolders,
+                folder.id,
+              );
+              return (
+                <div
+                  key={folder.id}
+                  className={cn(styles.folder, {
+                    [styles.selected]: selected,
+                  })}
+                  onClick={() => {
+                    if (!selected) {
+                      setSelectedFolders({
+                        ...selectedFolders,
+                        [folder.id]: folder,
+                      });
+                    } else {
+                      // Remove folder from selected
+                      const {[folder.id]: omitted, ...rest} = selectedFolders;
+                      setSelectedFolders(rest);
+                    }
+                  }}>
+                  <div className={styles.settings}>
+                    <img
+                      className="w-1 group-hover:opacity-60 transition-all"
+                      src={'/dots.svg'}
+                      alt=""
+                    />
+                  </div>
+                  <span className={styles.checkbox} />
+                  <img
+                    className={styles.image}
+                    src={folder.imageUrl}
+                    alt="folder"
+                  />
+                  <div className={styles.info}>
+                    <div className={styles.desc}>
+                      <H6>{folder.name}</H6>
+                      <Paragraph>{folder.numItems} items</Paragraph>
+                    </div>
+                    {folder.visibility === 1 && (
+                      <img
+                        className={styles.lock}
+                        src={'/lock.svg'}
+                        alt="private"
+                      />
+                    )}
+                  </div>
                 </div>
-                {folder.type === "private" && (
-                  <img className={styles.lock} src={"./lock.svg"} alt="" />
-                )}
-              </div>
-            </div>))}
+              );
+            })}
         </div>
       </div>
     </section>

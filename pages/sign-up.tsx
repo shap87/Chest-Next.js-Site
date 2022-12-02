@@ -7,6 +7,7 @@ import {
   signInWithEmailLink,
 } from "firebase/auth";
 
+import firebaseService from "../services/firebase.service";
 import { routes } from "../utils/routes";
 
 //components
@@ -29,8 +30,6 @@ export default function SignUpLayout() {
     state: "",
   });
 
-  console.log(router.query);
-
   useEffect(() => {
     const auth = getAuth(firebaseApp);
     if (isSignInWithEmailLink(auth, window.location.href)) {
@@ -38,17 +37,25 @@ export default function SignUpLayout() {
       if (!email) {
         email = window.prompt("Please provide your email for confirmation");
       }
+
+      let name = window.localStorage.getItem("nameForSignIn");
+      if (!name) {
+        name = window.prompt("Please provide your name")!;
+      }
+
       signInWithEmailLink(auth, email!, window.location.href)
-        .then(() => {
+        .then(async () => {
           window.localStorage.removeItem("emailForSignIn");
-          console.log("Success - Welcome");
+          window.localStorage.removeItem("nameForSignIn");
+
+          await firebaseService.addNewUser(firebaseApp, String(name));
           router.push(routes.welcome);
         })
         .catch((error) => {
           console.error(error);
         });
     }
-  }, []);
+  }, [router]);
 
   if (Number(router.query?.isEmailLink)) {
     return <Splash />;
