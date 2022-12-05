@@ -50,7 +50,7 @@ input {
   @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-[248px] translate-y-full border border-[#EAECF0];
   box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05), 0 2px 4px rgba(16, 24, 40, 0.04);
   li {
-    @apply py-3 px-4 text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main;
+    @apply py-3 px-4 text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main-500;
     &:not(:last-child) {
       @apply border-b border-[#EAECF0];
     }
@@ -76,15 +76,15 @@ input {
 }
 
 @font-face {
-  font-family: "Inter-Medium";
-  src: url("../assets/fonts/Inter-Medium.ttf");
+  font-family: 'Inter-Medium';
+  src: url('../assets/fonts/Inter-Medium.ttf');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Inter-Semibold";
-  src: url("../assets/fonts/Inter-SemiBold.ttf");
+  font-family: 'Inter-Semibold';
+  src: url('../assets/fonts/Inter-SemiBold.ttf');
   font-weight: 600;
   font-style: normal;
 }
