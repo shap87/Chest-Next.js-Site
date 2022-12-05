@@ -4,10 +4,11 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { FirebaseApp, initializeApp } from "firebase/app";
+} from 'react';
+import {FirebaseApp, initializeApp} from 'firebase/app';
 import {
   ActionCodeSettings,
+  Auth,
   browserLocalPersistence,
   browserPopupRedirectResolver,
   connectAuthEmulator,
@@ -20,38 +21,48 @@ import {
   signInWithEmailLink,
   signInWithPopup,
   signOut,
-} from "firebase/auth";
+} from 'firebase/auth';
 import {
   connectFirestoreEmulator,
+  Firestore,
   initializeFirestore,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 import {
   initializeAppCheck,
   ReCaptchaEnterpriseProvider,
-} from "firebase/app-check";
-import { initializeAnalytics } from "firebase/analytics";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { Timestamp } from "firebase/firestore";
-import SuperJSON from "superjson";
+} from 'firebase/app-check';
+import {initializeAnalytics} from 'firebase/analytics';
+import {getFunctions, connectFunctionsEmulator} from 'firebase/functions';
+import {Timestamp} from 'firebase/firestore';
+import SuperJSON from 'superjson';
 
-import Splash from "../components/layout/Splash";
+import Splash from '../components/layout/Splash';
 
-import { firebaseConfig } from "./firebaseConfig";
+import {firebaseConfig} from './firebaseConfig';
 
 SuperJSON.registerCustom<Timestamp, number>(
   {
-    isApplicable: (v): v is Timestamp => v?.constructor.name === "Timestamp",
-    serialize: (v) => v.toDate().getTime(),
-    deserialize: (v) => Timestamp.fromMillis(v),
+    isApplicable: (v): v is Timestamp => v?.constructor.name === 'Timestamp',
+    serialize: v => v.toDate().getTime(),
+    deserialize: v => Timestamp.fromMillis(v),
   },
-  "firestore.Timestamp"
+  'firestore.Timestamp',
 );
 
-export const FirebaseContext = createContext<FirebaseApp>(null!);
-export const useFirebase = () => useContext(FirebaseContext);
+export const FirebaseContext = createContext<{
+  app: FirebaseApp;
+  auth: Auth;
+  firestore: Firestore;
+}>(null!);
+
+export const useFirebase = () => useContext(FirebaseContext).app;
+export const useAuth = () => useContext(FirebaseContext).auth;
+export const useFirestore = () => useContext(FirebaseContext).firestore;
 
 export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
   const [app, setApp] = useState<FirebaseApp>(null!);
+  const [auth, setAuth] = useState<Auth>(null!);
+  const [firestore, setFirestore] = useState<Firestore>(null!);
 
   useEffect(() => {
     try {
@@ -84,10 +95,12 @@ export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
       // connectFunctionsEmulator(functions, "localhost", 5001);
 
       setApp(app);
+      setAuth(auth);
+      setFirestore(firestore);
     } catch {}
   }, []);
 
-  return <FirebaseContext.Provider value={app} {...props} />;
+  return <FirebaseContext.Provider value={{app, auth, firestore}} {...props} />;
 };
 
 export function FirebaseReady(props: PropsWithChildren<{}>) {
@@ -118,7 +131,7 @@ export const signInWithGoogleUser = (app: FirebaseApp) => {
   const auth = getAuth(app);
 
   const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
+  provider.setCustomParameters({prompt: 'select_account'});
 
   return signInWithPopup(auth, provider);
 };
@@ -126,7 +139,7 @@ export const signInWithGoogleUser = (app: FirebaseApp) => {
 export const signInWithEmail = (
   app: FirebaseApp,
   email: string,
-  link: string
+  link: string,
 ) => {
   const auth = getAuth(app);
 

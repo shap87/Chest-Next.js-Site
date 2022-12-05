@@ -1,10 +1,9 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
-})
-const { withSuperjson } = require('next-superjson')
+});
+const {withSuperjson} = require('next-superjson');
 // const { Timestamp } = require('@google-cloud/firestore');
 // const SuperJSON = require('superjson');
-
 
 // SuperJSON.default.registerCustom(
 //   {
@@ -24,16 +23,17 @@ const { withSuperjson } = require('next-superjson')
 //   'firestore.Timestamp'
 // );
 
-
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ['firebasestorage.googleapis.com'],
+  },
   reactStrictMode: false,
   swcMinify: true,
   // experimental: {
   //   esmExternals: !false,
 
   // },
-}
+};
 
-module.exports = withBundleAnalyzer(withSuperjson()(nextConfig))
+module.exports = withBundleAnalyzer(withSuperjson()(nextConfig));
