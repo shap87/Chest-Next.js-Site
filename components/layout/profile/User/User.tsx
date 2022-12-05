@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
 
 // components
 import { H5, H6, LoadingSpinner } from "../../../common";
-import { AddNewFolderModal, EditProfileModal, SettingsModal } from "../../../dialogs";
+import { AddNewFolderModal, AddNewItemModal, EditProfileModal, SettingsModal } from "../../../dialogs";
 import { useFirebase } from "../../../../context/firebase";
 
 // assets
@@ -18,6 +18,7 @@ export const User = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState<boolean>(false);
   const [showAddNewFolderModal, setShowAddNewFolderModal] = useState<boolean>(false);
+  const [showAddNewItemModal, setShowAddNewItemModal] = useState<boolean>(false);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const [share, setShare] = useState<boolean>(false);
 
@@ -104,7 +105,7 @@ export const User = () => {
                   New Folder
                   <img src={"./folder.svg"} alt="" />
                 </li>
-                <li>
+                <li onClick={() => setShowAddNewItemModal(true)}>
                   New Item
                   <img src={"./plus.svg"} alt="" />
                 </li>
@@ -113,6 +114,9 @@ export const User = () => {
           </div>
         </div>
       </section>
+      <AddNewItemModal
+        show={showAddNewItemModal}
+        onClose={() => setShowAddNewItemModal(false)} />
       <AddNewFolderModal
         show={showAddNewFolderModal}
         onClose={() => setShowAddNewFolderModal(false)} />
