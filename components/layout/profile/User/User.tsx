@@ -35,8 +35,13 @@ export const User = () => {
   useEffect(() => {
     const user = getAuth(firebaseApp).currentUser;
     const db = getFirestore(firebaseApp);
+
+    console.log(user);
+
     getDoc(doc(db, "users", user?.uid!)).then((querySnapshot) => {
       const data = querySnapshot.data();
+
+      console.log(data);
 
       setUserData({
         username: data?.username,
