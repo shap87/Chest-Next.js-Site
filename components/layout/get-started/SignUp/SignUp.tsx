@@ -3,6 +3,8 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import * as yup from "yup";
 
+import firebaseService from "../../../../services/firebase.service";
+
 // components
 import { Button, H4 } from "../../../common";
 
@@ -33,8 +35,9 @@ export const SignUp = ({ setStep }: ISignUp) => {
 
   const handleSignUpWithGoogle = () => {
     signInWithGoogleUser(firebaseApp)
-      .then((res) => {
+      .then(async (res) => {
         console.log(res.user);
+        await firebaseService.addNewUser(firebaseApp, String('User'));
         router.push(routes.welcome);
       })
       .catch((error) => {
@@ -46,9 +49,7 @@ export const SignUp = ({ setStep }: ISignUp) => {
     signInWithEmail(
       firebaseApp,
       email,
-      `${
-        process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL
-      }sign-up?isEmailLink=1`!
+      `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}sign-up?isEmailLink=1`!
     )
       .then(() => {
         window.localStorage.setItem("emailForSignIn", email);

@@ -4,6 +4,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { useRouter } from "next/router";
 
+import firebaseService from "../services/firebase.service";
+
 //components
 import { Button, Layout, H4 } from "../components/common";
 import {
@@ -55,8 +57,9 @@ export default function Login() {
 
   const handleSignInWithGoogle = () => {
     signInWithGoogleUser(firebaseApp)
-      .then((res) => {
+      .then(async (res) => {
         console.log(res.user);
+        await firebaseService.addNewUser(firebaseApp, String('User'));
         router.push(routes.profile);
       })
       .catch((error) => {
