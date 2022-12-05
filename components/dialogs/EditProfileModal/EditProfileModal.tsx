@@ -64,15 +64,8 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      title={
-        <div className="flex flex-row items-center justify-start ">
-          <img className="w-5 h-5" src={"./edit.svg"} alt="" />
-          <p className="text-[#667085]text-lg font-semibold ml-2.5">
-            Edit profile
-          </p>
-        </div>
-      }
-    >
+      icon={"./edit.svg"}
+      title="Edit profile">
       <div
         className={`w-full flex justify-center absolute -top-20 ${
           showSavedMessage ? "" : "hidden"
