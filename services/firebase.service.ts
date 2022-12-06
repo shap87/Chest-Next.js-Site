@@ -8,8 +8,10 @@ import {
   setDoc,
   Timestamp,
 } from 'firebase/firestore';
+import {getFunctions, httpsCallable} from 'firebase/functions';
 import uuid from 'react-uuid';
 import {generateUsernameHelper} from '../utils/helpers/generateUsernameHelper';
+import {FetchProductType} from './types';
 
 // ! Change later
 const profilePictireURL_Example =
@@ -42,9 +44,7 @@ class FirebaseService {
     });
   }
 
-  async addNewFolder(app: FirebaseApp, name: string) {
-    console.log(name);
-
+  async addNewFolder(app: FirebaseApp, name: string, isPrivate: boolean) {
     const user = getAuth(app).currentUser;
     if (!user) return;
 
@@ -52,8 +52,11 @@ class FirebaseService {
 
     const uniqueId = uuid();
 
+    console.log('New folder', uniqueId);
+
     await setDoc(doc(db, 'folders', uniqueId), {
       name,
+      private: isPrivate,
       id: uniqueId,
       userId: user.uid,
       imageUrl: folderImageUrl_Example,
@@ -62,6 +65,33 @@ class FirebaseService {
       visibility: 1,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
+    });
+  }
+
+  async addNewItem(app: FirebaseApp, url: string) {
+    const functions = getFunctions(app);
+    const result = await httpsCallable(functions, 'fetchProductData')({url});
+
+    if (!result?.data) return;
+
+    const db = getFirestore(app);
+    
+    const fetchedData: any = result.data;
+    const uniqueId = uuid();
+
+    console.log('New product', uniqueId);
+
+    await setDoc(doc(db, 'products', uniqueId), {
+      id: uniqueId,
+      productUrl: url,
+      description: fetchedData?.description ?? null,
+      brand: fetchedData?.brand ?? '',
+      title: fetchedData?.title ?? null,
+      priceHistory: [fetchedData?.price] ?? null,
+      priceCurrency: fetchedData.priceCurrency ?? null,
+      createdAt: Timestamp.fromDate(new Date()),
+      updatedAt: Timestamp.fromDate(new Date()),
+      parent: null, // Folder id
     });
   }
 }

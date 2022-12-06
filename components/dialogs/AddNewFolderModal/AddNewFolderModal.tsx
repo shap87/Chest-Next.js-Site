@@ -1,8 +1,8 @@
 // libs
-import { FC } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from "yup";
-import cn from "classnames";
+import {FC} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import * as yup from 'yup';
+import cn from 'classnames';
 
 // components
 import {Button, ModalBaseLayout} from '../../common';
@@ -22,7 +22,8 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
   const firebaseApp = useFirebase();
 
   const handleSubmit = async (values: {name: string}) => {
-    await firebaseService.addNewFolder(firebaseApp, values.name);
+    const isPrivate = false;
+    await firebaseService.addNewFolder(firebaseApp, values.name, isPrivate);
     onClose();
   };
 
@@ -38,15 +39,18 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
           validationSchema={validationSchemaEditProfile}
           initialValues={{name: ''}}
           onSubmit={handleSubmit}>
-          {({ isValid, errors }) => (
+          {({isValid, errors}) => (
             <Form className="w-full max-w-[440px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
               <div className="w-full">
                 <div className="field !mb-10">
                   <div className="relative">
-                    <img className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5" src={'./edit-with-line.svg'}
-                         alt='' />
+                    <img
+                      className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5"
+                      src={'./edit-with-line.svg'}
+                      alt=""
+                    />
                     <Field
-                      className={cn("!pl-10", { 'field-error': errors.name })}
+                      className={cn('!pl-10', {'field-error': errors.name})}
                       type="text"
                       name="name"
                       placeholder="Enter your title like “books” etc."

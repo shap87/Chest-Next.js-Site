@@ -8,6 +8,7 @@ import cn from 'classnames';
 import {Button, ModalBaseLayout} from '../../common';
 import {getFunctions, httpsCallable} from 'firebase/functions';
 import {useFirebase} from '../../../context/firebase';
+import firebaseService from '../../../services/firebase.service';
 
 interface EditProfileProps {
   show: boolean;
@@ -22,18 +23,7 @@ export const AddNewItemModal: FC<EditProfileProps> = ({show, onClose}) => {
   const firebaseApp = useFirebase();
 
   const handleSubmit = async (values: {url: string}) => {
-    console.log(values, 'values');
-    const functions = getFunctions(firebaseApp);
-
-    console.log(functions);
-
-    const result = await httpsCallable(
-      functions,
-      'fetchProductData',
-    )({url: values.url});
-
-    console.log(result);
-
+    await firebaseService.addNewItem(firebaseApp, values.url);
     onClose();
   };
 
