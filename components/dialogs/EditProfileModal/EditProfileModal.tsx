@@ -3,6 +3,7 @@ import { FC, useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { doc, getFirestore, Timestamp, updateDoc } from "firebase/firestore";
 import * as yup from "yup";
+import cn from "classnames";
 
 import { useFirebase } from "../../../context/firebase";
 
@@ -21,10 +22,10 @@ const validationSchemaEditProfile = yup.object().shape({
 });
 
 export const EditProfileModal: FC<EditProfileProps> = ({
-  show,
-  onClose,
-  userData,
-}) => {
+                                                         show,
+                                                         onClose,
+                                                         userData,
+                                                       }) => {
   const firebaseApp = useFirebase();
 
   const [showSavedMessage, setShowSavedMessage] = useState<boolean>();
@@ -71,7 +72,8 @@ export const EditProfileModal: FC<EditProfileProps> = ({
           showSavedMessage ? "" : "hidden"
         }`}
       >
-        <div className="w-[185px] bg-[#FFF4FA] p-2 flex flex-row justify-center items-center border-[1px] border-[#FF9AD4] rounded-[10px]">
+        <div
+          className="w-[185px] bg-[#FFF4FA] p-2 flex flex-row justify-center items-center border-[1px] border-[#FF9AD4] rounded-[10px]">
           <img className="w-[18px] h-[13px]" src={"./check-pink.svg"} alt="" />
           <h4 className="font-['Inter-Semibold'] text-lg text-[#FF0098] ml-4">
             Profile saved
@@ -84,7 +86,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
           initialValues={{ name: userData.name, username: userData.username }}
           onSubmit={handleSubmit}
         >
-          {({ isValid, values }) => (
+          {({ isValid, values, errors }) => (
             <Form className="w-full max-w-[336px] flex flex-col items-center px-3 pt-7">
               <div className="field !mb-8">
                 <label className="cursor-pointer group !mb-0">
@@ -109,7 +111,8 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                       alt="Avatar"
                     />
                   )}
-                  <div className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
+                  <div
+                    className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
                     <img
                       className="w-[19px] h-[18px]"
                       src={"./upload-cloud.svg"}
@@ -122,12 +125,13 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 <div className="field !mb-5">
                   <label htmlFor="name">Name</label>
                   <Field
+                    className={cn({ 'field-error': errors.name })}
                     type="text"
                     name="name"
                     placeholder="Enter your name"
                   />
                   <ErrorMessage
-                    className="field-error"
+                    className="error-message"
                     name="name"
                     component="p"
                   />
@@ -143,7 +147,8 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                     </span>
                   </label>
                   <div className="flex items-center">
-                    <span className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
+                    <span
+                      className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
                       @
                     </span>
                     <Field
@@ -154,7 +159,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                     />
                   </div>
                   <ErrorMessage
-                    className="field-error"
+                    className="error-message"
                     name="username"
                     component="p"
                   />
