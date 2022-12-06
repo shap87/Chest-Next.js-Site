@@ -1,66 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // libs
-import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { getAuth, isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import * as yup from "yup";
 import cn from "classnames";
 
-
 // components
 import { Button, H4, LoadingSpinner } from "../../../common";
-
-import {
-  signInWithEmail,
-  signInWithGoogleUser,
-  useFirebase,
-} from "../../../../context/firebase";
+import { signInWithEmail, signInWithGoogleUser, useFirebase } from "../../../../context/firebase";
 import firebaseService from "../../../../services/firebase.service";
 import { routes } from "../../../../utils/routes";
 
-interface ISignUp {
-  setStep: any;
-}
-
-const validationSchemaSignUp = yup.object().shape({
+const validationSchemaLogin = yup.object().shape({
   email: yup
     .string()
     .email("Invalid email format")
     .required("Email is required"),
-  name: yup.string().required("Name is required"),
 });
 
-export const SignUp = ({ setStep }: ISignUp) => {
+interface ILogin {
+  setStep: any;
+}
+
+
+export const Login = ({ setStep }: ILogin) => {
   const router = useRouter();
+  const firebaseApp = useFirebase();
 
   const [loading, setLoading] = useState(false);
 
-  const firebaseApp = useFirebase();
+  useEffect(() => {
+    const auth = getAuth(firebaseApp);
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      let email = window.localStorage.getItem("emailForSignIn");
+      if (!email) {
+        email = window.prompt("Please provide your email for confirmation");
+      }
+      signInWithEmailLink(auth, email!, window.location.href)
+        .then(() => {
+          window.localStorage.removeItem("emailForSignIn");
+          console.log("Success - Home");
+          router.push(routes.home);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
 
-  const handleSignUpWithGoogle = () => {
+  const handleSignInWithGoogle = () => {
     signInWithGoogleUser(firebaseApp)
       .then(async (res) => {
         console.log(res.user);
         await firebaseService.addNewUser(firebaseApp, String('User'));
-        router.push(routes.welcome);
+        router.push(routes.profile);
       })
       .catch((error) => {
         console.log(error.message);
       });
   };
 
-  const handleSignUpWithEmail = (email: string, name: string) => {
+  const handleSignInWithEmail = (email: string) => {
     setLoading(true);
-
-    signInWithEmail(
-      firebaseApp,
-      email,
-      `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}sign-up?isEmailLink=1`!
-    )
+    signInWithEmail(firebaseApp, email, `${process.env.NEXT_PUBLIC_EMAIL_LINK_AUTH_URL}/login`!)
       .then(() => {
         setLoading(false);
         window.localStorage.setItem("emailForSignIn", email);
-        window.localStorage.setItem("nameForSignIn", name);
         setStep({
           email,
           state: "check-email",
@@ -76,14 +83,13 @@ export const SignUp = ({ setStep }: ISignUp) => {
     <>
       {loading && <LoadingSpinner />}
       <div className="md:max-w-[344px]">
-        <H4>Sign Up</H4>
+        <H4>Login</H4>
         <Button
           classname="w-full !border-[#D0D5DD]"
-          onClick={handleSignUpWithGoogle}
-          icon="icon-left"
-        >
+          onClick={handleSignInWithGoogle}
+          icon="icon-left">
           <img src={"./google.svg"} alt="" />
-          Continue with Google
+          Get Chestr - It’s Free
         </Button>
         <div className="relative flex py-3 md:py-6 px-2 md:px-4 items-center">
           <div className="flex-grow border-t border-[#EAECF0]" />
@@ -91,28 +97,20 @@ export const SignUp = ({ setStep }: ISignUp) => {
           <div className="flex-grow border-t border-[#EAECF0]" />
         </div>
         <Formik
-          validationSchema={validationSchemaSignUp}
-          initialValues={{ email: "", name: "" }}
-          onSubmit={(values) => handleSignUpWithEmail(values.email, values.name)}
+          validationSchema={validationSchemaLogin}
+          initialValues={{ email: "" }}
+          onSubmit={(values) => handleSignInWithEmail(values.email)}
         >
           {({ isValid, errors }) => (
             <Form>
-              <div className="field">
-                <label htmlFor="name">Name*</label>
-                <Field
-                  className={cn({ 'field-error': errors.name })}
-                  type="text"
-                  name="name"
-                  placeholder="Enter your name" />
-                <ErrorMessage className="error-message" name="name" component="p" />
-              </div>
               <div className="field">
                 <label htmlFor="email">Email*</label>
                 <Field
                   className={cn({ 'field-error': errors.email })}
                   type="email"
                   name="email"
-                  placeholder="Enter your email" />
+                  placeholder="Enter your email"
+                />
                 <ErrorMessage
                   className="error-message"
                   name="email"
@@ -122,10 +120,9 @@ export const SignUp = ({ setStep }: ISignUp) => {
               <Button
                 htmlType="submit"
                 disabled={!isValid}
-                classname="w-full !py-2 !text-base"
+                classname="w-full !text-base"
                 target="_blank"
-                color="pink"
-              >
+                color="pink">
                 Continue
               </Button>
             </Form>
@@ -133,5 +130,5 @@ export const SignUp = ({ setStep }: ISignUp) => {
         </Formik>
       </div>
     </>
-  );
-};
+  )
+}

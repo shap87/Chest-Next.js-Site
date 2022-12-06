@@ -2,6 +2,7 @@
 import { FC } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
+import cn from "classnames";
 
 // components
 import { Button, ModalBaseLayout } from "../../common";
@@ -33,7 +34,7 @@ export const AddNewItemModal: FC<EditProfileProps> = ({ show, onClose, }) => {
           validationSchema={validationSchemaEditProfile}
           initialValues={{ url: "" }}
           onSubmit={handleSubmit}>
-          {({ isValid }) => (
+          {({ isValid, errors }) => (
             <Form className="w-full max-w-[440px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
               <div className="w-full">
                 <div className="field !mb-10">
@@ -41,14 +42,14 @@ export const AddNewItemModal: FC<EditProfileProps> = ({ show, onClose, }) => {
                     <img className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-4" src={'./share-link-black.svg'}
                          alt='' />
                     <Field
-                      className="!pl-10"
+                      className={cn("!pl-10", { 'field-error': errors.url })}
                       type="text"
                       name="url"
                       placeholder="Paste Item URL (⌘+V)"
                     />
                   </div>
                   <ErrorMessage
-                    className="field-error"
+                    className="error-message"
                     name="url"
                     component="p"
                   />
