@@ -32,7 +32,11 @@ import {
   ReCaptchaEnterpriseProvider,
 } from 'firebase/app-check';
 import {initializeAnalytics} from 'firebase/analytics';
-import {getFunctions, connectFunctionsEmulator} from 'firebase/functions';
+import {
+  getFunctions,
+  connectFunctionsEmulator,
+  Functions,
+} from 'firebase/functions';
 import {Timestamp} from 'firebase/firestore';
 import SuperJSON from 'superjson';
 
@@ -53,16 +57,19 @@ export const FirebaseContext = createContext<{
   app: FirebaseApp;
   auth: Auth;
   firestore: Firestore;
+  functions: Functions;
 }>(null!);
 
 export const useFirebase = () => useContext(FirebaseContext).app;
 export const useAuth = () => useContext(FirebaseContext).auth;
 export const useFirestore = () => useContext(FirebaseContext).firestore;
+export const useFunctions = () => useContext(FirebaseContext).functions;
 
 export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
   const [app, setApp] = useState<FirebaseApp>(null!);
   const [auth, setAuth] = useState<Auth>(null!);
   const [firestore, setFirestore] = useState<Firestore>(null!);
+  const [functions, setFunctions] = useState<Functions>(null!);
 
   useEffect(() => {
     try {
@@ -97,10 +104,16 @@ export const FirebaseContextProvider = (props: PropsWithChildren<{}>) => {
       setApp(app);
       setAuth(auth);
       setFirestore(firestore);
+      setFunctions(functions);
     } catch {}
   }, []);
 
-  return <FirebaseContext.Provider value={{app, auth, firestore}} {...props} />;
+  return (
+    <FirebaseContext.Provider
+      value={{app, auth, firestore, functions}}
+      {...props}
+    />
+  );
 };
 
 export function FirebaseReady(props: PropsWithChildren<{}>) {
