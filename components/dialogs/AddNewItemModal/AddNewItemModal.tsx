@@ -1,12 +1,12 @@
 // libs
-import { FC } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from "yup";
-import cn from "classnames";
+import {FC} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import * as yup from 'yup';
+import cn from 'classnames';
 
 // components
 import {Button, ModalBaseLayout} from '../../common';
-import functions, {getFunctions} from 'firebase/functions';
+import {getFunctions, httpsCallable} from 'firebase/functions';
 import {useFirebase} from '../../../context/firebase';
 
 interface EditProfileProps {
@@ -23,12 +23,12 @@ export const AddNewItemModal: FC<EditProfileProps> = ({show, onClose}) => {
 
   const handleSubmit = async (values: {url: string}) => {
     console.log(values, 'values');
-    const firebaseFuncitons = getFunctions(firebaseApp);
+    const functions = getFunctions(firebaseApp);
 
-    console.log(firebaseFuncitons);
+    console.log(functions);
 
-    const result = await functions.httpsCallable(
-      firebaseFuncitons,
+    const result = await httpsCallable(
+      functions,
       'fetchProductData',
     )({url: values.url});
 
@@ -49,7 +49,7 @@ export const AddNewItemModal: FC<EditProfileProps> = ({show, onClose}) => {
           validationSchema={validationSchemaEditProfile}
           initialValues={{url: ''}}
           onSubmit={handleSubmit}>
-          {({ isValid, errors }) => (
+          {({isValid, errors}) => (
             <Form className="w-full max-w-[440px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
               <div className="w-full">
                 <div className="field !mb-10">
@@ -60,7 +60,7 @@ export const AddNewItemModal: FC<EditProfileProps> = ({show, onClose}) => {
                       alt=""
                     />
                     <Field
-                      className={cn("!pl-10", { 'field-error': errors.url })}
+                      className={cn('!pl-10', {'field-error': errors.url})}
                       type="text"
                       name="url"
                       placeholder="Paste Item URL (⌘+V)"
