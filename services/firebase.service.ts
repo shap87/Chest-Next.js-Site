@@ -1,3 +1,4 @@
+import uuid from 'react-uuid';
 import {FirebaseApp} from 'firebase/app';
 import {getAuth} from 'firebase/auth';
 import {
@@ -9,9 +10,8 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import {getFunctions, httpsCallable} from 'firebase/functions';
-import uuid from 'react-uuid';
+
 import {generateUsernameHelper} from '../utils/helpers/generateUsernameHelper';
-import {FetchProductType} from './types';
 
 // ! Change later
 const profilePictireURL_Example =
@@ -75,7 +75,7 @@ class FirebaseService {
     if (!result?.data) return;
 
     const db = getFirestore(app);
-    
+
     const fetchedData: any = result.data;
     const uniqueId = uuid();
 
