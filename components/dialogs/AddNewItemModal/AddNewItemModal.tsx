@@ -8,6 +8,7 @@ import cn from 'classnames';
 import { Button, FolderSelect, H6, LoadingSpinner, ModalBaseLayout, Notification, Paragraph } from '../../common';
 import { useFirebase } from '../../../context/firebase';
 import firebaseService from '../../../services/firebase.service';
+import PlusIcon from '../../icons/PlusIcon';
 
 interface AddNewItemModalProps {
   show: boolean;
@@ -99,21 +100,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
                     classname="w-full max-w-[220px] group"
                     icon="icon-right">
                     Add Item
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        className="group-hover:stroke-[#FF0098]"
-                        d="M6.99984 1.16663V12.8333M1.1665 6.99996H12.8332"
-                        stroke="white"
-                        strokeWidth="1.66667"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <PlusIcon className="stroke-white group-hover:stroke-main-500" />
                   </Button>
                 </Form>
               )}
