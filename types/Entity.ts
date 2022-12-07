@@ -1,9 +1,9 @@
-import {FieldValue} from 'firebase/firestore';
+import {Timestamp} from 'firebase/firestore';
 
 interface Entity {
   id?: string;
-  createdAt?: Date | FieldValue;
-  updatedAt?: Date | FieldValue;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export default Entity;
