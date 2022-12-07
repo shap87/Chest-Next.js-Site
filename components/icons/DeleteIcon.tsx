@@ -1,11 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 
 const DeleteIcon: React.FC<{
-  className?: string;
+  className: string;
 }> = ({className}) => (
   <svg
-    className={classNames('stroke-danger group-hover:stroke-white', className)}
+    className={className}
     width="17"
     height="20"
     viewBox="0 0 17 20"

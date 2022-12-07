@@ -167,7 +167,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 classname="w-full max-w-[211px] group"
                 icon="icon-right">
                 Save
-                <CheckIcon />
+                <CheckIcon className="stroke-white group-hover:stroke-main-500" />
               </Button>
             </Form>
           )}

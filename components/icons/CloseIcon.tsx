@@ -1,11 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 
 const CloseIcon: React.FC<{
-  className?: string;
+  className: string;
 }> = ({className}) => (
   <svg
-    className={classNames('stroke-main-700 h-3 w-3', className)}
+    className={className}
     width="14"
     height="14"
     viewBox="0 0 14 14"

@@ -1,11 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 
 const SpinnerIcon: React.FC<{
   className?: string;
 }> = ({className}) => (
   <svg
-    className={classNames('fill-main-500', className)}
+    className={className}
     version="1.1"
     id="L9"
     xmlns="http://www.w3.org/2000/svg"

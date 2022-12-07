@@ -31,11 +31,11 @@ export const SelectedPanel: FC<SelectedPanelProps> = ({
         Select All
       </p>
       <Button classname="ml-auto mr-5 group" icon="icon-left">
-        <PlusIcon />
+        <PlusIcon className="stroke-second group-hover:stroke-white" />
         Add to folder
       </Button>
       <Button classname="group" icon="icon-left" color="red">
-        <DeleteIcon />
+        <DeleteIcon className="stroke-danger group-hover:stroke-white" />
         Delete
       </Button>
       <img

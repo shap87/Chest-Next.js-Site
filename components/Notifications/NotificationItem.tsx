@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import classNames from 'classnames';
+import cn from 'classnames';
 import CloseIcon from '../icons/CloseIcon';
 
 dayjs.extend(relativeTime);
@@ -54,7 +54,7 @@ const NotificationItem = React.forwardRef(function Item(
       className="py-4 flex flex-row items-center justify-between cursor-pointer">
       <div className="flex flex-row items-center gap-2">
         <img
-          className={classNames(
+          className={cn(
             'h-12 w-12 object-fill',
             isDiscount ? 'rounded-lg' : 'rounded-full',
             isLarge && 'h-16 w-16',
@@ -64,13 +64,13 @@ const NotificationItem = React.forwardRef(function Item(
         <div className="w-5/6">
           <div className="flex items-center gap-2">
             <span
-              className={classNames(
+              className={cn(
                 'text-gray-700 font-semibold',
                 !isLarge && 'text-sm',
               )}>
               {name}
             </span>
-            <span className={classNames(isLarge ? 'text-sm' : 'text-xs')}>
+            <span className={cn(isLarge ? 'text-sm' : 'text-xs')}>
               {dayjs(createdAt).fromNow()}
             </span>
             {!seen && (
@@ -80,7 +80,7 @@ const NotificationItem = React.forwardRef(function Item(
             )}
           </div>
           {type === 0 && (
-            <span className={classNames('line-clamp-2', !isLarge && 'text-sm')}>
+            <span className={cn('line-clamp-2', !isLarge && 'text-sm')}>
               {`Priced on ${product.name} `}
               <span className="text-main-700 font-semibold">dropped</span>
               {' from '}
@@ -96,7 +96,7 @@ const NotificationItem = React.forwardRef(function Item(
             </span>
           )}
           {type === 1 && (
-            <span className={classNames('line-clamp-2', !isLarge && 'text-sm')}>
+            <span className={cn('line-clamp-2', !isLarge && 'text-sm')}>
               <span className="text-main-700 font-semibold">
                 Left a comment{' '}
               </span>
@@ -104,13 +104,13 @@ const NotificationItem = React.forwardRef(function Item(
             </span>
           )}
           {type === 2 && (
-            <span className={classNames('line-clamp-2', !isLarge && 'text-sm')}>
+            <span className={cn('line-clamp-2', !isLarge && 'text-sm')}>
               <span className="text-main-700 font-semibold">Liked </span>
               {product.name}
             </span>
           )}
           {type === 3 && (
-            <span className={classNames('line-clamp-2', !isLarge && 'text-sm')}>
+            <span className={cn('line-clamp-2', !isLarge && 'text-sm')}>
               Started following you
             </span>
           )}
@@ -123,7 +123,7 @@ const NotificationItem = React.forwardRef(function Item(
             src={product.imageUrl}
           />
         )}
-        <CloseIcon />
+        <CloseIcon className="stroke-main-700 h-3 w-3" />
       </div>
     </div>
   );

@@ -1,14 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 
 const CheckIcon: React.FC<{
-  className?: string;
+  className: string;
 }> = ({className}) => (
   <svg
-    className={classNames(
-      'stroke-white group-hover:stroke-main-500',
-      className,
-    )}
+    className={className}
     width="15"
     height="11"
     viewBox="0 0 15 11"
