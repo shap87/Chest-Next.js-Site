@@ -10,7 +10,7 @@
 
 .folders {
   .folder {
-    @apply w-[48%] sm:w-[32%] md:w-[22%] lg:w-[18%] relative bg-[#FCFCFD] border-2 border-transparent rounded-md h-40 flex flex-col transition-all;
+    @apply mx-[1%] w-[48%] sm:mx-[0.6%] sm:w-[32%] md:mx-[1.5%] md:w-[22%] lg:w-[18%] lg:mx-[1%] relative bg-[#FCFCFD] border-2 border-transparent rounded-md h-40 flex flex-col transition-all;
     box-shadow: 0 3.76446px 7.52892px -1.88223px rgba(16, 24, 40, 0.05),
                 0px 1.88223px 3.76446px -1.88223px rgba(16, 24, 40, 0.03);
     &:hover, &:active, &.active, &.selected {

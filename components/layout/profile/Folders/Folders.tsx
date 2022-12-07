@@ -109,7 +109,7 @@ export const Folders = () => {
           </div>
           <div
             className={cn(
-              'flex flex-wrap items-center justify-between gap-y-12',
+              'flex flex-wrap items-center gap-y-12',
               styles.folders,
             )}>
             {foldersQuery.data
