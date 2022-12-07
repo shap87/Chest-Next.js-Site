@@ -1,31 +1,32 @@
 // libs
-import { FC, useState, useEffect } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { doc, getFirestore, Timestamp, updateDoc } from "firebase/firestore";
-import * as yup from "yup";
-import cn from "classnames";
+import {FC, useState, useEffect} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
+import * as yup from 'yup';
+import cn from 'classnames';
 
-import { useFirebase } from "../../../context/firebase";
+import {useFirebase} from '../../../context/firebase';
 
 // components
-import { Button, ModalBaseLayout } from "../../common";
+import {Button, ModalBaseLayout} from '../../common';
+import CheckIcon from '../../icons/CheckIcon';
 
 interface EditProfileProps {
   show: boolean;
   onClose: () => void;
-  userData: { name: string; username: string; uid: string };
+  userData: {name: string; username: string; uid: string};
 }
 
 const validationSchemaEditProfile = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  username: yup.string().required("Name is required"),
+  name: yup.string().required('Name is required'),
+  username: yup.string().required('Name is required'),
 });
 
 export const EditProfileModal: FC<EditProfileProps> = ({
-                                                         show,
-                                                         onClose,
-                                                         userData,
-                                                       }) => {
+  show,
+  onClose,
+  userData,
+}) => {
   const firebaseApp = useFirebase();
 
   const [showSavedMessage, setShowSavedMessage] = useState<boolean>();
@@ -46,9 +47,9 @@ export const EditProfileModal: FC<EditProfileProps> = ({
     }
   }, [file]);
 
-  const handleSubmit = async (values: { name: string; username: string }) => {
+  const handleSubmit = async (values: {name: string; username: string}) => {
     const db = getFirestore(firebaseApp);
-    await updateDoc(doc(db, "users", userData.uid), {
+    await updateDoc(doc(db, 'users', userData.uid), {
       username: values.username,
       name: values.name,
       updatedAt: Timestamp.fromDate(new Date()),
@@ -65,16 +66,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={"./edit.svg"}
+      icon={'./edit.svg'}
       title="Edit profile">
       <div
         className={`w-full flex justify-center absolute -top-20 ${
-          showSavedMessage ? "" : "hidden"
-        }`}
-      >
-        <div
-          className="w-[185px] bg-[#FFF4FA] p-2 flex flex-row justify-center items-center border-[1px] border-[#FF9AD4] rounded-[10px]">
-          <img className="w-[18px] h-[13px]" src={"./check-pink.svg"} alt="" />
+          showSavedMessage ? '' : 'hidden'
+        }`}>
+        <div className="w-[185px] bg-[#FFF4FA] p-2 flex flex-row justify-center items-center border-[1px] border-[#FF9AD4] rounded-[10px]">
+          <img className="w-[18px] h-[13px]" src={'./check-pink.svg'} alt="" />
           <h4 className="font-['Inter-Semibold'] text-lg text-[#FF0098] ml-4">
             Profile saved
           </h4>
@@ -83,10 +82,9 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       <div className="w-full flex flex-col items-center">
         <Formik
           validationSchema={validationSchemaEditProfile}
-          initialValues={{ name: userData.name, username: userData.username }}
-          onSubmit={handleSubmit}
-        >
-          {({ isValid, values, errors }) => (
+          initialValues={{name: userData.name, username: userData.username}}
+          onSubmit={handleSubmit}>
+          {({isValid, values, errors}) => (
             <Form className="w-full max-w-[336px] flex flex-col items-center px-3 pt-7">
               <div className="field !mb-8">
                 <label className="cursor-pointer group !mb-0">
@@ -107,15 +105,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                   ) : (
                     <img
                       className="w-[66px] h-[66px] border-2 border-white drop-shadow-md rounded-full"
-                      src={"./images/avatar.png"}
+                      src={'./images/avatar.png'}
                       alt="Avatar"
                     />
                   )}
-                  <div
-                    className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
+                  <div className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
                     <img
                       className="w-[19px] h-[18px]"
-                      src={"./upload-cloud.svg"}
+                      src={'./upload-cloud.svg'}
                       alt="Avatar"
                     />
                   </div>
@@ -125,7 +122,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 <div className="field !mb-5">
                   <label htmlFor="name">Name</label>
                   <Field
-                    className={cn({ 'field-error': errors.name })}
+                    className={cn({'field-error': errors.name})}
                     type="text"
                     name="name"
                     placeholder="Enter your name"
@@ -139,16 +136,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 <div className="field !mb-12">
                   <label
                     htmlFor="username"
-                    className="!flex justify-between items-center overflow-hidden"
-                  >
+                    className="!flex justify-between items-center overflow-hidden">
                     Username
                     <span className="text-[#CC0174] text-sm font-semibold no-underline ml-2">
                       chestr.app/{values.username}
                     </span>
                   </label>
                   <div className="flex items-center">
-                    <span
-                      className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
+                    <span className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
                       @
                     </span>
                     <Field
@@ -170,25 +165,9 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 htmlType="submit"
                 color="pink"
                 classname="w-full max-w-[211px] group"
-                icon="icon-right"
-              >
+                icon="icon-right">
                 Save
-                <svg
-                  width="15"
-                  height="11"
-                  viewBox="0 0 15 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    className="group-hover:stroke-[#FF0098]"
-                    d="M14.1663 1L4.99967 10.1667L0.833008 6"
-                    stroke="white"
-                    strokeWidth="1.66667"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <CheckIcon className="stroke-white group-hover:stroke-main-500" />
               </Button>
             </Form>
           )}
