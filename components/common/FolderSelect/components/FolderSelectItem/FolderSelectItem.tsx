@@ -35,8 +35,8 @@ export const FolderSelectItem = ({ folder, setSelectedFolder, setShowList }: IFo
         }}>
         {folder.name}
       </div>
-      {folder.children.length > 0 && showSubList && <ul>{folder.children.map((subFolder) => (
-        <li>
+      {folder.children.length > 0 && showSubList && <ul>{folder.children.map((subFolder, index) => (
+        <li key={index}>
           {subFolder.type === 'private'
             ? <img src={"./lock-black.svg"} alt="" />
             : <img src={"./folder-empty.svg"} alt="" />}

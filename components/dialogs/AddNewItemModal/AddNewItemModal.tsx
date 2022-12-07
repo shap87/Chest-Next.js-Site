@@ -5,7 +5,16 @@ import * as yup from 'yup';
 import cn from 'classnames';
 
 // components
-import { Button, FolderSelect, H6, LoadingSpinner, ModalBaseLayout, Notification, Paragraph } from '../../common';
+import {
+  Alert,
+  Button,
+  FolderSelect,
+  H6,
+  LoadingSpinner,
+  ModalBaseLayout,
+  Notification,
+  Paragraph
+} from '../../common';
 import { useFirebase } from '../../../context/firebase';
 import firebaseService from '../../../services/firebase.service';
 import PlusIcon from '../../icons/PlusIcon';
@@ -27,6 +36,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
   const [showList, setShowList] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState<{ message: string, type: string } | null>(null);
+  const [showSavedMessage, setShowSavedMessage] = useState<string>("");
 
   const handleSubmitPasteUrl = async (values: { url: string }) => {
     setLoading(true);
@@ -49,8 +59,10 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
   const handleSubmitAddFolder = async (values: { notes: string }) => {
     const data = { notes: values.notes, folder: selectedFolder }
     console.log(data, 'handleSubmitAddFolder')
-    setStep('paste-url');
-    onClose();
+    setShowSavedMessage('Item saved to your chest!')
+    setTimeout(() => {
+      setShowSavedMessage('')
+    }, 3000)
   };
 
   return (
@@ -63,6 +75,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
         onClose={onClose}
         icon={'./plus-black.svg'}
         title="Add new item">
+        {showSavedMessage && <Alert showSavedMessage={showSavedMessage} iconWidth="w-8" icon={'./chest.svg'} />}
         <div className="w-full flex flex-col items-center">
           {step === 'paste-url'
             && <Formik
