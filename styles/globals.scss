@@ -50,6 +50,10 @@ input, textarea {
   }
 }
 
+textarea {
+  @apply h-[50px];
+}
+
 .list {
   @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-[248px] translate-y-full border border-[#EAECF0];
   box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05), 0 2px 4px rgba(16, 24, 40, 0.04);

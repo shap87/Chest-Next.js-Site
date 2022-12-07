@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import cn from 'classnames';
 
 // components
-import { Button, FolderSelect, H6, ModalBaseLayout, Paragraph } from '../../common';
+import { Button, FolderSelect, H6, LoadingSpinner, ModalBaseLayout, Notification, Paragraph } from '../../common';
 import { useFirebase } from '../../../context/firebase';
 import firebaseService from '../../../services/firebase.service';
 
@@ -20,94 +20,119 @@ const validationSchemaAddItem = yup.object().shape({
 
 export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => {
   const firebaseApp = useFirebase();
-  const [step, setStep] = useState(2);
+
+  const [step, setStep] = useState<string>('paste-url');
   const [selectedFolder, setSelectedFolder] = useState("");
   const [showList, setShowList] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState<{ message: string, type: string } | null>(null);
 
-  const handleSubmitStep1 = async (values: { url: string }) => {
-    await firebaseService.addNewItem(firebaseApp, values.url).then(() => {
-      setStep(2);
-    });
+  const handleSubmitPasteUrl = async (values: { url: string }) => {
+    setLoading(true);
+    await firebaseService.addNewItem(firebaseApp, values.url)
+      .then(() => {
+        setStep('add-folder');
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setNotification({
+          type: "error",
+          message: 'Failed to send data, please try again.'
+        })
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000)
+      })
   };
-  const handleSubmitStep2 = async (values: { notes: string }) => {
+  const handleSubmitAddFolder = async (values: { notes: string }) => {
     const data = { notes: values.notes, folder: selectedFolder }
-    console.log(data, 'handleSubmitStep2')
+    console.log(data, 'handleSubmitAddFolder')
+    setStep('paste-url');
     onClose();
   };
 
   return (
-    <ModalBaseLayout
-      show={show}
-      maxWidth="673"
-      onClose={onClose}
-      icon={'./plus-black.svg'}
-      title="Add new item">
-      <div className="w-full flex flex-col items-center">
-        {step === 1
-          ? <Formik
-            validationSchema={validationSchemaAddItem}
-            initialValues={{ url: '' }}
-            onSubmit={handleSubmitStep1}>
-            {({ isValid, errors }) => (
-              <Form className="w-full max-w-[440px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
-                <div className="w-full">
-                  <div className="field !mb-10">
-                    <div className="relative">
-                      <img
-                        className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-4"
-                        src={'./share-link-black.svg'}
-                        alt=""
-                      />
-                      <Field
-                        className={cn('!pl-10', { 'field-error': errors.url })}
-                        type="text"
+    <>
+      {loading && <LoadingSpinner />}
+      {notification && <Notification notification={notification} />}
+      <ModalBaseLayout
+        show={show}
+        maxWidth="673"
+        onClose={onClose}
+        icon={'./plus-black.svg'}
+        title="Add new item">
+        <div className="w-full flex flex-col items-center">
+          {step === 'paste-url'
+            && <Formik
+              validationSchema={validationSchemaAddItem}
+              initialValues={{ url: '' }}
+              onSubmit={handleSubmitPasteUrl}>
+              {({ isValid, errors }) => (
+                <Form className="w-full max-w-[440px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
+                  <div className="w-full">
+                    <div className="field !mb-10">
+                      <div className="relative">
+                        <img
+                          className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-4"
+                          src={'./share-link-black.svg'}
+                          alt=""
+                        />
+                        <Field
+                          className={cn('!pl-10', { 'field-error': errors.url })}
+                          type="text"
+                          name="url"
+                          placeholder="Paste Item URL (⌘+V)"
+                        />
+                      </div>
+                      <ErrorMessage
+                        className="error-message"
                         name="url"
-                        placeholder="Paste Item URL (⌘+V)"
+                        component="p"
                       />
                     </div>
-                    <ErrorMessage
-                      className="error-message"
-                      name="url"
-                      component="p"
-                    />
                   </div>
-                </div>
-                <Button
-                  disabled={!isValid}
-                  htmlType="submit"
-                  color="pink"
-                  classname="w-full max-w-[220px] group"
-                  icon="icon-right">
-                  Add Item
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      className="group-hover:stroke-[#FF0098]"
-                      d="M6.99984 1.16663V12.8333M1.1665 6.99996H12.8332"
-                      stroke="white"
-                      strokeWidth="1.66667"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Button>
-              </Form>
-            )}
-          </Formik>
-          : <Formik
+                  <Button
+                    disabled={!isValid}
+                    htmlType="submit"
+                    color="pink"
+                    classname="w-full max-w-[220px] group"
+                    icon="icon-right">
+                    Add Item
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        className="group-hover:stroke-[#FF0098]"
+                        d="M6.99984 1.16663V12.8333M1.1665 6.99996H12.8332"
+                        stroke="white"
+                        strokeWidth="1.66667"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Button>
+                </Form>
+              )}
+            </Formik>}
+          {step === 'add-folder' && <Formik
             initialValues={{ notes: '' }}
-            onSubmit={handleSubmitStep2}>
+            onSubmit={handleSubmitAddFolder}>
             {({ isValid, errors }) => (
-              <Form className="w-full max-w-[330px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-14 md:pb-28">
+              <Form className="w-full max-w-[330px] flex flex-col items-center px-3 pt-5 md:pt-10 pb-14 md:pb-28">
                 <div className="w-full">
-                  <div className="field !mb-10">
+                  <div className="field !mb-7">
                     <div
-                      className="cursor-pointer w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
-                      onClick={() => setShowList(true)}>{selectedFolder ? selectedFolder : 'Select value'}</div>
+                      className="pr-8 text-ellipsis whitespace-nowrap overflow-hidden relative cursor-pointer w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
+                      onClick={() => setShowList(true)}>
+                      {selectedFolder ? selectedFolder : 'Select value'}
+                      <img
+                        className={cn("absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all", { 'rotate-180': showList })}
+                        src={'./arrow-select.svg'} alt='' />
+                    </div>
                     {showList &&
                       <FolderSelect
                         setShowList={setShowList}
@@ -118,7 +143,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
                     <div className="w-[48%] h-[144px]">
                       <img className="rounded-md h-full overflow-hidden" src={'./images/sweater.jpg'} alt='' />
                     </div>
-                    <div className="w-[48%]">
+                    <div className="w-[49%]">
                       <H6 classname="!text-[15px] text-[#475467] !leading-tight !mb-2">
                         Basic hooded sweatshirt in pink
                       </H6>
@@ -126,7 +151,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
                       <H6 classname="!text-[17px] text-[#475467] !mb-0">$52</H6>
                     </div>
                   </div>
-                  <div className="field !mb-10">
+                  <div className="field !mb-5">
                     <Field
                       className={cn({ 'field-error': errors.notes })}
                       as="textarea"
@@ -144,18 +169,19 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
                   disabled={!isValid || !selectedFolder}
                   htmlType="submit"
                   color="pink"
-                  classname="w-full max-w-[220px] group"
+                  classname="w-full max-w-[120px] group"
                   icon="icon-right">
                   Done
                   <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
+                    width="15"
+                    height="11"
+                    viewBox="0 0 15 11"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       className="group-hover:stroke-[#FF0098]"
-                      d="M6.99984 1.16663V12.8333M1.1665 6.99996H12.8332"
+                      d="M14.1663 1L4.99967 10.1667L0.833008 6"
                       stroke="white"
                       strokeWidth="1.66667"
                       strokeLinecap="round"
@@ -166,7 +192,8 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({ show, onClose }) => 
               </Form>
             )}
           </Formik>}
-      </div>
-    </ModalBaseLayout>
+        </div>
+      </ModalBaseLayout>
+    </>
   );
 };

@@ -1,0 +1,14 @@
+.notification {
+  &.error {
+    @apply bg-[#fef2f2];
+    p {
+      @apply text-[#981c1b];
+    }
+  }
+  &.success {
+    @apply bg-[#effef4];
+    p {
+      @apply text-[#28894a];
+    }
+  }
+}

@@ -9,3 +9,4 @@ export { LoadingSpinner } from "./LodaingSpinner/LoadingSpinner";
 export { Paragraph } from "./Paragraph/Paragraph";
 export { ModalBaseLayout } from "./ModalBaseLayout/ModalBaseLayout";
 export { FolderSelect } from "./FolderSelect/FolderSelect";
+export { Notification } from "./Notification/Notification";
