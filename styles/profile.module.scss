@@ -10,7 +10,7 @@
 
 .folders {
   .folder {
-    @apply w-[48%] sm:w-[32%] md:w-[22%] lg:w-[18%] overflow-hidden relative bg-[#FCFCFD] border-2 border-transparent rounded-md h-40 flex flex-col transition-all cursor-pointer;
+    @apply w-[48%] sm:w-[32%] md:w-[22%] lg:w-[18%] relative bg-[#FCFCFD] border-2 border-transparent rounded-md h-40 flex flex-col transition-all;
     box-shadow: 0 3.76446px 7.52892px -1.88223px rgba(16, 24, 40, 0.05),
                 0px 1.88223px 3.76446px -1.88223px rgba(16, 24, 40, 0.03);
     &:hover, &:active, &.active, &.selected {
@@ -20,6 +20,9 @@
       }
       h6, p {
         @apply text-[#FF0098];
+      }
+      .settings {
+        @apply block;
       }
     }
     &.selected {
@@ -35,10 +38,13 @@
     @apply w-4 brightness-0;
   }
   .settings {
-    @apply absolute left-3 top-3;
+    @apply bg-[#fcfcfd] absolute left-0 top-0 p-2 rounded-tl-md rounded-br-md hover:bg-opacity-70 transition-all cursor-pointer;
   }
   .checkbox {
-    @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white;
+    @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white transition-all cursor-pointer;
+    &:hover, &:active {
+      @apply border-[#FF46AF];
+    }
     &:before {
       content: "";
       @apply hidden absolute z-10 left-1/2 top-1/2 w-[60%] h-[60%] -translate-y-1/2 -translate-x-1/2 bg-[#FF46AF] rounded-full;
@@ -48,7 +54,7 @@
     @apply p-2 border-t border-[#F2F4F7] flex items-center justify-between;
   }
   .image {
-    @apply h-[100px] object-cover;
+    @apply h-[100px] object-cover rounded-md;
   }
   h6 {
     @apply mb-0 font-semibold text-base text-[#475467] transition-all;

@@ -3,6 +3,7 @@ import {FC, useState, useEffect} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
 import * as yup from 'yup';
+import cn from 'classnames';
 
 import {useFirebase} from '../../../context/firebase';
 
@@ -65,14 +66,8 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      title={
-        <div className="flex flex-row items-center justify-start ">
-          <img className="w-5 h-5" src={'./edit.svg'} alt="" />
-          <p className="text-[#667085]text-lg font-semibold ml-2.5">
-            Edit profile
-          </p>
-        </div>
-      }>
+      icon={'./edit.svg'}
+      title="Edit profile">
       <div
         className={`w-full flex justify-center absolute -top-20 ${
           showSavedMessage ? '' : 'hidden'
@@ -89,7 +84,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
           validationSchema={validationSchemaEditProfile}
           initialValues={{name: userData.name, username: userData.username}}
           onSubmit={handleSubmit}>
-          {({isValid, values}) => (
+          {({isValid, values, errors}) => (
             <Form className="w-full max-w-[336px] flex flex-col items-center px-3 pt-7">
               <div className="field !mb-8">
                 <label className="cursor-pointer group !mb-0">
@@ -127,12 +122,13 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                 <div className="field !mb-5">
                   <label htmlFor="name">Name</label>
                   <Field
+                    className={cn({'field-error': errors.name})}
                     type="text"
                     name="name"
                     placeholder="Enter your name"
                   />
                   <ErrorMessage
-                    className="field-error"
+                    className="error-message"
                     name="name"
                     component="p"
                   />
@@ -158,7 +154,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                     />
                   </div>
                   <ErrorMessage
-                    className="field-error"
+                    className="error-message"
                     name="username"
                     component="p"
                   />

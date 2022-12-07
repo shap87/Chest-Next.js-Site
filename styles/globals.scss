@@ -27,8 +27,11 @@ a {
   label {
     @apply block text-sm mb-2 font-medium;
   }
-  .field-error {
+  .error-message {
     @apply absolute left-0 -bottom-1 text-xs text-[#ff0000] translate-y-full;
+  }
+  .field-error {
+    @apply border-[#e74c3c];
   }
 }
 

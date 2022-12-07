@@ -1,24 +1,24 @@
 // libs
 import { useEffect, useState } from "react";
 import cn from "classnames";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 // components
 import { H5, H6, LoadingSpinner } from "../../../common";
-import { EditProfileModal, SettingsModal } from "../../../dialogs";
+import { AddNewFolderModal, AddNewItemModal, EditProfileModal, SettingsModal } from "../../../dialogs";
+import { useFirebase } from "../../../../context/firebase";
 
 // assets
 import styles from "../../../../styles/profile.module.scss";
-import { getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { useFirebase } from "../../../../context/firebase";
-import { string } from "yup";
 
 export const User = () => {
   const firebaseApp = useFirebase();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [showEditProfileModal, setShowEditProfileModal] =
-    useState<boolean>(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState<boolean>(false);
+  const [showAddNewFolderModal, setShowAddNewFolderModal] = useState<boolean>(false);
+  const [showAddNewItemModal, setShowAddNewItemModal] = useState<boolean>(false);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const [share, setShare] = useState<boolean>(false);
 
@@ -101,15 +101,16 @@ export const User = () => {
               </div>
             </div>
             <div className="relative pt-2 pb-2 group ml-2">
-              <div className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
+              <div
+                className="rounded-lg bg-[#FFEBF6] border border-transparent py-4 px-4 md:px-11 group-hover:border-[#CC0174] transition-all cursor-pointer">
                 <img className="w-3" src={"./plus.svg"} alt="" />
               </div>
               <ul className="list hidden group-hover:block">
-                <li>
+                <li onClick={() => setShowAddNewFolderModal(true)}>
                   New Folder
                   <img src={"./folder.svg"} alt="" />
                 </li>
-                <li>
+                <li onClick={() => setShowAddNewItemModal(true)}>
                   New Item
                   <img src={"./plus.svg"} alt="" />
                 </li>
@@ -118,7 +119,12 @@ export const User = () => {
           </div>
         </div>
       </section>
-
+      <AddNewItemModal
+        show={showAddNewItemModal}
+        onClose={() => setShowAddNewItemModal(false)} />
+      <AddNewFolderModal
+        show={showAddNewFolderModal}
+        onClose={() => setShowAddNewFolderModal(false)} />
       <EditProfileModal
         userData={userData!}
         show={showEditProfileModal}
@@ -132,7 +138,8 @@ export const User = () => {
 
       {share && (
         <div className="fixed z-50 bottom-8 md:top-24 left-1/2 -translate-x-1/2">
-          <div className="bg-[#FFF4FA] py-2 px-5 flex justify-center items-center border border-[#FF9AD4] rounded-[10px]">
+          <div
+            className="bg-[#FFF4FA] py-2 px-5 flex justify-center items-center border border-[#FF9AD4] rounded-[10px]">
             <img className="w-5 mr-4" src={"./share-link.svg"} alt="" />
             <H6 classname="text-[#FF0098] !mb-0 whitespace-nowrap">
               Profile link copied
