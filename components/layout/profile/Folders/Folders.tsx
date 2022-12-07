@@ -9,6 +9,7 @@ import { H6, Paragraph } from '../../../common';
 import { SelectedPanel } from '../SelectedPanel/SelectedPanel';
 import { useAuth, useFirestore } from '../../../../context/firebase';
 import { useWindowSize } from '../../../../utils/useWindowSize';
+import { AddNewSubFolderModal } from "../../../dialogs";
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
@@ -31,6 +32,7 @@ export const Folders = () => {
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
   const [selectedFolders, setSelectedFolders] = useState<{ [key: string]: IFolder; }>({});
+  const [showNewSubFolderModal, setShowNewSubFolderModal] = useState<boolean>(true);
 
   const auth = useAuth();
   const firestore = useFirestore();
@@ -131,9 +133,11 @@ export const Folders = () => {
                         src={'/dots.svg'}
                         alt=""
                       />
-                      <ul className="list hidden left-0 group-hover:block">
+                      <ul
+                        className="list hidden left-0 group-hover:block"
+                        onClick={() => setShowNewSubFolderModal(true)}>
                         <li>
-                          New Subfolder
+                          New Sub folder
                           <img src={"./folder.svg"} alt="" />
                         </li>
                         <li>
@@ -196,6 +200,10 @@ export const Folders = () => {
           </div>
         </div>
       </section>
+      {showNewSubFolderModal &&
+        <AddNewSubFolderModal
+          show={showNewSubFolderModal}
+          onClose={() => setShowNewSubFolderModal(false)} />}
     </>
   );
 };
