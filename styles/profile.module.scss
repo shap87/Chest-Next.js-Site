@@ -38,7 +38,7 @@
     @apply w-4 brightness-0;
   }
   .settings {
-    @apply bg-[#fcfcfd] absolute left-0 top-0 p-2 rounded-tl-md rounded-br-md hover:bg-opacity-70 transition-all cursor-pointer;
+    @apply select-none bg-[#fcfcfd] absolute z-20 left-0 top-0 p-2 rounded-tl-md rounded-br-md hover:bg-opacity-70 transition-all cursor-pointer;
   }
   .checkbox {
     @apply absolute z-10 right-2 top-2 w-6 h-6 border-2 border-[#D0D5DD] rounded-full bg-white transition-all cursor-pointer;

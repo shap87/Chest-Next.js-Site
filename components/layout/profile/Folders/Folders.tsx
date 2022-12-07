@@ -124,27 +124,54 @@ export const Folders = () => {
                     key={folder.id}
                     className={cn(styles.folder, {
                       [styles.selected]: selected,
-                    })}
-                    onClick={() => {
-                      if (!selected) {
-                        setSelectedFolders({
-                          ...selectedFolders,
-                          [folder.id]: folder,
-                        });
-                      } else {
-                        // Remove folder from selected
-                        const { [folder.id]: omitted, ...rest } = selectedFolders;
-                        setSelectedFolders(rest);
-                      }
-                    }}>
-                    <div className={styles.settings}>
+                    })}>
+                    <div className={cn(styles.settings, "group")}>
                       <img
                         className="w-1 group-hover:opacity-60 transition-all"
                         src={'/dots.svg'}
                         alt=""
                       />
+                      <ul className="list hidden left-0 group-hover:block">
+                        <li>
+                          New Subfolder
+                          <img src={"./folder.svg"} alt="" />
+                        </li>
+                        <li>
+                          Edit Folder
+                          <img src={"./edit-with-border.svg"} alt="" />
+                        </li>
+                        <li>
+                          Move Folder
+                          <img src={"./switch.svg"} alt="" />
+                        </li>
+                        <li>
+                          Make Public
+                          <img src={"./lock-black.svg"} alt="" />
+                        </li>
+                        <li>
+                          Share
+                          <img src={"./share.svg"} alt="" />
+                        </li>
+                        <li className="text-danger">
+                          Delete
+                          <img src={"./trash.svg"} alt="" />
+                        </li>
+                      </ul>
                     </div>
-                    <span className={styles.checkbox} />
+                    <span
+                      className={styles.checkbox}
+                      onClick={() => {
+                        if (!selected) {
+                          setSelectedFolders({
+                            ...selectedFolders,
+                            [folder.id]: folder,
+                          });
+                        } else {
+                          // Remove folder from selected
+                          const { [folder.id]: omitted, ...rest } = selectedFolders;
+                          setSelectedFolders(rest);
+                        }
+                      }} />
                     <img
                       className={styles.image}
                       src={folder.imageUrl}
