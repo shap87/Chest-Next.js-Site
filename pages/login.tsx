@@ -1,5 +1,5 @@
 // libs
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 //components
 import {Layout} from '../components/common';
@@ -11,8 +11,6 @@ import {
 
 // assets
 import 'swiper/css';
-import {useAppDispatch, useAppSelector} from '../hooks/redux';
-import {setExampleState} from '../store/modules/exampleSlice';
 
 export default function LoginPage() {
   const [step, setStep] = useState({
