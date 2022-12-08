@@ -12,7 +12,6 @@
     "@headlessui/react": "^1.7.4",
     "@next/bundle-analyzer": "^12.3.1",
     "@next/font": "^13.0.5",
-    "@react-query-firebase/auth": "^1.0.0-dev.2",
     "@react-query-firebase/firestore": "^1.0.0-dev.7",
     "@tailwindcss/line-clamp": "^0.4.2",
     "classnames": "^2.3.2",
