@@ -1,21 +1,22 @@
 /*global chrome*/
-import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { useMemo } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import type {AppProps} from 'next/app';
+import {useRouter} from 'next/router';
+import {useMemo} from 'react';
+import {QueryClient, QueryClientProvider} from 'react-query';
+import {wrapper} from '../store/store';
 
-import { AuthStateReady, FirebaseContextProvider } from "../context/firebase";
+import {AuthStateReady, FirebaseContextProvider} from '../context/firebase';
 
-import { ProtectedRoute, UnprotectedRoute } from "../components/routes";
+import {ProtectedRoute, UnprotectedRoute} from '../components/routes';
 
-import "../styles/globals.scss";
+import '../styles/globals.scss';
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({Component, pageProps}: AppProps) {
   const router = useRouter();
 
   console.log(router.pathname);
 
-  const noAuthRequired = useMemo(() => ["", "/", "/login", "/sign-up"], []);
+  const noAuthRequired = useMemo(() => ['', '/', '/login', '/sign-up'], []);
 
   /* Google extension detection */
   // useEffect(() => {
@@ -50,3 +51,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </QueryClientProvider>
   );
 }
+
+export default wrapper.withRedux(App);
