@@ -8,6 +8,7 @@ import {useFirebase} from '../../../context/firebase';
 // components
 import {Button} from '../Button/Button';
 import NotificationsMenu from '../../Notifications/NotificationsMenu';
+import SearchUser from './SearchUser';
 // utils
 import {routes} from '../../../utils/routes';
 // assets
@@ -39,6 +40,7 @@ export const Header = ({noButton}: IHeader) => {
             className={cn('w-[126px] md:w-[196px]', styles.logo)}>
             <img src={'./logo.svg'} alt="" />
           </a>
+          <SearchUser />
           {isLogged ? (
             <ul
               className={cn(

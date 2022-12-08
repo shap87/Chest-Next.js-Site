@@ -4,7 +4,7 @@ export enum ProductSortingOptions {
   LAST_ADDED,
   A_TO_Z,
   PRICE_LOW_TO_HIGH,
-  PRICE_HIGH_TO_LOW
+  PRICE_HIGH_TO_LOW,
 }
 
 export interface Product extends Entity {
