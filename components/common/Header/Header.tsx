@@ -9,6 +9,8 @@ import {useFirebase} from '../../../context/firebase';
 import {Button} from '../Button/Button';
 import NotificationsMenu from '../../Notifications/NotificationsMenu';
 import SearchUser from './SearchUser';
+import MobileMenu from './MobileMenu';
+import LogoIcon from '../../icons/LogoIcon';
 // utils
 import {routes} from '../../../utils/routes';
 // assets
@@ -37,37 +39,53 @@ export const Header = ({noButton}: IHeader) => {
         <div className="flex flex-wrap items-center justify-between gap-y-4">
           <a
             href={routes.home}
-            className={cn('w-[126px] md:w-[196px]', styles.logo)}>
-            <img src={'./logo.svg'} alt="" />
+            className={cn('w-40 no-underline', styles.logo)}>
+            <img className="hidden md:block" src={'./logo.svg'} alt="" />
+            <div className="flex md:hidden items-center gap-4">
+              <div className="w-8">
+                <LogoIcon />
+              </div>
+              <span className="bg-main-50 text-main-700 font-semibold px-2 rounded-full capitalize">
+                {router.pathname === '/profile'
+                  ? 'Chest'
+                  : router.pathname.substring(1, router.pathname.length)}
+              </span>
+            </div>
           </a>
-          <SearchUser />
-          {isLogged ? (
-            <ul
-              className={cn(
-                'flex items-center gap-x-6 md:gap-x-12 ml-2',
-                styles.nav,
-              )}>
-              <li>
-                <img src={'./ball.svg'} alt="" />
-              </li>
-              <NotificationsMenu />
-              <li>
-                <img src={'./chest.svg'} alt="" />
-              </li>
-            </ul>
-          ) : !noButton ? (
-            isLogin ? (
-              <Button href={routes.login} classname="!py-3">
-                Login
-              </Button>
+          <div className="flex items-center gap-8">
+            <SearchUser />
+            <MobileMenu />
+          </div>
+
+          <div className="hidden md:block">
+            {isLogged ? (
+              <ul
+                className={cn(
+                  'flex items-center gap-x-6 md:gap-x-12 ml-2',
+                  styles.nav,
+                )}>
+                <li>
+                  <img src={'./ball.svg'} alt="" />
+                </li>
+                <NotificationsMenu />
+                <li>
+                  <img src={'./chest.svg'} alt="" />
+                </li>
+              </ul>
+            ) : !noButton ? (
+              isLogin ? (
+                <Button href={routes.login} classname="!py-3">
+                  Login
+                </Button>
+              ) : (
+                <Button href={routes.signUp} classname="!py-3">
+                  Sign Up
+                </Button>
+              )
             ) : (
-              <Button href={routes.signUp} classname="!py-3">
-                Sign Up
-              </Button>
-            )
-          ) : (
-            ''
-          )}
+              ''
+            )}
+          </div>
         </div>
       </div>
     </header>

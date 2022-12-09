@@ -9,6 +9,7 @@ import {useFirebase, useFirestore} from '../context/firebase';
 import {Layout} from '../components/common/Layout/Layout';
 import NotificationItem from '../components/Notifications/NotificationItem';
 import EmptyNotification from '../components/Notifications/EmptyNotification';
+import {useWindowSize} from '../utils/useWindowSize';
 
 export default function NotificationsMenu() {
   const app = useFirebase();
@@ -28,6 +29,8 @@ export default function NotificationsMenu() {
     ref,
   );
 
+  const {width} = useWindowSize();
+
   return (
     <Layout title="Notifications | Chestr" description="Notifications | Chestr">
       <div className="container max-w-[1000px]">
@@ -42,7 +45,7 @@ export default function NotificationsMenu() {
             <div className="py-1 divide-y">
               {notificationsQuery.data?.map((n, index) => (
                 <NotificationItem
-                  size="large"
+                  size={width && width < 640 ? 'small' : 'large'}
                   data={n as Notification}
                   key={`notification-detail-item-${index}`}></NotificationItem>
               ))}
