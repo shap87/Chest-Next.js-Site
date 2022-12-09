@@ -1,8 +1,6 @@
 // libs
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import cn from 'classnames';
-import {doc, getDoc, getFirestore} from 'firebase/firestore';
-import {getAuth} from 'firebase/auth';
 
 // components
 import {H5, H6, LoadingSpinner} from '../../../common';
@@ -12,18 +10,13 @@ import {
   EditProfileModal,
   SettingsModal,
 } from '../../../dialogs';
-import {useFirebase} from '../../../../context/firebase';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
 import {useAppSelector} from '../../../../hooks/redux';
 
 export const User = () => {
-  // const firebaseApp = useFirebase();
   const {user} = useAppSelector(state => state.user);
-
-  console.log(user);
-  
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showEditProfileModal, setShowEditProfileModal] =
@@ -34,35 +27,6 @@ export const User = () => {
     useState<boolean>(false);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const [share, setShare] = useState<boolean>(false);
-
-  // const [userData, setUserData] = useState<{
-  //   username: string;
-  //   name: string;
-  //   uid: string;
-  // }>({
-  //   name: "",
-  //   uid: "",
-  //   username: "",
-  // });
-
-  // useEffect(() => {
-  //   const user = getAuth(firebaseApp).currentUser;
-  //   const db = getFirestore(firebaseApp);
-
-  //   console.log(user);
-
-  //   getDoc(doc(db, "users", user?.uid!)).then((querySnapshot) => {
-  //     const data = querySnapshot.data();
-
-  //     console.log(data);
-
-  //     setUserData({
-  //       username: data?.username,
-  //       name: data?.name,
-  //       uid: user?.uid!,
-  //     });
-  //   });
-  // }, []);
 
   return (
     <>

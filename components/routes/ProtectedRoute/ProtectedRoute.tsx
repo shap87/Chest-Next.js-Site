@@ -3,7 +3,9 @@ import {useRouter} from 'next/router';
 import {useEffect} from 'react';
 import {useFirebase} from '../../../context/firebase';
 import {useAppDispatch} from '../../../hooks/redux';
+
 import firebaseService from '../../../services/firebase.service';
+
 import {routes} from '../../../utils/routes';
 
 export const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
