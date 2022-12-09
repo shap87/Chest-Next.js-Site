@@ -5,6 +5,7 @@ import {useFirebase} from '../../../context/firebase';
 import {useAppDispatch} from '../../../hooks/redux';
 
 import firebaseService from '../../../services/firebase.service';
+import {getUser} from '../../../store/modules/user/actionCreator';
 
 import {routes} from '../../../utils/routes';
 
@@ -19,14 +20,7 @@ export const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
     if (!user) {
       router.push(routes.login);
     } else {
-      firebaseService.getUser(app).then(userData => {
-        console.log(userData);
-
-        dispatch({
-          type: 'UPDATE_USER',
-          payload: userData,
-        });
-      });
+      dispatch(getUser(app));
     }
   }, [user]);
 

@@ -7,11 +7,11 @@ import * as yup from 'yup';
 import cn from 'classnames';
 
 import {useFirebase} from '../../../context/firebase';
+import {getUser} from '../../../store/modules/user/actionCreator';
 
 // components
 import {Alert, Button, ModalBaseLayout} from '../../common';
 import CheckIcon from '../../icons/CheckIcon';
-import firebaseService from '../../../services/firebase.service';
 
 interface EditProfileProps {
   show: boolean;
@@ -58,12 +58,7 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       updatedAt: Timestamp.fromDate(new Date()),
     });
 
-    const newUserData = await firebaseService.getUser(firebaseApp);
-
-    dispatch({
-      type: 'UPDATE_USER',
-      payload: newUserData,
-    });
+    dispatch(getUser(firebaseApp));
 
     setShowSavedMessage('Profile saved');
     setTimeout(() => {
