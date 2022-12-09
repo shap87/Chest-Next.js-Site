@@ -4,6 +4,7 @@ import {getAuth} from 'firebase/auth';
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   setDoc,
@@ -93,6 +94,23 @@ class FirebaseService {
       updatedAt: Timestamp.fromDate(new Date()),
       parent: null, // Folder id
     });
+  }
+
+  async getUser(app: FirebaseApp) {
+    const user = getAuth(app).currentUser;
+    if (!user) return;
+
+    const db = getFirestore(app);
+    const querySnapshot = await getDoc(doc(db, 'users', user?.uid!));
+    const data = querySnapshot.data();
+
+    console.log(data);
+
+    return {
+      username: data?.username,
+      name: data?.name,
+      uid: user?.uid!,
+    };
   }
 }
 
