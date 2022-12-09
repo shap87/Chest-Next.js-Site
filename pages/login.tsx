@@ -1,5 +1,5 @@
 // libs
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 //components
 import {Layout} from '../components/common';
@@ -11,8 +11,22 @@ import {
 
 // assets
 import 'swiper/css';
+import {useAppDispatch, useAppSelector} from '../hooks/redux';
 
 export default function LoginPage() {
+  //!! State manager usage example
+  // const dispatch = useAppDispatch();
+  // const {exampleState} = useAppSelector(state => state.example);
+
+  // console.log(exampleState);
+
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'EXAMPLE',
+  //     payload: true,
+  //   });
+  // }, []);
+
   const [step, setStep] = useState({
     email: '',
     state: '',
