@@ -132,19 +132,7 @@ export const Folders = () => {
                     key={folder.id}
                     className={cn(styles.folder, {
                       [styles.selected]: selected,
-                    })}
-                    onClick={() => {
-                      if (!selected) {
-                        setSelectedFolders({
-                          ...selectedFolders,
-                          [folder.id]: folder,
-                        });
-                      } else {
-                        // Remove folder from selected
-                        const {[folder.id]: omitted, ...rest} = selectedFolders;
-                        setSelectedFolders(rest);
-                      }
-                    }}>
+                    })}>
                     <div className={cn(styles.settings, 'group')}>
                       <img
                         className="w-1 group-hover:opacity-60 transition-all"
