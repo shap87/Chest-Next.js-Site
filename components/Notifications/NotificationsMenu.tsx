@@ -34,7 +34,7 @@ export default function NotificationsMenu() {
 
   return (
     <Menu as="div" className="z-10 relative inline-block text-left">
-      <div className="absolute z-10 -top-1 -right-1 text-[11px] text-white flex items-center justify-center font-bold bg-primary h-4 p-0.5 min-w-[16px] rounded-full border border-white pointer-events-none">
+      <div className="absolute z-10 -top-1 -right-1 text-[11px] text-white flex items-center justify-center font-semibold bg-red-500 h-4 p-0.5 min-w-[16px] rounded-full border border-white pointer-events-none">
         {count}
       </div>
       <Menu.Button as="li" className="flex items-center">
