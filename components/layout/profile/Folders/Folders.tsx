@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import cn from 'classnames';
-import { useAuthUser } from '@react-query-firebase/auth';
-import { useFirestoreQueryData } from '@react-query-firebase/firestore';
-import { query, collection, where } from 'firebase/firestore';
+import {getAuth} from 'firebase/auth';
+import {useFirestoreQueryData} from '@react-query-firebase/firestore';
+import {query, collection, where} from 'firebase/firestore';
 
 // components
-import { H6, Paragraph } from '../../../common';
-import { SelectedPanel } from '../SelectedPanel/SelectedPanel';
-import { useAuth, useFirestore } from '../../../../context/firebase';
-import { useWindowSize } from '../../../../utils/useWindowSize';
-import { AddNewSubFolderModal } from "../../../dialogs";
+import {H6, Paragraph} from '../../../common';
+import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
+import {useFirebase, useFirestore} from '../../../../context/firebase';
+import {useWindowSize} from '../../../../utils/useWindowSize';
+import {AddNewSubFolderModal} from '../../../dialogs';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
@@ -27,26 +27,29 @@ interface IFolder {
 }
 
 export const Folders = () => {
-  const { width } = useWindowSize();
+  const {width} = useWindowSize();
 
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
-  const [selectedFolders, setSelectedFolders] = useState<{ [key: string]: IFolder; }>({});
-  const [showNewSubFolderModal, setShowNewSubFolderModal] = useState<boolean>(true);
+  const [selectedFolders, setSelectedFolders] = useState<{
+    [key: string]: IFolder;
+  }>({});
+  const [showNewSubFolderModal, setShowNewSubFolderModal] =
+    useState<boolean>(true);
 
-  const auth = useAuth();
+  const app = useFirebase();
   const firestore = useFirestore();
-  const user = useAuthUser(['user'], auth);
+  const user = getAuth(app).currentUser;
 
   // Define a query reference using the Firebase SDK
   const ref = query(
     collection(firestore, 'folders'),
-    where('userId', '==', user.data?.uid ?? ''),
+    where('userId', '==', user?.uid ?? ''),
   );
 
   // Provide the query to the hook
   const foldersQuery = useFirestoreQueryData(
-    ['folders', { userId: user.data?.uid }],
+    ['folders', {userId: user?.uid}],
     ref,
   );
 
@@ -63,9 +66,11 @@ export const Folders = () => {
   }, [width]);
 
   if (foldersQuery.isLoading) {
-    return <div className="container">
-      <div>Loading...</div>
-    </div>;
+    return (
+      <div className="container">
+        <div>Loading...</div>
+      </div>
+    );
   }
 
   const countSelected = Object.keys(selectedFolders).length;
@@ -76,10 +81,8 @@ export const Folders = () => {
         <div className="container">
           {countSelected ? (
             <SelectedPanel
-              selectAll={() => {
-              }}
-              removeSelected={() => {
-              }}
+              selectAll={() => {}}
+              removeSelected={() => {}}
               countSelected={countSelected}
             />
           ) : null}
@@ -115,7 +118,10 @@ export const Folders = () => {
               styles.folders,
             )}>
             {foldersQuery.data
-              ?.slice(0, showAll ? foldersQuery.data?.length ?? Infinity : count)
+              ?.slice(
+                0,
+                showAll ? foldersQuery.data?.length ?? Infinity : count,
+              )
               ?.map(folder => {
                 const selected = Object.prototype.hasOwnProperty.call(
                   selectedFolders,
@@ -126,8 +132,20 @@ export const Folders = () => {
                     key={folder.id}
                     className={cn(styles.folder, {
                       [styles.selected]: selected,
-                    })}>
-                    <div className={cn(styles.settings, "group")}>
+                    })}
+                    onClick={() => {
+                      if (!selected) {
+                        setSelectedFolders({
+                          ...selectedFolders,
+                          [folder.id]: folder,
+                        });
+                      } else {
+                        // Remove folder from selected
+                        const {[folder.id]: omitted, ...rest} = selectedFolders;
+                        setSelectedFolders(rest);
+                      }
+                    }}>
+                    <div className={cn(styles.settings, 'group')}>
                       <img
                         className="w-1 group-hover:opacity-60 transition-all"
                         src={'/dots.svg'}
@@ -138,27 +156,27 @@ export const Folders = () => {
                         onClick={() => setShowNewSubFolderModal(true)}>
                         <li>
                           New Sub folder
-                          <img src={"./folder.svg"} alt="" />
+                          <img src={'./folder.svg'} alt="" />
                         </li>
                         <li>
                           Edit Folder
-                          <img src={"./edit-with-border.svg"} alt="" />
+                          <img src={'./edit-with-border.svg'} alt="" />
                         </li>
                         <li>
                           Move Folder
-                          <img src={"./switch.svg"} alt="" />
+                          <img src={'./switch.svg'} alt="" />
                         </li>
                         <li>
                           Make Public
-                          <img src={"./lock-black.svg"} alt="" />
+                          <img src={'./lock-black.svg'} alt="" />
                         </li>
                         <li>
                           Share
-                          <img src={"./share.svg"} alt="" />
+                          <img src={'./share.svg'} alt="" />
                         </li>
                         <li className="text-danger">
                           Delete
-                          <img src={"./trash.svg"} alt="" />
+                          <img src={'./trash.svg'} alt="" />
                         </li>
                       </ul>
                     </div>
@@ -172,10 +190,12 @@ export const Folders = () => {
                           });
                         } else {
                           // Remove folder from selected
-                          const { [folder.id]: omitted, ...rest } = selectedFolders;
+                          const {[folder.id]: omitted, ...rest} =
+                            selectedFolders;
                           setSelectedFolders(rest);
                         }
-                      }} />
+                      }}
+                    />
                     <img
                       className={styles.image}
                       src={folder.imageUrl}
@@ -200,10 +220,12 @@ export const Folders = () => {
           </div>
         </div>
       </section>
-      {showNewSubFolderModal &&
+      {showNewSubFolderModal && (
         <AddNewSubFolderModal
           show={showNewSubFolderModal}
-          onClose={() => setShowNewSubFolderModal(false)} />}
+          onClose={() => setShowNewSubFolderModal(false)}
+        />
+      )}
     </>
   );
 };

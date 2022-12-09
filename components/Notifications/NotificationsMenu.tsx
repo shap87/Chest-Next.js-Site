@@ -1,82 +1,40 @@
+import type Notification from '../../types/Notification';
+
 import {Fragment} from 'react';
 import {Menu, Transition} from '@headlessui/react';
 import Image from 'next/image';
+import {getAuth} from 'firebase/auth';
+import {useFirestoreQueryData} from '@react-query-firebase/firestore';
+import {query, collection, where, orderBy} from 'firebase/firestore';
+// hooks
+import {useFirebase, useFirestore} from '../../context/firebase';
+// component
 import {Button} from '../common';
-import NotificationItem, {INotification} from './NotificationItem';
+import NotificationItem from './NotificationItem';
 import EmptyNotification from './EmptyNotification';
 
 export default function NotificationsMenu() {
-  // TODO: to fetch notifications from Firestore
-  const notifications = [
-    {
-      id: 'ada213',
-      createdAt: new Date().toString(),
-      name: 'Besart Çopa',
-      imageUrl:
-        'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fuser.png?alt=media&token=b1f74d09-46bd-45de-8930-c5c23440613a',
-      product: {
-        name: 'Dark Navy Avalon Knit Polo',
-        imageUrl:
-          'https://cdn.shopify.com/s/files/1/1407/3982/products/black-front-desktop_1_1.jpg?v=1626808704&width=200',
-      },
-      seen: false,
-      type: 3,
-    },
-    {
-      id: '123456',
-      createdAt: new Date().toString(),
-      name: 'Besart Çopa',
-      imageUrl:
-        'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fuser.png?alt=media&token=b1f74d09-46bd-45de-8930-c5c23440613a',
-      product: {
-        name: 'Dark Navy Avalon Knit Polo',
-        imageUrl:
-          'https://cdn.shopify.com/s/files/1/1407/3982/products/black-front-desktop_1_1.jpg?v=1626808704&width=200',
-      },
-      seen: false,
-      type: 1,
-      comment:
-        'This dark navy, wow the pattern the looks so nice! Too bad it is probably',
-    },
-    {
-      id: '131311',
-      createdAt: new Date().toString(),
-      name: 'Vincent Krugg',
-      imageUrl:
-        'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fuser.png?alt=media&token=b1f74d09-46bd-45de-8930-c5c23440613a',
-      product: {
-        name: 'Dark Navy Avalon Knit Polo',
-        imageUrl:
-          'https://cdn.shopify.com/s/files/1/1407/3982/products/black-front-desktop_1_1.jpg?v=1626808704&width=200',
-      },
-      seen: true,
-      type: 2,
-    },
-    {
-      id: '31223124',
-      createdAt: new Date().toString(),
-      name: 'Clint Yeager',
-      imageUrl:
-        'https://cdn.shopify.com/s/files/1/1407/3982/products/black-front-desktop_1_1.jpg?v=1626808704&width=200',
-      product: {
-        name: 'Bullet Ruck',
-        imageUrl:
-          'https://cdn.shopify.com/s/files/1/1407/3982/products/black-front-desktop_1_1.jpg?v=1626808704&width=200',
-      },
-      seen: true,
-      type: 0,
-      discountInfo: {
-        prevPrice: 405,
-        price: '364.00',
-      },
-    },
-  ] as INotification[];
+  const app = useFirebase();
+  const firestore = useFirestore();
+  const user = getAuth(app).currentUser;
+  // Define a query reference using the Firebase SDK
+  const ref = query(
+    collection(firestore, 'notifications'),
+    where('recipientId', '==', user?.uid ?? ''),
+    orderBy('createdAt', 'desc'),
+  );
 
-  const count = notifications.filter(n => !n.seen).length;
+  // Provide the query to the hook
+  const notificationsQuery = useFirestoreQueryData(
+    ['notifications', {recipientId: user?.uid}],
+    ref,
+  );
+
+  const count = notificationsQuery.data?.filter(n => !n.seen).length;
 
   return (
     <Menu as="div" className="z-10 relative inline-block text-left">
-      <div className="absolute z-10 -top-1 -right-1 text-[11px] text-white flex items-center justify-center font-bold bg-primary h-4 p-0.5 min-w-[16px] rounded-full border border-white pointer-events-none">
+      <div className="absolute z-10 -top-1 -right-1 text-[11px] text-white flex items-center justify-center font-semibold bg-red-500 h-4 p-0.5 min-w-[16px] rounded-full border border-white pointer-events-none">
         {count}
       </div>
       <Menu.Button as="li" className="flex items-center">
@@ -97,14 +55,14 @@ export default function NotificationsMenu() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95">
         <Menu.Items className="absolute right-0 z-10 mt-2 p-5 w-[350px] origin-top-right rounded-md bg-white shadow-lg focus:outline-none">
-          {notifications.length === 0 ? (
+          {notificationsQuery.data?.length === 0 ? (
             <EmptyNotification />
           ) : (
             <Fragment>
               <div className="py-1 divide-y">
-                {notifications.slice(0, 3).map(n => (
-                  <Menu.Item key={n.id}>
-                    {() => <NotificationItem {...n} />}
+                {notificationsQuery.data?.slice(0, 3).map((n, index) => (
+                  <Menu.Item key={`notification-item-${index}`}>
+                    {() => <NotificationItem data={n as Notification} />}
                   </Menu.Item>
                 ))}
               </div>

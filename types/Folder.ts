@@ -6,7 +6,7 @@ export enum Visibility {
 
 export enum FolderSortingOptions {
   LAST_ADDED,
-  A_TO_Z
+  A_TO_Z,
 }
 
 export default interface Folder extends Entity {
