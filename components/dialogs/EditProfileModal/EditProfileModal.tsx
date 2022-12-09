@@ -1,20 +1,22 @@
 // libs
-import { FC, useState, useEffect } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import {FC, useState, useEffect} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
+import {useAppDispatch} from '../../../hooks/redux';
 import * as yup from 'yup';
 import cn from 'classnames';
 
-import { useFirebase } from '../../../context/firebase';
+import {useFirebase} from '../../../context/firebase';
 
 // components
-import { Alert, Button, ModalBaseLayout } from '../../common';
+import {Alert, Button, ModalBaseLayout} from '../../common';
 import CheckIcon from '../../icons/CheckIcon';
+import firebaseService from '../../../services/firebase.service';
 
 interface EditProfileProps {
   show: boolean;
   onClose: () => void;
-  userData: { name: string; username: string; uid: string };
+  userData: {name: string; username: string; uid: string};
 }
 
 const validationSchemaEditProfile = yup.object().shape({
@@ -22,20 +24,20 @@ const validationSchemaEditProfile = yup.object().shape({
   username: yup.string().required('Name is required'),
 });
 
-export const EditProfileModal: FC<EditProfileProps> = (
-  {
-    show,
-    onClose,
-    userData,
-  }) => {
+export const EditProfileModal: FC<EditProfileProps> = ({
+  show,
+  onClose,
+  userData,
+}) => {
   const firebaseApp = useFirebase();
+  const dispatch = useAppDispatch();
 
-  const [showSavedMessage, setShowSavedMessage] = useState<string>("");
+  const [showSavedMessage, setShowSavedMessage] = useState<string>('');
   const [avatar, setAvatar] = useState<any>(null);
   const [file, setFile] = useState<Blob | null>(null);
 
   useEffect(() => {
-    setShowSavedMessage("");
+    setShowSavedMessage('');
   }, [show]);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export const EditProfileModal: FC<EditProfileProps> = (
     }
   }, [file]);
 
-  const handleSubmit = async (values: { name: string; username: string }) => {
+  const handleSubmit = async (values: {name: string; username: string}) => {
     const db = getFirestore(firebaseApp);
     await updateDoc(doc(db, 'users', userData.uid), {
       username: values.username,
@@ -56,9 +58,16 @@ export const EditProfileModal: FC<EditProfileProps> = (
       updatedAt: Timestamp.fromDate(new Date()),
     });
 
-    setShowSavedMessage("Profile saved");
+    const newUserData = await firebaseService.getUser(firebaseApp);
+
+    dispatch({
+      type: 'UPDATE_USER',
+      payload: newUserData,
+    });
+
+    setShowSavedMessage('Profile saved');
     setTimeout(() => {
-      setShowSavedMessage("");
+      setShowSavedMessage('');
     }, 2000);
   };
 
@@ -69,13 +78,19 @@ export const EditProfileModal: FC<EditProfileProps> = (
       onClose={onClose}
       icon={'./edit.svg'}
       title="Edit profile">
-      {showSavedMessage && <Alert showSavedMessage={showSavedMessage} iconWidth="w-4" icon={'./check-pink.svg'} />}
+      {showSavedMessage && (
+        <Alert
+          showSavedMessage={showSavedMessage}
+          iconWidth="w-4"
+          icon={'./check-pink.svg'}
+        />
+      )}
       <div className="w-full flex flex-col items-center">
         <Formik
           validationSchema={validationSchemaEditProfile}
-          initialValues={{ name: userData.name, username: userData.username }}
+          initialValues={{name: userData.name, username: userData.username}}
           onSubmit={handleSubmit}>
-          {({ isValid, values, errors }) => (
+          {({isValid, values, errors}) => (
             <Form className="w-full max-w-[336px] flex flex-col items-center px-3 pt-7">
               <div className="field !mb-8">
                 <label className="cursor-pointer group !mb-0">
@@ -100,8 +115,7 @@ export const EditProfileModal: FC<EditProfileProps> = (
                       alt="Avatar"
                     />
                   )}
-                  <div
-                    className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
+                  <div className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
                     <img
                       className="w-[19px] h-[18px]"
                       src={'./upload-cloud.svg'}
@@ -114,7 +128,7 @@ export const EditProfileModal: FC<EditProfileProps> = (
                 <div className="field !mb-5">
                   <label htmlFor="name">Name</label>
                   <Field
-                    className={cn({ 'field-error': errors.name })}
+                    className={cn({'field-error': errors.name})}
                     type="text"
                     name="name"
                     placeholder="Enter your name"
@@ -135,8 +149,7 @@ export const EditProfileModal: FC<EditProfileProps> = (
                     </span>
                   </label>
                   <div className="flex items-center">
-                    <span
-                      className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
+                    <span className="h-[42px] w-[39px] border-[1px] rounded-lg rounded-r-none border-r-0 flex items-center justify-center">
                       @
                     </span>
                     <Field
