@@ -25,6 +25,7 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
   const handleSubmit = async (values: {name: string}) => {
     const isPrivate = false;
     await firebaseService.addNewFolder(firebaseApp, values.name, isPrivate);
+    
     onClose();
   };
 

@@ -1,6 +1,7 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
 import {createWrapper} from 'next-redux-wrapper';
 import {exampleReducer} from './modules/example/example-reducer';
+import {foldersSlice} from './modules/folders/foldersSlice';
 import {userSlice} from './modules/user/userSlice';
 
 const makeStore = () =>
@@ -8,7 +9,12 @@ const makeStore = () =>
     reducer: {
       example: exampleReducer,
       user: userSlice.reducer,
+      folders: foldersSlice.reducer,
     },
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
     devTools: true,
   });
 

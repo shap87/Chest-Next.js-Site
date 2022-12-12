@@ -1,57 +1,28 @@
 import {useEffect, useState} from 'react';
 import cn from 'classnames';
-import {getAuth} from 'firebase/auth';
-import {useFirestoreQueryData} from '@react-query-firebase/firestore';
-import {query, collection, where} from 'firebase/firestore';
 
 // components
 import {H6, Paragraph} from '../../../common';
 import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
-import {useFirebase, useFirestore} from '../../../../context/firebase';
 import {useWindowSize} from '../../../../utils/useWindowSize';
 import {AddNewSubFolderModal} from '../../../dialogs';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
-
-// TODO: to refactor the types, add createdAt/Entity
-interface IFolder {
-  id: string;
-  userId: string;
-  imageUrl: string;
-  name: string;
-  visibility: 0 | 1;
-  parent: string;
-  numItems: number;
-  viewItems: number;
-}
+import {useAppSelector} from '../../../../hooks/redux';
+import {FolderType} from '../../../../store/modules/folders/foldersSlice';
 
 export const Folders = () => {
+  const {folders} = useAppSelector(state => state.folders);
   const {width} = useWindowSize();
 
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
   const [selectedFolders, setSelectedFolders] = useState<{
-    [key: string]: IFolder;
+    [key: string]: FolderType;
   }>({});
   const [showNewSubFolderModal, setShowNewSubFolderModal] =
     useState<boolean>(true);
-
-  const app = useFirebase();
-  const firestore = useFirestore();
-  const user = getAuth(app).currentUser;
-
-  // Define a query reference using the Firebase SDK
-  const ref = query(
-    collection(firestore, 'folders'),
-    where('userId', '==', user?.uid ?? ''),
-  );
-
-  // Provide the query to the hook
-  const foldersQuery = useFirestoreQueryData(
-    ['folders', {userId: user?.uid}],
-    ref,
-  );
 
   useEffect(() => {
     if (width < 640) {
@@ -65,13 +36,13 @@ export const Folders = () => {
     }
   }, [width]);
 
-  if (foldersQuery.isLoading) {
-    return (
-      <div className="container">
-        <div>Loading...</div>
-      </div>
-    );
-  }
+  // if (foldersQuery.isLoading) {
+  //   return (
+  //     <div className="container">
+  //       <div>Loading...</div>
+  //     </div>
+  //   );
+  // }
 
   const countSelected = Object.keys(selectedFolders).length;
 
@@ -117,11 +88,8 @@ export const Folders = () => {
               'flex flex-wrap items-center gap-y-12',
               styles.folders,
             )}>
-            {foldersQuery.data
-              ?.slice(
-                0,
-                showAll ? foldersQuery.data?.length ?? Infinity : count,
-              )
+            {folders
+              ?.slice(0, showAll ? folders?.length ?? Infinity : count)
               ?.map(folder => {
                 const selected = Object.prototype.hasOwnProperty.call(
                   selectedFolders,

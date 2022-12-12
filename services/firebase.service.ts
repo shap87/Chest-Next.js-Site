@@ -112,6 +112,14 @@ class FirebaseService {
       uid: user?.uid!,
     };
   }
+
+  async getFodlers(app: FirebaseApp) {
+    const user = getAuth(app).currentUser;
+    if (!user) return;
+
+    const db = getFirestore(app);
+    const querySnapshot = await getDoc(doc(db, 'users', user?.uid!));
+  }
 }
 
 export default new FirebaseService();
