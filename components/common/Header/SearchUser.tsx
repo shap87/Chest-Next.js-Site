@@ -7,6 +7,7 @@ import {useFirestoreQueryData} from '@react-query-firebase/firestore';
 import {query, collection, orderBy, startAt, endAt} from 'firebase/firestore';
 // hooks
 import {useFirestore} from '../../../context/firebase';
+import {useWindowSize} from '../../../utils/useWindowSize';
 // components
 import SearchIcon from '../../icons/SearchIcon';
 import UserItem from './UserItem';
@@ -30,38 +31,43 @@ const SearchUser = () => {
 
   const onSearchDebounce = debounce(e => setTerm(e.target.value), 300);
 
+  const {width} = useWindowSize();
+  const isMobile = width && width < 640;
+
   return (
     <>
       {/* Search user mobile  */}
-      <div className="block md:hidden" onClick={() => setOpen(true)}>
-        <SearchIcon className="stroke-primary scale-125" />
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          className="relative z-50">
-          <Dialog.Panel className="bg-white fixed inset-0 flex-1">
-            <div className="flex items-center gap-6 px-6 py-3 shadow-md">
-              <label className="relative flex-1">
-                <SearchIcon className="stroke-primary absolute z-10 w-4 left-4 top-1/2 -translate-y-1/2" />
-                <input
-                  onChange={onSearchDebounce}
-                  className="pl-10 focus:border-main-300 focus:outline-main-50 outline-4 outline-offset-0"
-                  type="search"
-                  placeholder="Search (⌘+K)"
-                />
-              </label>
-              <div onClick={() => setOpen(false)}>
-                <CloseIcon className="stroke-primary h-4 w-4" />
+      {isMobile ? (
+        <div className="block md:hidden" onClick={() => setOpen(true)}>
+          <SearchIcon className="stroke-primary scale-125" />
+          <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            className="relative z-50">
+            <Dialog.Panel className="bg-white fixed inset-0 flex-1">
+              <div className="flex items-center gap-6 px-6 py-3 shadow-md">
+                <label className="relative flex-1">
+                  <SearchIcon className="stroke-primary absolute z-10 w-4 left-4 top-1/2 -translate-y-1/2" />
+                  <input
+                    onChange={onSearchDebounce}
+                    className="pl-10 focus:border-main-300 focus:outline-main-50 outline-4 outline-offset-0"
+                    type="search"
+                    placeholder="Search (⌘+K)"
+                  />
+                </label>
+                <div onClick={() => setOpen(false)}>
+                  <CloseIcon className="stroke-primary h-4 w-4" />
+                </div>
               </div>
-            </div>
-            <div className="p-6 divide-y">
-              {usersQuery.data?.map(user => (
-                <UserItem key={user.uid} user={user as User} />
-              ))}
-            </div>
-          </Dialog.Panel>
-        </Dialog>
-      </div>
+              <div className="p-6 divide-y">
+                {usersQuery.data?.map(user => (
+                  <UserItem key={user.uid} user={user as User} />
+                ))}
+              </div>
+            </Dialog.Panel>
+          </Dialog>
+        </div>
+      ) : null}
       {/* Search user desktop */}
       <Popover as="label" className="hidden md:block w-96 relative">
         <SearchIcon className="stroke-primary absolute z-10 w-4 left-4 top-1/2 -translate-y-1/2" />
