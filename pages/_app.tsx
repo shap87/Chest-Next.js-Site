@@ -2,6 +2,7 @@
 import type {AppProps} from 'next/app';
 import {useRouter} from 'next/router';
 import {useMemo} from 'react';
+import {Provider} from 'react-redux';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import {wrapper} from '../store/store';
 
@@ -11,8 +12,9 @@ import {ProtectedRoute, UnprotectedRoute} from '../components/routes';
 
 import '../styles/globals.scss';
 
-function App({Component, pageProps}: AppProps) {
+function App({Component, ...rest}: AppProps) {
   const router = useRouter();
+  const {store, props} = wrapper.useWrappedStore(rest);
 
   console.log(router.pathname);
 
@@ -35,21 +37,23 @@ function App({Component, pageProps}: AppProps) {
 
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <FirebaseContextProvider>
-        <AuthStateReady>
-          {noAuthRequired.includes(router.pathname) ? (
-            <UnprotectedRoute>
-              <Component {...pageProps} />
-            </UnprotectedRoute>
-          ) : (
-            <ProtectedRoute>
-              <Component {...pageProps} />
-            </ProtectedRoute>
-          )}
-        </AuthStateReady>
-      </FirebaseContextProvider>
+      <Provider store={store}>
+        <FirebaseContextProvider>
+          <AuthStateReady>
+            {noAuthRequired.includes(router.pathname) ? (
+              <UnprotectedRoute>
+                <Component {...props} />
+              </UnprotectedRoute>
+            ) : (
+              <ProtectedRoute>
+                <Component {...props} />
+              </ProtectedRoute>
+            )}
+          </AuthStateReady>
+        </FirebaseContextProvider>
+      </Provider>
     </QueryClientProvider>
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

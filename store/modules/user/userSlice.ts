@@ -2,7 +2,11 @@ import {createSlice} from '@reduxjs/toolkit';
 import {HYDRATE} from 'next-redux-wrapper';
 import {getUser} from './actionCreator';
 
-type UserType = {username: string; name: string; uid: string};
+type UserType = {
+  username: string;
+  name: string;
+  uid: string;
+};
 
 export interface UserState {
   user: UserType;
@@ -20,19 +24,23 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
-  extraReducers: {
-    [getUser.fulfilled.type]: (state, action) => {
-      state.user = action.payload;
-      state.loading = false;
-      state.userError = '';
-    },
-    [getUser.pending.type]: (state, action) => {
-      state.loading = true;
-    },
-    [getUser.rejected.type]: (state, action) => {
-      state.userError = action.payload;
-      state.loading = false;
-    },
+  extraReducers: builder => {
+    builder
+      .addCase(HYDRATE, (state, action: any) => {
+        state.user = action.payload;
+      })
+      .addCase(getUser.pending.type, state => {
+        state.loading = true;
+      })
+      .addCase(getUser.rejected.type, (state, action: any) => {
+        state.userError = action.payload;
+        state.loading = false;
+      })
+      .addCase(getUser.fulfilled.type, (state, action: any) => {
+        state.user = action.payload;
+        state.loading = false;
+        state.userError = '';
+      });
   },
 });
 
