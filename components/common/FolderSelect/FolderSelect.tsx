@@ -1,8 +1,10 @@
 //  components
-import { FolderSelectItem } from "./components/FolderSelectItem/FolderSelectItem";
-import { IFolder } from "../../../utils/types";
+import {FolderSelectItem} from './components/FolderSelectItem/FolderSelectItem';
+import {IFolder} from '../../../utils/types';
+import {useAppSelector} from '../../../hooks/redux';
+import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
-const folders: (IFolder)[] = [
+const folders: IFolder[] = [
   {
     name: 'Books',
     type: 'default',
@@ -10,33 +12,42 @@ const folders: (IFolder)[] = [
       {
         name: 'Scarce books',
         type: 'default',
-        children: []
+        children: [],
       },
       {
         name: 'Kids books',
         type: 'default',
-        children: []
-      }
-    ]
+        children: [],
+      },
+    ],
   },
-  { name: 'Cars', children: [], type: 'private', },
-  { name: 'Old books', children: [], type: 'default', },
-  { name: 'Red books', children: [], type: 'private', },
-]
+  {name: 'Cars', children: [], type: 'private'},
+  {name: 'Old books', children: [], type: 'default'},
+  {name: 'Red books', children: [], type: 'private'},
+];
 
 interface IFolderSelect {
-  setShowList: (value: boolean) => void,
-  selectedFolder: string,
-  setSelectedFolder: (value: string) => void
+  setShowList: (value: boolean) => void;
+  selectedFolder: string;
+  setSelectedFolder: (value: string) => void;
 }
 
-export const FolderSelect = ({ setShowList, setSelectedFolder }: IFolderSelect) => {
-
+export const FolderSelect = ({
+  setShowList,
+  setSelectedFolder,
+}: IFolderSelect) => {
+  const {folders} = useAppSelector(state => state.folders);
   return (
     <ul className="list list-select group-hover:block">
-      {folders.map((folder: IFolder, index) => <li key={index}>
-        <FolderSelectItem folder={folder} setShowList={setShowList} setSelectedFolder={setSelectedFolder} />
-      </li>)}
+      {folders.map((folder: FolderType, index) => (
+        <li key={index}>
+          <FolderSelectItem
+            folder={folder}
+            setShowList={setShowList}
+            setSelectedFolder={setSelectedFolder}
+          />
+        </li>
+      ))}
     </ul>
-  )
-}
+  );
+};

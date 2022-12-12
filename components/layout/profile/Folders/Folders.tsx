@@ -25,6 +25,10 @@ export const Folders = () => {
     useState<boolean>(true);
 
   useEffect(() => {
+    console.log('Current folders:', folders);
+  }, [folders]);
+
+  useEffect(() => {
     if (width < 640) {
       setCount(2);
     } else if (width < 768) {

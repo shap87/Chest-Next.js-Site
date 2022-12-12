@@ -11,6 +11,7 @@ export type FolderType = {
   id: string;
   private: false;
   numItems: number;
+  children: FolderType[];
 };
 
 export interface FolderState {
