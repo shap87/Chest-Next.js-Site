@@ -84,7 +84,7 @@ const NotificationItem = React.forwardRef(function Item(
               {type === 0 ? product.data?.brand : interactor.data?.name}
             </span>
             <span className={cn(isLarge ? 'text-sm' : 'text-xs')}>
-              {dayjs((createdAt?.seconds ?? 0) * 1000).fromNow()}
+              {dayjs(createdAt?.toMillis()).fromNow()}
             </span>
             {!seen && (
               <span className="bg-main-50 text-main-700 font-semibold text-xs px-2 py-1 rounded-full">
