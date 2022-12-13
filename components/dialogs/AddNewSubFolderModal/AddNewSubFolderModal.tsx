@@ -1,25 +1,36 @@
 // libs
-import { FC } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {FC, useState} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as yup from 'yup';
 import cn from 'classnames';
 
 // components
-import { Button, H6, ModalBaseLayout, Paragraph, Toggle } from '../../common';
+import {Button, H6, ModalBaseLayout, Paragraph, Toggle} from '../../common';
 import PlusIcon from '../../icons/PlusIcon';
+import firebaseService from '../../../services/firebase.service';
+import { useFirebase } from '../../../context/firebase';
 
 interface AddNewSubFolderModalProps {
   show: boolean;
   onClose: () => void;
+  parentFolderId: string;
 }
 
 const validationSchemaEditProfile = yup.object().shape({
   name: yup.string().required('Name is required'),
 });
 
-export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({ show, onClose }) => {
-  const handleSubmit = async (values: { name: string }) => {
-    console.log(values, 'values')
+export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({
+  show,
+  onClose,
+  parentFolderId
+}) => {
+  const firebaseApp = useFirebase()
+
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+
+  const handleSubmit = async (values: {name: string}) => {
+    await firebaseService.addNewFolder(firebaseApp, values.name, isPrivate, parentFolderId);
     onClose();
   };
 
@@ -33,9 +44,9 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({ show, onCl
       <div className="w-full flex flex-col items-center">
         <Formik
           validationSchema={validationSchemaEditProfile}
-          initialValues={{ name: '' }}
+          initialValues={{name: ''}}
           onSubmit={handleSubmit}>
-          {({ isValid, errors }) => (
+          {({isValid, errors}) => (
             <Form className="w-full max-w-[540px] flex flex-col items-center px-3 pt-12 md:pt-24 pb-6 md:pb-12">
               <div className="w-full">
                 <div className="field !mb-10 flex items-center">
@@ -48,7 +59,7 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({ show, onCl
                         alt=""
                       />
                       <Field
-                        className={cn('!pl-10', { 'field-error': errors.name })}
+                        className={cn('!pl-10', {'field-error': errors.name})}
                         type="text"
                         name="name"
                         placeholder="Enter your title like “new books” etc."
@@ -63,8 +74,15 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({ show, onCl
                 </div>
                 <div className="flex items-center justify-center mb-6 md:mb-12 gap-3">
                   <img className="w-5" src={'./lock-black.svg'} alt="" />
-                  <Paragraph classname="font-medium !mb-0">Make private</Paragraph>
-                  <Toggle />
+                  <Paragraph classname="font-medium !mb-0">
+                    Make private
+                  </Paragraph>
+                  <Toggle
+                    value={isPrivate}
+                    onChange={e => {
+                      setIsPrivate(e.currentTarget.checked);
+                    }}
+                  />
                 </div>
               </div>
               <Button

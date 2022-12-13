@@ -1,16 +1,15 @@
 import {getAuth} from 'firebase/auth';
-import {
-  collection,
-  onSnapshot,
-  where,
-} from 'firebase/firestore';
+import {collection, onSnapshot, where} from 'firebase/firestore';
 import {query} from 'firebase/firestore/lite';
 import {useRouter} from 'next/router';
 import {useEffect} from 'react';
 import {useFirebase, useFirestore} from '../../../context/firebase';
 import {useAppDispatch} from '../../../hooks/redux';
 
-import {FolderType, setFolders} from '../../../store/modules/folders/foldersSlice';
+import {
+  FolderType,
+  setFolders,
+} from '../../../store/modules/folders/foldersSlice';
 import {getUser} from '../../../store/modules/user/actionCreator';
 
 import {routes} from '../../../utils/routes';
@@ -31,12 +30,35 @@ export const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
 
     const unsub = onSnapshot(ref, querySnapshot => {
       const folders: FolderType[] = [];
+      const subFolders: FolderType[] = [];
       querySnapshot.forEach(doc => {
-        folders.push({
-          ...doc.data() as FolderType,
-          children: [] // !! change for getting from db
-        });
+        if (doc.data().parent) {
+          subFolders.push({
+            ...(doc.data() as FolderType),
+            children: [],
+          });
+        } else {
+          folders.push({
+            ...(doc.data() as FolderType),
+            children: [],
+          });
+        }
       });
+
+      for (const subFolder of subFolders) {
+        const targetFolder = folders.find(
+          folder => folder.id === subFolder.parent,
+        );
+        if (!targetFolder) continue;
+
+        const index = folders.indexOf(targetFolder);
+        if (index < 0) continue;
+
+        folders[index].children.push(subFolder);
+        folders.push(subFolder); //! May be delete for hide subfolders
+      }
+
+      console.log(folders);
 
       dispatch(setFolders(folders));
     });

@@ -1,30 +1,7 @@
 //  components
 import {FolderSelectItem} from './components/FolderSelectItem/FolderSelectItem';
-import {IFolder} from '../../../utils/types';
 import {useAppSelector} from '../../../hooks/redux';
 import {FolderType} from '../../../store/modules/folders/foldersSlice';
-
-const folders: IFolder[] = [
-  {
-    name: 'Books',
-    type: 'default',
-    children: [
-      {
-        name: 'Scarce books',
-        type: 'default',
-        children: [],
-      },
-      {
-        name: 'Kids books',
-        type: 'default',
-        children: [],
-      },
-    ],
-  },
-  {name: 'Cars', children: [], type: 'private'},
-  {name: 'Old books', children: [], type: 'default'},
-  {name: 'Red books', children: [], type: 'private'},
-];
 
 interface IFolderSelect {
   setShowList: (value: boolean) => void;

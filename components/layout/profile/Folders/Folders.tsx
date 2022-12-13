@@ -21,8 +21,10 @@ export const Folders = () => {
   const [selectedFolders, setSelectedFolders] = useState<{
     [key: string]: FolderType;
   }>({});
+
   const [showNewSubFolderModal, setShowNewSubFolderModal] =
     useState<boolean>(true);
+  const [parentFolder, setParentFolder] = useState<string>('');
 
   useEffect(() => {
     console.log('Current folders:', folders);
@@ -113,7 +115,10 @@ export const Folders = () => {
                       />
                       <ul
                         className="list hidden left-0 group-hover:block"
-                        onClick={() => setShowNewSubFolderModal(true)}>
+                        onClick={() => {
+                          setParentFolder(folder.id);
+                          setShowNewSubFolderModal(true);
+                        }}>
                         <li>
                           New Sub folder
                           <img src={'./folder.svg'} alt="" />
@@ -182,6 +187,7 @@ export const Folders = () => {
       </section>
       {showNewSubFolderModal && (
         <AddNewSubFolderModal
+          parentFolderId={parentFolder}
           show={showNewSubFolderModal}
           onClose={() => setShowNewSubFolderModal(false)}
         />

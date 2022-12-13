@@ -13,6 +13,7 @@ import {
 import {getFunctions, httpsCallable} from 'firebase/functions';
 
 import {generateUsernameHelper} from '../utils/helpers/generateUsernameHelper';
+import FetchedProduct from '../types/FetchedProduct';
 
 // ! Change later
 const profilePictireURL_Example =
@@ -45,7 +46,12 @@ class FirebaseService {
     });
   }
 
-  async addNewFolder(app: FirebaseApp, name: string, isPrivate: boolean) {
+  async addNewFolder(
+    app: FirebaseApp,
+    name: string,
+    isPrivate: boolean,
+    parentFolder: string = '',
+  ) {
     const user = getAuth(app).currentUser;
     if (!user) return;
 
@@ -53,9 +59,7 @@ class FirebaseService {
 
     const uniqueId = uuid();
 
-    console.log('New folder', uniqueId);
-
-    await setDoc(doc(db, 'folders', uniqueId), {
+    const newFodler = {
       name,
       private: isPrivate,
       id: uniqueId,
@@ -66,34 +70,41 @@ class FirebaseService {
       visibility: 1,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
-    });
+      parent: parentFolder ? parentFolder : null,
+    };
+
+    console.log('New folder', newFodler);
+
+    await setDoc(doc(db, 'folders', uniqueId), newFodler);
   }
 
-  async addNewItem(app: FirebaseApp, url: string) {
-    const functions = getFunctions(app);
-    const result = await httpsCallable(functions, 'fetchProductData')({url});
-
-    if (!result?.data) return;
-
+  async addNewItem(
+    app: FirebaseApp,
+    product: FetchedProduct,
+    additionalData: {notes: string; folder: string},
+  ) {
     const db = getFirestore(app);
-
-    const fetchedData: any = result.data;
     const uniqueId = uuid();
 
     console.log('New product', uniqueId);
 
-    await setDoc(doc(db, 'products', uniqueId), {
+    const newProductItem = {
       id: uniqueId,
-      productUrl: url,
-      description: fetchedData?.description ?? null,
-      brand: fetchedData?.brand ?? '',
-      title: fetchedData?.title ?? null,
-      priceHistory: [fetchedData?.price] ?? null,
-      priceCurrency: fetchedData.priceCurrency ?? null,
+      productUrl: product.url,
+      description: product?.description ?? null,
+      brand: product?.brand ?? '',
+      title: product?.title ?? null,
+      priceHistory: [product?.price] ?? null,
+      priceCurrency: product.priceCurrency ?? null,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
-      parent: null, // Folder id
-    });
+      parent: additionalData.folder, // Folder userId
+      notes: additionalData.notes,
+    };
+
+    console.log('newProductItem', newProductItem);
+
+    // await setDoc(doc(db, 'products', uniqueId), newProductItem);
   }
 
   async getUser(app: FirebaseApp) {
