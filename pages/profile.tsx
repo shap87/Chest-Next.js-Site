@@ -1,6 +1,6 @@
 //components
-import { Layout } from "../components/common/Layout/Layout";
-import { User, Folders, Products, Steps } from "../components/layout/profile";
+import { Layout } from "../components/common";
+import { User, Folders, Products, Steps, SubFolders } from "../components/layout/profile";
 
 export default function Profile() {
 
@@ -8,6 +8,7 @@ export default function Profile() {
     <Layout classname='profile-page' title="Profile | Chestr" description="Profile | Chestr">
       <User />
       <Folders />
+      <SubFolders />
       <Products />
       <Steps />
     </Layout>

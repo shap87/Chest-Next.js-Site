@@ -23,7 +23,7 @@ export const Folders = () => {
   }>({});
 
   const [showNewSubFolderModal, setShowNewSubFolderModal] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [parentFolder, setParentFolder] = useState<string>('');
 
   useEffect(() => {
