@@ -55,7 +55,6 @@ export const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
         if (index < 0) continue;
 
         folders[index].children.push(subFolder);
-        folders.push(subFolder); //! May be delete for hide subfolders
       }
 
       console.log(folders);
