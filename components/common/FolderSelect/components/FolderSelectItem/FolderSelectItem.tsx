@@ -32,7 +32,7 @@ export const FolderSelectItem = ({
           />
         )
       ) : null}
-      {folder.type === 'private' ? (
+      {folder.private ? (
         <img src={'./lock-black.svg'} alt="" />
       ) : (
         <img src={'./folder-empty.svg'} alt="" />
@@ -49,7 +49,7 @@ export const FolderSelectItem = ({
         <ul>
           {folder.children.map((subFolder, index) => (
             <li key={index}>
-              {subFolder.type === 'private' ? (
+              {subFolder.private ? (
                 <img src={'./lock-black.svg'} alt="" />
               ) : (
                 <img src={'./folder-empty.svg'} alt="" />
