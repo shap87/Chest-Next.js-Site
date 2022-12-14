@@ -58,9 +58,9 @@ export const Folders = () => {
         <div className="container">
           {countSelected ? (
             <SelectedPanel
-              selectAll={() => {}}
-              removeSelected={() => {}}
-              countSelected={countSelected}
+              type="folder"
+              total={1}
+              totalSelected={countSelected}
             />
           ) : null}
           <div className="flex justify-between items-center">
@@ -139,7 +139,7 @@ export const Folders = () => {
                           Share
                           <img src={'./share.svg'} alt="" />
                         </li>
-                        <li className="text-danger">
+                        <li className="text-red-500">
                           Delete
                           <img src={'./trash.svg'} alt="" />
                         </li>

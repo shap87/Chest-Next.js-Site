@@ -1,24 +1,27 @@
 .btn {
-  @apply select-none inline-flex items-center justify-center px-3 py-[0.625rem] text-base font-semibold border text-primary border-primary rounded-lg transition-all hover:bg-second hover:text-white no-underline;
+  @apply select-none inline-flex items-center justify-center px-3 py-2 text-sm md:text-base font-semibold border-2 text-primary border-gray-300 rounded-lg transition-all hover:border-primary hover:bg-primary hover:text-white no-underline gap-1 md:gap-2;
   &.pink {
-    @apply bg-[#E0007F] text-white border-[#E0007F] hover:bg-transparent hover:text-[#E0007F];
+    @apply bg-main-500 text-white border-main-500 hover:bg-transparent hover:text-main-500;
   }
   &.light-pink {
-    @apply bg-[#FFEBF6] text-[#CC0174] border-[#FFEBF6] hover:border-[#CC0174];
+    @apply bg-main-50 text-main-700 border-main-50 hover:border-main-700;
   }
   &.red {
-    @apply text-danger border-danger hover:text-white hover:bg-danger;
+    @apply text-red-500 border-red-300 hover:text-white hover:border-red-500 hover:bg-red-500;
+  }
+  &.green {
+    @apply text-green-600 border-green-300 hover:text-white hover:border-green-600 hover:bg-green-600;
   }
   &.icon-left {
     img,
     svg {
-      @apply w-5 mr-3;
+      @apply w-4;
     }
   }
   &.icon-right {
     img,
     svg {
-      @apply w-5 ml-3;
+      @apply w-4;
     }
   }
   &:disabled {

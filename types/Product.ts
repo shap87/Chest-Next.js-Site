@@ -18,7 +18,7 @@ export interface Product extends Entity {
   // parsed attributes
   parsedType: string;
   title?: string;
-  priceHistory: number[] | null;
+  price: number;
   priceCurrency?: string;
   description?: string;
   imageUrl?: string;

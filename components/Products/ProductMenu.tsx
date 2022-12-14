@@ -48,7 +48,7 @@ const ProductMenu: React.FC<Props> = () => {
             </Menu.Item>
             <Menu.Item
               as="li"
-              className="text-danger stroke-danger hover:stroke-main-500">
+              className="text-red-500 stroke-red-500 hover:stroke-main-500">
               Delete
               <DeleteIcon className="" />
             </Menu.Item>

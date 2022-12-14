@@ -47,7 +47,7 @@ export const SettingsModal: FC<EditProfileProps> = ({
         </Button>
         <Button classname="w-full group" icon="icon-right" color="red">
           Delete my account
-          <DeleteIcon className="stroke-danger group-hover:stroke-white" />
+          <DeleteIcon className="stroke-red-500 group-hover:stroke-white" />
         </Button>
       </div>
     </ModalBaseLayout>

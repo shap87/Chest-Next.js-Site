@@ -3,6 +3,8 @@ import type {Product} from '../../types/Product';
 import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+// components
+import FolderBadge from './FolderBadge';
 
 dayjs.extend(relativeTime);
 
@@ -11,12 +13,10 @@ interface Props {
 }
 
 const ProductContent: React.FC<Props> = ({product}) => {
-  const price = product?.priceHistory?.[
-    (product?.priceHistory?.length ?? 0) - 1
-  ].toLocaleString('en-US', {
+  const price = product?.price?.toLocaleString('en-US', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 1,
+    currency: product?.priceCurrency ?? 'USD',
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
 
@@ -28,10 +28,8 @@ const ProductContent: React.FC<Props> = ({product}) => {
           src={product?.imageUrl}
           alt="product"
         />
-        {/* TODO: add logic to show folder name */}
-        <div className="bg-gray-50 rounded-xl flex items-center gap-1 absolute left-3 bottom-3 px-2 h-6">
-          <img className="h-3 w-3" src="/folder-empty.svg" alt="folder" />
-          <span className="text-xs font-medium">Home</span>
+        <div className="absolute left-3 bottom-3">
+          {product?.parent ? <FolderBadge folderId={product.parent} /> : null}
         </div>
       </div>
 
