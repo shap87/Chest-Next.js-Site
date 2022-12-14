@@ -25,7 +25,7 @@ export const SubFolders = () => {
       folders.push(...selectedFolders[folderId].children);
 
       if (i === Object.keys(selectedFolders).length - 1) {
-        title += selectedFolders[folderId].name
+        title += selectedFolders[folderId].name + ' / '
       } else {
         title += selectedFolders[folderId].name + ', '
       }
@@ -40,7 +40,7 @@ export const SubFolders = () => {
       <div className="container">
         <div className="flex justify-between items-center">
           <H6>
-            <span className="text-[#98A2B3]">{headerTitle}</span> / Sub Folders
+            <span className="text-[#98A2B3]">{headerTitle}</span>Sub Folders
           </H6>
         </div>
         <div className="flex flex-wrap items-center gap-4 md:gap-6">
