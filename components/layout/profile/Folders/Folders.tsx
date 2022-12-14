@@ -9,18 +9,19 @@ import {AddNewSubFolderModal} from '../../../dialogs';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
-import {useAppSelector} from '../../../../hooks/redux';
-import {FolderType} from '../../../../store/modules/folders/foldersSlice';
+import {useAppDispatch, useAppSelector} from '../../../../hooks/redux';
+import {
+  FolderType,
+  setSelectedFolders,
+} from '../../../../store/modules/folders/foldersSlice';
 
 export const Folders = () => {
-  const {folders} = useAppSelector(state => state.folders);
+  const dispatch = useAppDispatch();
+  const {folders, selectedFolders} = useAppSelector(state => state.folders);
   const {width} = useWindowSize();
 
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
-  const [selectedFolders, setSelectedFolders] = useState<{
-    [key: string]: FolderType;
-  }>({});
 
   const [showNewSubFolderModal, setShowNewSubFolderModal] =
     useState<boolean>(false);
@@ -50,7 +51,9 @@ export const Folders = () => {
   //   );
   // }
 
-  const countSelected = Object.keys(selectedFolders).length;
+  const countSelected = Object.keys(selectedFolders).length || 0;
+
+  console.log('selectedFolders', selectedFolders);
 
   return (
     <>
@@ -149,15 +152,17 @@ export const Folders = () => {
                       className={styles.checkbox}
                       onClick={() => {
                         if (!selected) {
-                          setSelectedFolders({
-                            ...selectedFolders,
-                            [folder.id]: folder,
-                          });
+                          dispatch(
+                            setSelectedFolders({
+                              ...selectedFolders,
+                              [folder.id]: folder,
+                            }),
+                          );
                         } else {
                           // Remove folder from selected
                           const {[folder.id]: omitted, ...rest} =
                             selectedFolders;
-                          setSelectedFolders(rest);
+                          dispatch(setSelectedFolders(rest));
                         }
                       }}
                     />
