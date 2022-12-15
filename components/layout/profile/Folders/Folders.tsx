@@ -14,6 +14,8 @@ import {
   FolderType,
   setSelectedFolders,
 } from '../../../../store/modules/folders/foldersSlice';
+import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
+import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
   const dispatch = useAppDispatch();
@@ -22,10 +24,14 @@ export const Folders = () => {
 
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
+  const [parentFolder, setParentFolder] = useState<FolderType>();
 
   const [showNewSubFolderModal, setShowNewSubFolderModal] =
     useState<boolean>(false);
-  const [parentFolder, setParentFolder] = useState<string>('');
+  const [showEditFolderModal, setShowEditFolderModal] =
+    useState<boolean>(false);
+  const [showMoveFolderModal, setShowMoveFolderModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     console.log('Current folders:', folders);
@@ -118,19 +124,16 @@ export const Folders = () => {
                       />
                       <ul
                         className="list hidden left-0 group-hover:block"
-                        onClick={() => {
-                          setParentFolder(folder.id);
-                          setShowNewSubFolderModal(true);
-                        }}>
-                        <li>
+                        onClick={() => setParentFolder(folder)}>
+                        <li onClick={() => setShowNewSubFolderModal(true)}>
                           New Sub folder
                           <img src={'./folder.svg'} alt="" />
                         </li>
-                        <li>
+                        <li onClick={() => setShowEditFolderModal(true)}>
                           Edit Folder
                           <img src={'./edit-with-border.svg'} alt="" />
                         </li>
-                        <li>
+                        <li onClick={() => setShowMoveFolderModal(true)}>
                           Move Folder
                           <img src={'./switch.svg'} alt="" />
                         </li>
@@ -192,9 +195,28 @@ export const Folders = () => {
       </section>
       {showNewSubFolderModal && (
         <AddNewSubFolderModal
-          parentFolderId={parentFolder}
+          parentFolder={{
+            id: parentFolder?.id || '',
+            name: parentFolder?.name || '',
+          }}
           show={showNewSubFolderModal}
           onClose={() => setShowNewSubFolderModal(false)}
+        />
+      )}
+      {showEditFolderModal && (
+        <EditFolderModal
+          parentFolder={{
+            id: parentFolder?.id || '',
+            name: parentFolder?.name || '',
+          }}
+          show={showEditFolderModal}
+          onClose={() => setShowEditFolderModal(false)}
+        />
+      )}
+      {showMoveFolderModal && (
+        <MoveFolderModal
+          show={showMoveFolderModal}
+          onClose={() => setShowMoveFolderModal(false)}
         />
       )}
     </>

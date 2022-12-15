@@ -5,7 +5,6 @@ import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
 interface IFolderSelect {
   setShowList: (value: boolean) => void;
-  selectedFolder: string;
   setSelectedFolder: (value: string) => void;
 }
 

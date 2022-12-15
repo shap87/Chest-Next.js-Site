@@ -169,7 +169,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                     <div className="field !mb-7">
                       <div
                         className="pr-8 text-ellipsis whitespace-nowrap overflow-hidden relative cursor-pointer w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
-                        onClick={() => setShowList(true)}>
+                        onClick={() => setShowList(prev => !prev)}>
                         {selectedFolder ? selectedFolder : 'Select value'}
                         <img
                           className={cn(
@@ -183,7 +183,6 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       {showList && (
                         <FolderSelect
                           setShowList={setShowList}
-                          selectedFolder={selectedFolder}
                           setSelectedFolder={setSelectedFolder}
                         />
                       )}

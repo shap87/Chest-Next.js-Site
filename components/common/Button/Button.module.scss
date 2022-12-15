@@ -25,6 +25,6 @@
     }
   }
   &:disabled {
-    @apply opacity-50 pointer-events-none select-none;
+    @apply bg-[#D0D5DD] border-[#D0D5DD] pointer-events-none select-none;
   }
 }
