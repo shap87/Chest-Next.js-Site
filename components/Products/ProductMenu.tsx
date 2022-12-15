@@ -1,14 +1,16 @@
 import React, {Fragment} from 'react';
 import {Menu, Transition} from '@headlessui/react';
+import cn from 'classnames';
 //components
 import DeleteIcon from '../icons/DeleteIcon';
 import CreditCardCheckIcon from '../icons/CreditCardCheckIcon';
 
 interface Props {
   productId: string;
+  align?: 'left' | 'right';
 }
 
-const ProductMenu: React.FC<Props> = () => {
+const ProductMenu: React.FC<Props> = ({align}) => {
   return (
     <Menu as="div" className="relative">
       <Menu.Button>
@@ -22,7 +24,11 @@ const ProductMenu: React.FC<Props> = () => {
         leave="transition ease-in duration-75"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95">
-        <Menu.Items className="list absolute right-0 z-10 origin-top-right rounded-md bg-white shadow-lg focus:outline-none">
+        <Menu.Items
+          className={cn(
+            'list absolute z-10 right-0 origin-top-right rounded-md bg-white shadow-lg focus:outline-none',
+            align === 'left' && 'left-0 origin-top-left',
+          )}>
           <div className="py-1 divide-y">
             <Menu.Item
               as="li"

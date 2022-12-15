@@ -6,6 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import cn from 'classnames';
 // components
 import FolderBadge from './FolderBadge';
+import ProductMenu from './ProductMenu';
 
 dayjs.extend(relativeTime);
 
@@ -36,6 +37,9 @@ const ProductCard: React.FC<Props> = ({
         selected && 'outline-main-300',
       )}>
       <div className="relative">
+        <div className="absolute left-3 top-3">
+          <ProductMenu productId={product?.id!} align="left" />
+        </div>
         <span
           className={cn(
             'checkbox',
