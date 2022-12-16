@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import cn from 'classnames';
-import { deleteDoc, doc, getFirestore } from 'firebase/firestore';
+import { deleteDoc, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 
 import { useFirebase } from '../../../../context/firebase';
 
@@ -84,6 +84,14 @@ export const Folders = () => {
     }
   }
 
+  const handleChangePrivacy = (folderId: string, isPrivate: boolean) => {
+    const db = getFirestore(firebaseApp);
+    updateDoc(doc(db, 'folders', folderId), {
+      private: !isPrivate,
+      updatedAt: Timestamp.fromDate(new Date()),
+    });
+  }
+
   console.log('selectedFolders', selectedFolders);
 
   return (
@@ -158,8 +166,8 @@ export const Folders = () => {
                           Edit Folder
                           <img src={'./edit-with-border.svg'} alt="" />
                         </li>
-                        <li>
-                          Make Public
+                        <li onClick={() => handleChangePrivacy(folder.id, folder.private)}>
+                          {folder.private ? 'Make Public' : 'Make Private'}
                           <img src={'./lock-black.svg'} alt="" />
                         </li>
                         <li>
@@ -200,7 +208,7 @@ export const Folders = () => {
                         <H6>{folder.name}</H6>
                         <Paragraph>{folder.numItems} items</Paragraph>
                       </div>
-                      {folder.visibility === 1 && (
+                      {folder.private && (
                         <img
                           className={styles.lock}
                           src={'/lock.svg'}
