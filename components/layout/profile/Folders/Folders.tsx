@@ -1,5 +1,8 @@
 import {useEffect, useState} from 'react';
 import cn from 'classnames';
+import { deleteDoc, doc, getFirestore } from 'firebase/firestore';
+
+import { useFirebase } from '../../../../context/firebase';
 
 // components
 import {H6, Paragraph} from '../../../common';
@@ -18,6 +21,8 @@ import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
 import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
+  const firebaseApp = useFirebase();
+  
   const dispatch = useAppDispatch();
   const {folders, selectedFolders} = useAppSelector(state => state.folders);
   const {width} = useWindowSize();
@@ -58,6 +63,11 @@ export const Folders = () => {
   // }
 
   const countSelected = Object.keys(selectedFolders).length || 0;
+
+  const handleDeleteFolder = (folderId: string) => {
+    const db = getFirestore(firebaseApp);
+    deleteDoc(doc(db, 'folders', folderId));
+  }
 
   console.log('selectedFolders', selectedFolders);
 
@@ -145,7 +155,7 @@ export const Folders = () => {
                           Share
                           <img src={'./share.svg'} alt="" />
                         </li>
-                        <li className="text-red-500">
+                        <li className="text-red-500" onClick={() => handleDeleteFolder(folder.id)}>
                           Delete
                           <img src={'./trash.svg'} alt="" />
                         </li>
@@ -208,6 +218,7 @@ export const Folders = () => {
           parentFolder={{
             id: parentFolder?.id || '',
             name: parentFolder?.name || '',
+            private: !!parentFolder?.private
           }}
           show={showEditFolderModal}
           onClose={() => setShowEditFolderModal(false)}

@@ -2,6 +2,10 @@ import {FC, useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from 'formik';
 import * as yup from 'yup';
 import cn from 'classnames';
+import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+
+import { useFirebase } from '../../../context/firebase';
+
 
 import {Button, H6, ModalBaseLayout, Paragraph, Toggle} from '../../common';
 
@@ -11,6 +15,7 @@ interface EditFolderModalProps {
   parentFolder: {
     id: string;
     name: string;
+    private: boolean;
   };
 }
 
@@ -23,9 +28,18 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
   parentFolder,
   onClose,
 }) => {
-  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+  const firebaseApp = useFirebase();
+  const [isPrivate, setIsPrivate] = useState<boolean>(parentFolder.private);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (values: {name: string}) => {
+    const db = getFirestore(firebaseApp);
+    await updateDoc(doc(db, 'folders', parentFolder.id), {
+      name: values.name,
+      private: isPrivate,
+      updatedAt: Timestamp.fromDate(new Date()),
+    });
+    onClose();
+  };
 
   return (
     <ModalBaseLayout
