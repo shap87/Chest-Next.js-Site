@@ -73,6 +73,17 @@ export const Folders = () => {
     }
 
     deleteDoc(doc(db, 'folders', folder.id));
+
+    if (selectedFolders[folder.id]) {
+      const updatedSelectedFolders = {} as {[key: string]: FolderType};
+      Object.keys(selectedFolders).forEach((folderId) => {
+        if (folderId !== folder.id) {
+          updatedSelectedFolders[folderId] = selectedFolders[folderId];
+        }
+      });
+
+      dispatch(setSelectedFolders(updatedSelectedFolders));
+    }
   }
 
   console.log('selectedFolders', selectedFolders);
