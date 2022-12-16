@@ -1,5 +1,8 @@
 import {useEffect, useState} from 'react';
 import cn from 'classnames';
+import { deleteDoc, doc, getFirestore } from 'firebase/firestore';
+
+import { useFirebase } from '../../../../context/firebase';
 
 // components
 import {H6, Paragraph} from '../../../common';
@@ -18,6 +21,8 @@ import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
 import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
+  const firebaseApp = useFirebase();
+  
   const dispatch = useAppDispatch();
   const {folders, selectedFolders} = useAppSelector(state => state.folders);
   const {width} = useWindowSize();
@@ -56,6 +61,28 @@ export const Folders = () => {
   // }
 
   const countSelected = Object.keys(selectedFolders).length || 0;
+
+  const handleDeleteFolder = (folder: FolderType) => {
+    const db = getFirestore(firebaseApp);
+    if (folder.children.length > 0) {
+      folder.children.forEach((subFolder) => {
+        deleteDoc(doc(db, 'folders', subFolder.id));
+      })
+    }
+
+    deleteDoc(doc(db, 'folders', folder.id));
+
+    if (selectedFolders[folder.id]) {
+      const updatedSelectedFolders = {} as {[key: string]: FolderType};
+      Object.keys(selectedFolders).forEach((folderId) => {
+        if (folderId !== folder.id) {
+          updatedSelectedFolders[folderId] = selectedFolders[folderId];
+        }
+      });
+
+      dispatch(setSelectedFolders(updatedSelectedFolders));
+    }
+  }
 
   console.log('selectedFolders', selectedFolders);
 
@@ -139,7 +166,7 @@ export const Folders = () => {
                           Share
                           <img src={'./share.svg'} alt="" />
                         </li>
-                        <li className="text-red-500">
+                        <li className="text-red-500" onClick={() => handleDeleteFolder(folder)}>
                           Delete
                           <img src={'./trash.svg'} alt="" />
                         </li>
@@ -202,6 +229,7 @@ export const Folders = () => {
           parentFolder={{
             id: parentFolder?.id || '',
             name: parentFolder?.name || '',
+            private: !!parentFolder?.private
           }}
           show={showEditFolderModal}
           onClose={() => setShowEditFolderModal(false)}
