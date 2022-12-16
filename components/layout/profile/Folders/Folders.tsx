@@ -30,8 +30,6 @@ export const Folders = () => {
     useState<boolean>(false);
   const [showEditFolderModal, setShowEditFolderModal] =
     useState<boolean>(false);
-  const [showMoveFolderModal, setShowMoveFolderModal] =
-    useState<boolean>(false);
 
   useEffect(() => {
     console.log('Current folders:', folders);
@@ -133,10 +131,6 @@ export const Folders = () => {
                           Edit Folder
                           <img src={'./edit-with-border.svg'} alt="" />
                         </li>
-                        <li onClick={() => setShowMoveFolderModal(true)}>
-                          Move Folder
-                          <img src={'./switch.svg'} alt="" />
-                        </li>
                         <li>
                           Make Public
                           <img src={'./lock-black.svg'} alt="" />
@@ -211,12 +205,6 @@ export const Folders = () => {
           }}
           show={showEditFolderModal}
           onClose={() => setShowEditFolderModal(false)}
-        />
-      )}
-      {showMoveFolderModal && (
-        <MoveFolderModal
-          show={showMoveFolderModal}
-          onClose={() => setShowMoveFolderModal(false)}
         />
       )}
     </>
