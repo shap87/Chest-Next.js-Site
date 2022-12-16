@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import cn from 'classnames';
 import {getAuth} from 'firebase/auth';
+import Link from 'next/link';
 // hooks
 import {useFirebase} from '../../../context/firebase';
 // components
@@ -65,11 +66,15 @@ export const Header = ({noButton}: IHeader) => {
                   styles.nav,
                 )}>
                 <li>
-                  <img src={'./ball.svg'} alt="" />
+                  <Link href="/community">
+                    <img src={'./ball.svg'} alt="" />
+                  </Link>
                 </li>
                 <NotificationsMenu />
                 <li>
-                  <img src={'./chest.svg'} alt="" />
+                  <Link href="/profile">
+                    <img src={'./chest.svg'} alt="" />
+                  </Link>
                 </li>
               </ul>
             ) : !noButton ? (

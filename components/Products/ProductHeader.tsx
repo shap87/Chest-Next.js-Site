@@ -9,6 +9,7 @@ import {useFirestore} from '../../context/firebase';
 //components
 import CloseIcon from '../icons/CloseIcon';
 import ProductMenu from './ProductMenu';
+import {useWindowSize} from '../../utils/useWindowSize';
 
 interface Props {
   product: Product | null;
@@ -27,8 +28,10 @@ const ProductHeader: React.FC<Props> = ({product, onClose}) => {
     },
   );
 
+  const {width} = useWindowSize();
+
   return (
-    <div className="flex items-center justify-between border-b px-6 py-4 border-gray-200">
+    <div className="flex items-center justify-between border-b px-6 py-3 border-gray-200">
       <div className="flex flex-row-reverse md:flex-row items-center gap-2 md:min-w-[50%]">
         <img
           className="hidden md:block shadow-gray-200 shadow-lg p-[2px] h-10 w-10 rounded-full shadow-sm"
@@ -43,7 +46,12 @@ const ProductHeader: React.FC<Props> = ({product, onClose}) => {
             <img className="w-4 h-4" src="/link-external.svg" />
           </a>
         </Link>
-        <ProductMenu productId={product?.id!} />
+        <div className="mt-2">
+          <ProductMenu
+            productId={product?.id!}
+            align={width && width < 640 ? 'left' : 'right'}
+          />
+        </div>
       </div>
       <button onClick={onClose}>
         <CloseIcon className="stroke-primary h-4 w-4" />

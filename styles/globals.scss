@@ -55,12 +55,12 @@ textarea {
 }
 
 .list {
-  @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-[248px] translate-y-full border border-[#EAECF0];
+  @apply absolute z-10 right-0 bottom-0 bg-white rounded-lg w-40 md:w-60 translate-y-full border border-gray-100;
   box-shadow: 0 4px 8px rgba(16, 24, 40, 0.05), 0 2px 4px rgba(16, 24, 40, 0.04);
   li {
-    @apply py-3 px-4 text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main-500;
+    @apply p-2 md:px-4 text-sm md:text-base flex justify-between font-medium cursor-pointer transition-all hover:text-main-500;
     &:not(:last-child) {
-      @apply border-b border-[#EAECF0];
+      @apply border-b border-gray-100;
     }
     img {
       @apply w-4;

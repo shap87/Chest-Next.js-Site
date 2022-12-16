@@ -7,21 +7,28 @@ import cn from 'classnames';
 // components
 import FolderBadge from './FolderBadge';
 import ProductMenu from './ProductMenu';
+import ProductCardProfile from './ProductCardProfile';
 
 dayjs.extend(relativeTime);
 
 interface Props {
   product: Product | null;
   selected?: boolean;
-  onToggleSelect: () => void;
+  displayProfile?: boolean;
+  displaySelect?: boolean;
+  onToggleSelect?: () => void;
   onViewDetail: () => void;
+  size?: 'small' | 'medium';
 }
 
 const ProductCard: React.FC<Props> = ({
   product,
   selected,
+  displayProfile,
+  displaySelect,
   onToggleSelect,
   onViewDetail,
+  size,
 }) => {
   const price = product?.price?.toLocaleString('en-US', {
     style: 'currency',
@@ -31,24 +38,27 @@ const ProductCard: React.FC<Props> = ({
   });
 
   return (
-    <div
-      className={cn(
-        'rounded-lg outline-2 outline-offset-0 outline-gray-200',
-        selected && 'outline-main-300',
-      )}>
+    <div className="rounded-lg outline-1 outline-offset-0 outline-gray-200 shadow-md">
+      {displayProfile && <ProductCardProfile product={product} />}
       <div className="relative">
-        <div className="absolute left-3 top-3">
+        <div className="absolute left-2 top-2.5">
           <ProductMenu productId={product?.id!} align="left" />
         </div>
-        <span
-          className={cn(
-            'checkbox',
-            selected && 'before:block !border-main-300',
-          )}
-          onClick={onToggleSelect}
-        />
+        {displaySelect && (
+          <span
+            className={cn(
+              'checkbox',
+              selected && 'before:block !border-main-300',
+            )}
+            onClick={onToggleSelect}
+          />
+        )}
         <img
-          className="h-72 md:h-80 rounded-lg rounded-b-none object-cover cursor-pointer"
+          className={cn(
+            'h-36 md:h-80 rounded-lg rounded-b-none object-cover cursor-pointer border-y border-gray-200',
+            displayProfile && 'rounded-t-none',
+            size === 'small' && '!h-36',
+          )}
           src={product?.imageUrl}
           alt="product"
           onClick={onViewDetail}
@@ -58,21 +68,38 @@ const ProductCard: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className="p-4">
+      <div className={cn('p-2 md:p-4', size === 'small' && '!p-2')}>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-400 uppercase">
+          <span
+            className={cn(
+              'text-xs md:text-sm text-gray-400 uppercase',
+              size === 'small' && '!text-xs',
+            )}>
             {product?.brand}
           </span>
-          <span className="text-sm text-gray-400">
+          <span
+            className={cn(
+              'text-xs md:text-sm text-gray-400',
+              size === 'small' && '!text-xs',
+            )}>
             {dayjs(product?.createdAt?.toMillis()).fromNow()}
           </span>
         </div>
         <p
-          className="text-xl text-gray-600 mt-4 line-clamp-2 cursor-pointer"
+          className={cn(
+            'text-sm md:text-xl mt-2 md:mt-4 text-gray-600 line-clamp-2 cursor-pointer',
+            size === 'small' && '!text-sm !mt-2',
+          )}
           onClick={onViewDetail}>
           {product?.title}
         </p>
-        <p className="text-xl text-gray-600 font-semibold mt-4">{price}</p>
+        <p
+          className={cn(
+            'text-sm md:text-xl mt-2 md:mt-4 text-gray-600 font-semibold',
+            size === 'small' && '!text-sm !mt-2',
+          )}>
+          {price}
+        </p>
       </div>
     </div>
   );

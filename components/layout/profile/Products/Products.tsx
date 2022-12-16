@@ -103,10 +103,11 @@ export const Products = () => {
           loadMore={() => productsQuery.fetchNextPage()}
           hasMore={productsQuery.hasNextPage}
           loader={<p key="loading">Loading...</p>}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 my-4 md:my-6">
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 my-4 md:my-6">
           {products?.map(product => (
             <ProductCard
               key={product.id}
+              displaySelect
               selected={Object.prototype.hasOwnProperty.call(
                 selectedProducts,
                 product.id,

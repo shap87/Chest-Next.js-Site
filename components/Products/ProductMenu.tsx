@@ -14,7 +14,11 @@ const ProductMenu: React.FC<Props> = ({align}) => {
   return (
     <Menu as="div" className="relative">
       <Menu.Button>
-        <img className="w-5 h-5" src={'/dots.svg'} alt="" />
+        <img
+          className="w-5 h-5 rotate-90 bg-gray-50 outline-offset-0 outline-gray-100 rounded-full p-[2px]"
+          src={'/dots.svg'}
+          alt=""
+        />
       </Menu.Button>
       <Transition
         as={Fragment}
