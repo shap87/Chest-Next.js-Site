@@ -64,9 +64,15 @@ export const Folders = () => {
 
   const countSelected = Object.keys(selectedFolders).length || 0;
 
-  const handleDeleteFolder = (folderId: string) => {
+  const handleDeleteFolder = (folder: FolderType) => {
     const db = getFirestore(firebaseApp);
-    deleteDoc(doc(db, 'folders', folderId));
+    if (folder.children.length > 0) {
+      folder.children.forEach((subFolder) => {
+        deleteDoc(doc(db, 'folders', subFolder.id));
+      })
+    }
+
+    deleteDoc(doc(db, 'folders', folder.id));
   }
 
   console.log('selectedFolders', selectedFolders);
@@ -155,7 +161,7 @@ export const Folders = () => {
                           Share
                           <img src={'./share.svg'} alt="" />
                         </li>
-                        <li className="text-red-500" onClick={() => handleDeleteFolder(folder.id)}>
+                        <li className="text-red-500" onClick={() => handleDeleteFolder(folder)}>
                           Delete
                           <img src={'./trash.svg'} alt="" />
                         </li>
