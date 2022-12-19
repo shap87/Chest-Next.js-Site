@@ -2,12 +2,16 @@ import {FC, useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from 'formik';
 import * as yup from 'yup';
 import cn from 'classnames';
-import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
 
-import { useFirebase } from '../../../context/firebase';
-
+import {useFirebase} from '../../../context/firebase';
 
 import {Button, H6, ModalBaseLayout, Paragraph, Toggle} from '../../common';
+import {
+  FolderType,
+  setSelectedFolders,
+} from '../../../store/modules/folders/foldersSlice';
+import {useAppDispatch} from '../../../hooks/redux';
 
 interface EditFolderModalProps {
   show: boolean;
@@ -16,6 +20,9 @@ interface EditFolderModalProps {
     id: string;
     name: string;
     private: boolean;
+  };
+  selectedFolders: {
+    [key: string]: FolderType;
   };
 }
 
@@ -26,9 +33,11 @@ const validationSchemaEditProfile = yup.object().shape({
 const EditFolderModal: FC<EditFolderModalProps> = ({
   show,
   parentFolder,
+  selectedFolders,
   onClose,
 }) => {
   const firebaseApp = useFirebase();
+  const dispatch = useAppDispatch();
   const [isPrivate, setIsPrivate] = useState<boolean>(parentFolder.private);
 
   const handleSubmit = async (values: {name: string}) => {
@@ -38,6 +47,20 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
       private: isPrivate,
       updatedAt: Timestamp.fromDate(new Date()),
     });
+
+    if (selectedFolders[parentFolder.id]) {
+      const updatedSelectedFolders = {} as {[key: string]: FolderType};
+      Object.keys(selectedFolders).forEach(folderId => {
+        updatedSelectedFolders[folderId] = {...selectedFolders[folderId]};
+        if (folderId === parentFolder.id) {
+          updatedSelectedFolders[folderId].name = values.name;
+          updatedSelectedFolders[folderId].private = isPrivate;
+        }
+      });
+
+      dispatch(setSelectedFolders(updatedSelectedFolders));
+    }
+
     onClose();
   };
 

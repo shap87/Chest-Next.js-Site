@@ -9,7 +9,7 @@ export type FolderType = {
   imageUrl: string;
   userId: string;
   id: string;
-  private: false;
+  private: boolean;
   numItems: number;
   children: FolderType[];
   parent: string | null;

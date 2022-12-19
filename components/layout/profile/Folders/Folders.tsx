@@ -1,8 +1,14 @@
 import {useEffect, useState} from 'react';
 import cn from 'classnames';
-import { deleteDoc, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import {
+  deleteDoc,
+  doc,
+  getFirestore,
+  Timestamp,
+  updateDoc,
+} from 'firebase/firestore';
 
-import { useFirebase } from '../../../../context/firebase';
+import {useFirebase} from '../../../../context/firebase';
 
 // components
 import {H6, Paragraph} from '../../../common';
@@ -22,7 +28,7 @@ import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
   const firebaseApp = useFirebase();
-  
+
   const dispatch = useAppDispatch();
   const {folders, selectedFolders} = useAppSelector(state => state.folders);
   const {width} = useWindowSize();
@@ -65,16 +71,16 @@ export const Folders = () => {
   const handleDeleteFolder = (folder: FolderType) => {
     const db = getFirestore(firebaseApp);
     if (folder.children.length > 0) {
-      folder.children.forEach((subFolder) => {
+      folder.children.forEach(subFolder => {
         deleteDoc(doc(db, 'folders', subFolder.id));
-      })
+      });
     }
 
     deleteDoc(doc(db, 'folders', folder.id));
 
     if (selectedFolders[folder.id]) {
       const updatedSelectedFolders = {} as {[key: string]: FolderType};
-      Object.keys(selectedFolders).forEach((folderId) => {
+      Object.keys(selectedFolders).forEach(folderId => {
         if (folderId !== folder.id) {
           updatedSelectedFolders[folderId] = selectedFolders[folderId];
         }
@@ -82,7 +88,7 @@ export const Folders = () => {
 
       dispatch(setSelectedFolders(updatedSelectedFolders));
     }
-  }
+  };
 
   const handleChangePrivacy = (folderId: string, isPrivate: boolean) => {
     const db = getFirestore(firebaseApp);
@@ -90,7 +96,7 @@ export const Folders = () => {
       private: !isPrivate,
       updatedAt: Timestamp.fromDate(new Date()),
     });
-  }
+  };
 
   console.log('selectedFolders', selectedFolders);
 
@@ -166,7 +172,10 @@ export const Folders = () => {
                           Edit Folder
                           <img src={'./edit-with-border.svg'} alt="" />
                         </li>
-                        <li onClick={() => handleChangePrivacy(folder.id, folder.private)}>
+                        <li
+                          onClick={() =>
+                            handleChangePrivacy(folder.id, folder.private)
+                          }>
                           {folder.private ? 'Make Public' : 'Make Private'}
                           <img src={'./lock-black.svg'} alt="" />
                         </li>
@@ -174,7 +183,9 @@ export const Folders = () => {
                           Share
                           <img src={'./share.svg'} alt="" />
                         </li>
-                        <li className="text-red-500" onClick={() => handleDeleteFolder(folder)}>
+                        <li
+                          className="text-red-500"
+                          onClick={() => handleDeleteFolder(folder)}>
                           Delete
                           <img src={'./trash.svg'} alt="" />
                         </li>
@@ -237,9 +248,10 @@ export const Folders = () => {
           parentFolder={{
             id: parentFolder?.id || '',
             name: parentFolder?.name || '',
-            private: !!parentFolder?.private
+            private: !!parentFolder?.private,
           }}
           show={showEditFolderModal}
+          selectedFolders={selectedFolders}
           onClose={() => setShowEditFolderModal(false)}
         />
       )}

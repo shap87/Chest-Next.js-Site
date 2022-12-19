@@ -40,7 +40,7 @@ export const FolderSelectItem = ({
       <div
         className="cursor-pointer transition-all hover:opacity-70"
         onClick={() => {
-          setSelectedFolder(folder.name);
+          setSelectedFolder(folder.id);
           setShowList(false);
         }}>
         {folder.name}
