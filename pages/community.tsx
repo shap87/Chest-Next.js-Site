@@ -1,12 +1,14 @@
 import type {Product} from '../types/Product';
 
-import {useState} from 'react';
-import {getAuth} from 'firebase/auth';
-import {useFirestoreInfiniteQuery} from '@react-query-firebase/firestore';
-import {query, collection, where, limit, startAfter} from 'firebase/firestore';
+import {useEffect, useState} from 'react';
+import {useFirestoreQueryData} from '@react-query-firebase/firestore';
+import {query, collection} from 'firebase/firestore';
 import InfiniteScroll from 'react-infinite-scroller';
 // hooks
 import {useFirebase, useFirestore} from '../context/firebase';
+import {useAppSelector} from '../hooks/redux';
+// service
+import firebaseService from '../services/firebase.service';
 // components
 import Modal from '../components/common/Modal';
 import ProductDetails from '../components/Products/ProductDetails';
@@ -14,27 +16,58 @@ import ProductCard from '../components/Products/ProductCard';
 import {Layout} from '../components/common';
 import Followers from '../components/layout/community/Followers';
 
+const interval = 12;
+export const savedAsLinkPicture =
+  'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fsaved-as-link.png?alt=media&token=a95d66a9-4f9e-45d7-ad9f-7a4ec6bc5e20';
+
 export default function Community() {
   const app = useFirebase();
-  const user = getAuth(app).currentUser;
+  const {user} = useAppSelector(state => state.user);
   const firestore = useFirestore();
 
-  const ref = query(
-    collection(firestore, 'products'),
-    // TODO: to use the user.uid, temporarily use Isaac userId because has lot of products
-    where('userId', '==', 'DOmeCKtcU9d7lD9xvrJysJ9IFaD3'),
-    limit(9),
+  // const userId = 'DOmeCKtcU9d7lD9xvrJysJ9IFaD3';
+  const userId = user.uid;
+  const followingRef = query(
+    collection(firestore, `users/${userId}/following`),
   );
+  const following = useFirestoreQueryData(
+    `users/${userId}/following`,
+    userId ? followingRef : undefined,
+  );
+  const followingIds = following.data?.map(f => f.uid!) ?? [];
 
-  const productsQuery = useFirestoreInfiniteQuery(
-    ['products', {userId: user?.uid}],
-    ref,
-    snapshot => {
-      const lastDocument = snapshot.docs[snapshot.docs.length - 1];
-      if (!lastDocument) return;
-      return query(ref, startAfter(lastDocument));
-    },
-  );
+  const [products, setProducts] = useState<Product[]>([]);
+  const [notFoundResults, setNotFoundResults] = useState(0);
+  const [hoursAgo, setHoursAgo] = useState(interval);
+
+  const fetchPosts = async () => {
+    const fetchedPosts = await firebaseService.getHomeFeed(
+      app,
+      followingIds,
+      hoursAgo,
+      interval,
+    );
+    if (fetchedPosts.length === 0 && notFoundResults < 20) {
+      setNotFoundResults(pre => pre + 1);
+      setHoursAgo(pre => pre + interval);
+      return;
+    }
+    setNotFoundResults(0);
+    // filter out products that are saved as links
+    const updatedProducts = [
+      ...products,
+      ...fetchedPosts.filter(
+        (product: Product) => product.imageUrl !== savedAsLinkPicture,
+      ),
+    ];
+    setProducts(updatedProducts);
+  };
+
+  useEffect(() => {
+    if (followingIds.length > 0) {
+      fetchPosts();
+    }
+  }, [followingIds.length, hoursAgo]);
 
   const [selectedProducts, setSelectedProducts] = useState<{
     [key: string]: Product;
@@ -59,10 +92,6 @@ export default function Community() {
     }
   };
 
-  const products = productsQuery.data?.pages.flatMap(p =>
-    p.docs.map(docSnapshot => docSnapshot.data()),
-  );
-
   return (
     <Layout title="Community | Chestr" description="Community | Chestr">
       <section className="py-4 md:py-8">
@@ -80,8 +109,8 @@ export default function Community() {
         <div className="container max-w-[1000px] flex flex-col-reverse gap-8 md:flex-row md:divide-x !px-0">
           <div className="w-full md:w-2/3 px-4">
             <InfiniteScroll
-              loadMore={() => productsQuery.fetchNextPage()}
-              hasMore={productsQuery.hasNextPage}
+              loadMore={() => setHoursAgo(pre => pre + interval)}
+              // hasMore={productsQuery.hasNextPage}
               loader={<p key="loading">Loading...</p>}
               className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 my-4 md:my-6">
               {products?.map(product => (
@@ -91,13 +120,13 @@ export default function Community() {
                   size="small"
                   selected={Object.prototype.hasOwnProperty.call(
                     selectedProducts,
-                    product.id,
+                    product.id!,
                   )}
                   onToggleSelect={() => onToggleSelect(product as Product)}
                   product={product as Product}
                   onViewDetail={() => setProduct(product as Product)}
                 />
-              )) ?? <p key="no-products">No products found</p>}
+              ))}
             </InfiniteScroll>
           </div>
           <div className="w-full md:w-1/3 md:pl-8">

@@ -1,3 +1,7 @@
+import FetchedProduct from '../types/FetchedProduct';
+import {Product} from '../types/Product';
+import Folder, {Visibility} from '../types/Folder';
+
 import uuid from 'react-uuid';
 import {FirebaseApp} from 'firebase/app';
 import {getAuth} from 'firebase/auth';
@@ -7,13 +11,14 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
   setDoc,
   Timestamp,
+  where,
 } from 'firebase/firestore';
-import {getFunctions, httpsCallable} from 'firebase/functions';
 
 import {generateUsernameHelper} from '../utils/helpers/generateUsernameHelper';
-import FetchedProduct from '../types/FetchedProduct';
+import {chunk} from '../utils/helpers/ArrayUtils';
 
 // ! Change later
 const profilePictireURL_Example =
@@ -123,6 +128,59 @@ class FirebaseService {
       uid: user?.uid!,
     };
   }
+
+  getFolder = async (app: FirebaseApp, id?: string) => {
+    const db = getFirestore(app);
+    const querySnapshot = await getDoc(doc(db, 'folders', id!));
+    return querySnapshot.data() as Folder;
+  };
+
+  isItemPublic = async (
+    app: FirebaseApp,
+    parentId: string,
+  ): Promise<boolean> => {
+    // if the parentId is undefined or empty string, set as public
+    if (!parentId || parentId.length === 0) return true;
+
+    const currentFolder = await this.getFolder(app, parentId);
+
+    return currentFolder?.visibility === Visibility.Public;
+  };
+
+  getHomeFeed = async (
+    app: FirebaseApp,
+    userIds: string[],
+    hoursAgo: number,
+    gap: number,
+  ) => {
+    const db = getFirestore(app);
+    const oldest = new Date(new Date().getTime() - hoursAgo * 60 * 60 * 1000);
+    const start = new Date(
+      new Date().getTime() - (hoursAgo - gap) * 60 * 60 * 1000,
+    );
+
+    const batchProducts = await Promise.all(
+      chunk(userIds, 10).map(
+        async chunkedUserIds =>
+          await (
+            await getDocs(
+              query(
+                collection(db, 'products'),
+                where('createdAt', '>', oldest),
+                where('createdAt', '<', start),
+                where('userId', 'in', chunkedUserIds),
+              ),
+            )
+          ).docs.map(d => d.data() as Product),
+      ),
+    );
+
+    const allProducts: Product[] = batchProducts.flat();
+
+    return allProducts.filter(
+      async product => await this.isItemPublic(app, product.parent),
+    );
+  };
 }
 
 export default new FirebaseService();

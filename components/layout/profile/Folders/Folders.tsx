@@ -7,13 +7,12 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-
+// hooks
 import {useFirebase} from '../../../../context/firebase';
-
+import useWindowSize from '../../../../hooks/useWindowSize';
 // components
 import {H6, Paragraph} from '../../../common';
 import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
-import {useWindowSize} from '../../../../utils/useWindowSize';
 import {AddNewSubFolderModal} from '../../../dialogs';
 
 // assets
@@ -24,7 +23,7 @@ import {
   setSelectedFolders,
 } from '../../../../store/modules/folders/foldersSlice';
 import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
-import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
+// import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
   const firebaseApp = useFirebase();

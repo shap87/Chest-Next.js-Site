@@ -6,10 +6,10 @@ import {useFirestoreDocumentData} from '@react-query-firebase/firestore';
 import {doc} from 'firebase/firestore';
 // hooks
 import {useFirestore} from '../../context/firebase';
+import useWindowSize from '../../hooks/useWindowSize';
 //components
 import CloseIcon from '../icons/CloseIcon';
 import ProductMenu from './ProductMenu';
-import {useWindowSize} from '../../utils/useWindowSize';
 
 interface Props {
   product: Product | null;

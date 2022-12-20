@@ -7,7 +7,7 @@ import {useFirestoreQueryData} from '@react-query-firebase/firestore';
 import {query, collection, orderBy, startAt, endAt} from 'firebase/firestore';
 // hooks
 import {useFirestore} from '../../../context/firebase';
-import {useWindowSize} from '../../../utils/useWindowSize';
+import useWindowSize from '../../../hooks/useWindowSize';
 // components
 import SearchIcon from '../../icons/SearchIcon';
 import UserItem from './UserItem';

@@ -7,9 +7,9 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 // hooks
 import {useFirestore} from '../../../context/firebase';
+import useWindowSize from '../../../hooks/useWindowSize';
 // components
 import FollowerItem from './FollowerItem';
-import {useWindowSize} from '../../../utils/useWindowSize';
 
 const responsive = {
   superLargeDesktop: {

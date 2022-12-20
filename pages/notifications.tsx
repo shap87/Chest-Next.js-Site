@@ -5,11 +5,11 @@ import {useFirestoreQueryData} from '@react-query-firebase/firestore';
 import {query, collection, where, orderBy} from 'firebase/firestore';
 // hooks
 import {useFirebase, useFirestore} from '../context/firebase';
+import useWindowSize from '../hooks/useWindowSize';
 // components
 import {Layout} from '../components/common/Layout/Layout';
 import NotificationItem from '../components/Notifications/NotificationItem';
 import EmptyNotification from '../components/Notifications/EmptyNotification';
-import {useWindowSize} from '../utils/useWindowSize';
 
 export default function NotificationsMenu() {
   const app = useFirebase();
