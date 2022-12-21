@@ -99,7 +99,7 @@ export const Login = ({setStep}: ILogin) => {
           classname="w-full !border-[#D0D5DD]"
           onClick={handleSignInWithGoogle}
           icon="icon-left">
-          <img src={'./google.svg'} alt="" />
+          <img src="/google.svg" alt="" />
           Get Chestr - It’s Free
         </Button>
         <div className="relative flex py-3 md:py-6 px-2 md:px-4 items-center">

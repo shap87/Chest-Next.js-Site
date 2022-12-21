@@ -40,7 +40,7 @@ const MobileMenu = () => {
           {count}
         </div>
         <Image
-          src={'/menu.svg'}
+          src="/menu.svg"
           alt="alert icon"
           className="items-center"
           width={26}

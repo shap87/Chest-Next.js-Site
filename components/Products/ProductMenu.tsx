@@ -16,7 +16,7 @@ const ProductMenu: React.FC<Props> = ({align}) => {
       <Menu.Button>
         <img
           className="w-5 h-5 rotate-90 bg-gray-50 outline-offset-0 outline-gray-100 rounded-full p-[2px]"
-          src={'/dots.svg'}
+          src="/dots.svg"
           alt=""
         />
       </Menu.Button>
@@ -42,19 +42,19 @@ const ProductMenu: React.FC<Props> = ({align}) => {
             </Menu.Item>
             <Menu.Item as="li">
               Make Private
-              <img src={'./lock-black.svg'} alt="" />
+              <img src="/lock-black.svg" alt="" />
             </Menu.Item>
             <Menu.Item as="li">
               Edit Note
-              <img src={'./edit-with-border.svg'} alt="" />
+              <img src="/edit-with-border.svg" alt="" />
             </Menu.Item>
             <Menu.Item as="li">
               Move
-              <img src={'./switch.svg'} alt="" />
+              <img src="/switch.svg" alt="" />
             </Menu.Item>
             <Menu.Item as="li">
               Share
-              <img src={'./share.svg'} alt="" />
+              <img src="/share.svg" alt="" />
             </Menu.Item>
             <Menu.Item
               as="li"

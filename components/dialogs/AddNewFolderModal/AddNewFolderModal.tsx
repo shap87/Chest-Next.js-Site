@@ -25,7 +25,7 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
   const handleSubmit = async (values: {name: string}) => {
     const isPrivate = false;
     await firebaseService.addNewFolder(firebaseApp, values.name, isPrivate);
-    
+
     onClose();
   };
 
@@ -34,7 +34,7 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./folder-empty.svg'}
+      icon="/folder-empty.svg"
       title="Add new folder">
       <div className="w-full flex flex-col items-center">
         <Formik
@@ -48,7 +48,7 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
                   <div className="relative">
                     <img
                       className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5"
-                      src={'./edit-with-line.svg'}
+                      src="/edit-with-line.svg"
                       alt=""
                     />
                     <Field

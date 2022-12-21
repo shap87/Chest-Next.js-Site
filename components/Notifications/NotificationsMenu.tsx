@@ -39,7 +39,7 @@ export default function NotificationsMenu() {
       </div>
       <Menu.Button as="li" className="flex items-center">
         <Image
-          src={'/bell.svg'}
+          src="/bell.svg"
           alt="alert icon"
           className="items-center"
           width={24}

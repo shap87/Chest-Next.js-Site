@@ -69,7 +69,7 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./folder-empty.svg'}
+      icon="/folder-empty.svg"
       title="Edit folder">
       <div className="w-full flex flex-col items-center">
         <Formik
@@ -85,7 +85,7 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
                     <div className="relative">
                       <img
                         className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5"
-                        src={'./edit-with-line.svg'}
+                        src="/edit-with-line.svg"
                         alt=""
                       />
                       <Field
@@ -104,7 +104,7 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center justify-center mb-6 md:mb-12 gap-3">
-                  <img className="w-5" src={'./lock-black.svg'} alt="" />
+                  <img className="w-5" src="/lock-black.svg" alt="" />
                   <Paragraph classname="font-medium !mb-0">
                     Make private
                   </Paragraph>

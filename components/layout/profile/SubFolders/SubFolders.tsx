@@ -21,13 +21,13 @@ export const SubFolders = () => {
     let title = '';
 
     for (let i = 0; i < Object.keys(selectedFolders).length; i++) {
-      const folderId = Object.keys(selectedFolders)[i]
+      const folderId = Object.keys(selectedFolders)[i];
       folders.push(...selectedFolders[folderId].children);
 
       if (i === Object.keys(selectedFolders).length - 1) {
-        title += selectedFolders[folderId].name + ' / '
+        title += selectedFolders[folderId].name + ' / ';
       } else {
-        title += selectedFolders[folderId].name + ', '
+        title += selectedFolders[folderId].name + ', ';
       }
     }
 
@@ -55,13 +55,13 @@ export const SubFolders = () => {
                 {folder.visibility === 1 ? (
                   <img
                     className={cn(styles.icon)}
-                    src={'/lock.svg'}
+                    src="/lock.svg"
                     alt="private"
                   />
                 ) : (
                   <img
                     className={cn(styles.icon)}
-                    src={'/folder-empty.svg'}
+                    src="/folder-empty.svg"
                     alt="public"
                   />
                 )}

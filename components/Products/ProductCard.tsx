@@ -8,6 +8,7 @@ import cn from 'classnames';
 import FolderBadge from './FolderBadge';
 import ProductMenu from './ProductMenu';
 import ProductCardProfile from './ProductCardProfile';
+import ProductCardBookmark from './ProductCardBookmark';
 
 dayjs.extend(relativeTime);
 
@@ -15,7 +16,9 @@ interface Props {
   product: Product | null;
   selected?: boolean;
   displayProfile?: boolean;
+  displayMenu?: boolean;
   displaySelect?: boolean;
+  displayBookmark?: boolean;
   onToggleSelect?: () => void;
   onViewDetail: () => void;
   size?: 'small' | 'medium';
@@ -25,7 +28,9 @@ const ProductCard: React.FC<Props> = ({
   product,
   selected,
   displayProfile,
+  displayMenu,
   displaySelect,
+  displayBookmark,
   onToggleSelect,
   onViewDetail,
   size,
@@ -38,12 +43,17 @@ const ProductCard: React.FC<Props> = ({
   });
 
   return (
-    <div className="rounded-lg outline-1 outline-offset-0 outline-gray-200 shadow-md">
+    <div className="rounded-lg outline-1 outline-offset-0 outline-gray-200 shadow-md relative">
       {displayProfile && <ProductCardProfile product={product} />}
+      {(displayProfile || displayBookmark) && (
+        <ProductCardBookmark product={product} />
+      )}
       <div className="relative">
-        <div className="absolute left-2 top-2.5">
-          <ProductMenu productId={product?.id!} align="left" />
-        </div>
+        {displayMenu && (
+          <div className="absolute left-2 top-2.5">
+            <ProductMenu productId={product?.id!} align="left" />
+          </div>
+        )}
         {displaySelect && (
           <span
             className={cn(

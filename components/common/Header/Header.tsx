@@ -41,15 +41,15 @@ export const Header = ({noButton}: IHeader) => {
           <a
             href={routes.home}
             className={cn('w-40 no-underline', styles.logo)}>
-            <img className="hidden md:block" src={'./logo.svg'} alt="" />
+            <img className="hidden md:block" src="/logo.svg" alt="" />
             <div className="flex md:hidden items-center gap-4">
               <div className="w-8">
                 <LogoIcon />
               </div>
               <span className="bg-main-50 text-main-700 font-semibold px-2 rounded-full capitalize">
-                {router.pathname === '/profile'
+                {router.pathname.startsWith('/profile')
                   ? 'Chest'
-                  : router.pathname.substring(1, router.pathname.length)}
+                  : router.pathname.split('/')[1]}
               </span>
             </div>
           </a>
@@ -67,13 +67,13 @@ export const Header = ({noButton}: IHeader) => {
                 )}>
                 <li>
                   <Link href="/community">
-                    <img src={'./ball.svg'} alt="" />
+                    <img src="/ball.svg" alt="" />
                   </Link>
                 </li>
                 <NotificationsMenu />
                 <li>
                   <Link href="/profile">
-                    <img src={'./chest.svg'} alt="" />
+                    <img src="/chest.svg" alt="" />
                   </Link>
                 </li>
               </ul>

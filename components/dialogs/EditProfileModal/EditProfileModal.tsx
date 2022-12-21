@@ -71,13 +71,13 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./edit.svg'}
+      icon="/edit.svg"
       title="Edit profile">
       {showSavedMessage && (
         <Alert
           showSavedMessage={showSavedMessage}
           iconWidth="w-4"
-          icon={'./check-pink.svg'}
+          icon="/check-pink.svg"
         />
       )}
       <div className="w-full flex flex-col items-center">
@@ -106,14 +106,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                   ) : (
                     <img
                       className="w-[66px] h-[66px] border-2 border-white drop-shadow-md rounded-full"
-                      src={'./images/avatar.png'}
+                      src="/images/avatar.png"
                       alt="Avatar"
                     />
                   )}
                   <div className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
                     <img
                       className="w-[19px] h-[18px]"
-                      src={'./upload-cloud.svg'}
+                      src="/upload-cloud.svg"
                       alt="Avatar"
                     />
                   </div>

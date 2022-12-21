@@ -26,7 +26,7 @@ const MoveFolderModal: FC<EditFolderModalProps> = ({show, onClose}) => {
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./move-folder.svg'}
+      icon="/move-folder.svg"
       title="Move folder">
       <div className="w-full flex flex-col items-center">
         <Formik
@@ -48,7 +48,7 @@ const MoveFolderModal: FC<EditFolderModalProps> = ({show, onClose}) => {
                             'absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all',
                             {'rotate-180': showList},
                           )}
-                          src={'./arrow-select.svg'}
+                          src="/arrow-select.svg"
                           alt=""
                         />
                       </div>

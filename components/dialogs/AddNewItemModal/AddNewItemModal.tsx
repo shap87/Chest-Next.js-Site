@@ -109,13 +109,13 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
         show={show}
         maxWidth="673"
         onClose={onClose}
-        icon={'./plus-black.svg'}
+        icon="/plus-black.svg"
         title="Add new item">
         {showSavedMessage && (
           <Alert
             showSavedMessage={showSavedMessage}
             iconWidth="w-8"
-            icon={'./chest.svg'}
+            icon="/chest.svg"
           />
         )}
         <div className="w-full flex flex-col items-center">
@@ -131,7 +131,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       <div className="relative">
                         <img
                           className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-4"
-                          src={'./share-link-black.svg'}
+                          src="/share-link-black.svg"
                           alt=""
                         />
                         <Field
@@ -176,7 +176,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                             'absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all',
                             {'rotate-180': showList},
                           )}
-                          src={'./arrow-select.svg'}
+                          src="/arrow-select.svg"
                           alt=""
                         />
                       </div>
@@ -191,7 +191,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       <div className="w-[48%] h-[144px]">
                         <img
                           className="rounded-md h-full overflow-hidden"
-                          src={'./images/sweater.jpg'}
+                          src="/images/sweater.jpg"
                           alt=""
                         />
                       </div>

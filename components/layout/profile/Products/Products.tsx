@@ -6,7 +6,9 @@ import {useFirestoreInfiniteQuery} from '@react-query-firebase/firestore';
 import {query, collection, where, limit, startAfter} from 'firebase/firestore';
 import InfiniteScroll from 'react-infinite-scroller';
 // hooks
-import {useFirebase, useFirestore} from '../../../../context/firebase';
+import {useRouter} from 'next/router';
+import {useAppSelector} from '../../../../hooks/redux';
+import {useFirestore} from '../../../../context/firebase';
 // components
 import {Button, H6} from '../../../common';
 import Modal from '../../../common/Modal';
@@ -15,14 +17,15 @@ import ProductCard from '../../../Products/ProductCard';
 import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
 
 export const Products = () => {
-  const app = useFirebase();
-  const user = getAuth(app).currentUser;
+  const {user} = useAppSelector(state => state.user);
+  const router = useRouter();
+  const isPublic = !!router.query.userId;
+
   const firestore = useFirestore();
 
   const ref = query(
     collection(firestore, 'products'),
-    // TODO: to use the user.uid, temporarily use Isaac userId because has lot of products
-    where('userId', '==', 'DOmeCKtcU9d7lD9xvrJysJ9IFaD3'),
+    where('userId', '==', isPublic ? router.query.userId : user.uid ?? ''),
     limit(9),
   );
 
@@ -107,7 +110,9 @@ export const Products = () => {
           {products?.map(product => (
             <ProductCard
               key={product.id}
-              displaySelect
+              displayMenu={!isPublic}
+              displaySelect={!isPublic}
+              displayBookmark={isPublic}
               selected={Object.prototype.hasOwnProperty.call(
                 selectedProducts,
                 product.id,

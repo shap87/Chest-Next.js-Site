@@ -20,22 +20,22 @@ export const FolderSelectItem = ({
           <img
             onClick={() => setShowSubList(!showSubList)}
             className="cursor-pointer arrow -rotate-90 transition-all hover:opacity-70"
-            src={'./arrow-select.svg'}
+            src="/arrow-select.svg"
             alt=""
           />
         ) : (
           <img
             onClick={() => setShowSubList(!showSubList)}
             className="cursor-pointer arrow transition-all hover:opacity-70"
-            src={'./arrow-select.svg'}
+            src="/arrow-select.svg"
             alt=""
           />
         )
       ) : null}
       {folder.private ? (
-        <img src={'./lock-black.svg'} alt="" />
+        <img src="/lock-black.svg" alt="" />
       ) : (
-        <img src={'./folder-empty.svg'} alt="" />
+        <img src="/folder-empty.svg" alt="" />
       )}
       <div
         className="cursor-pointer transition-all hover:opacity-70"
@@ -50,9 +50,9 @@ export const FolderSelectItem = ({
           {folder.children.map((subFolder, index) => (
             <li key={index}>
               {subFolder.private ? (
-                <img src={'./lock-black.svg'} alt="" />
+                <img src="/lock-black.svg" alt="" />
               ) : (
-                <img src={'./folder-empty.svg'} alt="" />
+                <img src="/folder-empty.svg" alt="" />
               )}
               <div
                 className="cursor-pointer transition-all hover:opacity-70"

@@ -33,7 +33,7 @@ export const ModalBaseLayout: FC<ModalBaseLayoutProps> = ({
             <button
               onClick={onClose}
               className="hover:opacity-70 transition-all">
-              <img className="w-3 h-3" src={'./close.svg'} alt="Close" />
+              <img className="w-3 h-3" src="/close.svg" alt="Close" />
             </button>
           </div>
           {children}

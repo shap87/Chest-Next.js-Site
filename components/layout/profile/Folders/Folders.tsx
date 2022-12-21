@@ -119,7 +119,7 @@ export const Folders = () => {
                 Hide
                 <img
                   className="w-3 ml-2 opacity-60 rotate-180 group-hover:rotate-0 transition-all"
-                  src={'/arrow-select.svg'}
+                  src="/arrow-select.svg"
                   alt="arrow select"
                 />
               </div>
@@ -130,7 +130,7 @@ export const Folders = () => {
                 Show All
                 <img
                   className="w-3 ml-2 opacity-60 group-hover:rotate-180 transition-all"
-                  src={'/arrow-select.svg'}
+                  src="/arrow-select.svg"
                   alt="arrow select"
                 />
               </div>
@@ -157,7 +157,7 @@ export const Folders = () => {
                     <div className={cn(styles.settings, 'group')}>
                       <img
                         className="w-1 group-hover:opacity-60 transition-all"
-                        src={'/dots.svg'}
+                        src="/dots.svg"
                         alt=""
                       />
                       <ul
@@ -165,28 +165,28 @@ export const Folders = () => {
                         onClick={() => setParentFolder(folder)}>
                         <li onClick={() => setShowNewSubFolderModal(true)}>
                           New Sub folder
-                          <img src={'./folder.svg'} alt="" />
+                          <img src="/folder.svg" alt="" />
                         </li>
                         <li onClick={() => setShowEditFolderModal(true)}>
                           Edit Folder
-                          <img src={'./edit-with-border.svg'} alt="" />
+                          <img src="/edit-with-border.svg" alt="" />
                         </li>
                         <li
                           onClick={() =>
                             handleChangePrivacy(folder.id, folder.private)
                           }>
                           {folder.private ? 'Make Public' : 'Make Private'}
-                          <img src={'./lock-black.svg'} alt="" />
+                          <img src="/lock-black.svg" alt="" />
                         </li>
                         <li>
                           Share
-                          <img src={'./share.svg'} alt="" />
+                          <img src="/share.svg" alt="" />
                         </li>
                         <li
                           className="text-red-500"
                           onClick={() => handleDeleteFolder(folder)}>
                           Delete
-                          <img src={'./trash.svg'} alt="" />
+                          <img src="/trash.svg" alt="" />
                         </li>
                       </ul>
                     </div>
@@ -221,7 +221,7 @@ export const Folders = () => {
                       {folder.private && (
                         <img
                           className={styles.lock}
-                          src={'/lock.svg'}
+                          src="/lock.svg"
                           alt="private"
                         />
                       )}
