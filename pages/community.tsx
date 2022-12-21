@@ -92,6 +92,18 @@ export default function Community() {
     }
   };
 
+  const onProductDelete = async (productId: string) => {};
+
+  const onProductMove = (productId: string, folderId: string) => {};
+
+  const onMarkPurchased = (productId: string, isPurchased: boolean) => {};
+
+  const onEditProductNote = (productId: string, note: string) => {};
+
+  const onShareClick = async (link: string) => {
+    await navigator.clipboard.writeText(link);
+  };
+
   return (
     <Layout title="Community | Chestr" description="Community | Chestr">
       <section className="py-4 md:py-8">
@@ -101,6 +113,11 @@ export default function Community() {
           className="!max-w-[1000px] md:!max-h-[720px]">
           {!!product && (
             <ProductDetails
+              onEditProductNote={onEditProductNote}
+              onMarkPurchased={onMarkPurchased}
+              onProductDelete={onProductDelete}
+              onProductMove={onProductMove}
+              onShareClick={onShareClick}
               product={product}
               onClose={() => setProduct(null)}
             />
@@ -123,6 +140,11 @@ export default function Community() {
                     product.id!,
                   )}
                   onToggleSelect={() => onToggleSelect(product as Product)}
+                  onEditProductNote={onEditProductNote}
+                  onMarkPurchased={onMarkPurchased}
+                  onProductDelete={onProductDelete}
+                  onProductMove={onProductMove}
+                  onShareClick={onShareClick}
                   product={product as Product}
                   onViewDetail={() => setProduct(product as Product)}
                 />

@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import {Button, FolderSelect, ModalBaseLayout} from '../../common';
 import CheckIcon from '../../icons/CheckIcon';
+import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
 interface EditFolderModalProps {
   show: boolean;
@@ -17,7 +18,8 @@ const validationSchemaEditProfile = yup.object().shape({
 
 const MoveFolderModal: FC<EditFolderModalProps> = ({show, onClose}) => {
   const [showList, setShowList] = useState<boolean>(false);
-  const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+  const [placeholder, setPlaceHolder] = useState<string>('');
 
   const handleSubmit = () => {};
 
@@ -42,7 +44,7 @@ const MoveFolderModal: FC<EditFolderModalProps> = ({show, onClose}) => {
                       <div
                         className="pr-8 text-ellipsis whitespace-nowrap overflow-hidden relative cursor-pointer w-3/4 text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
                         onClick={() => setShowList(prev => !prev)}>
-                        {selectedFolder ? selectedFolder : 'Select location'}
+                        {placeholder ? placeholder : 'Select location'}
                         <img
                           className={cn(
                             'absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all',
@@ -57,6 +59,7 @@ const MoveFolderModal: FC<EditFolderModalProps> = ({show, onClose}) => {
                           <FolderSelect
                             setShowList={setShowList}
                             setSelectedFolder={setSelectedFolder}
+                            setPlaceHolder={setPlaceHolder}
                           />
                         </div>
                       )}

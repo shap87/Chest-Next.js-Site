@@ -21,6 +21,8 @@ import PlusIcon from '../../icons/PlusIcon';
 import {getFunctions, httpsCallable} from 'firebase/functions';
 import FetchedProduct from '../../../types/FetchedProduct';
 
+import {FolderType} from '../../../store/modules/folders/foldersSlice';
+
 interface AddNewItemModalProps {
   show: boolean;
   onClose: () => void;
@@ -34,7 +36,8 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
   const firebaseApp = useFirebase();
 
   const [step, setStep] = useState<string>('paste-url');
-  const [selectedFolder, setSelectedFolder] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+  const [paceholder, setPlaceHolder] = useState<string>('');
   const [showList, setShowList] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState<{
@@ -68,7 +71,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
     setLoading(false);
   };
   const handleSubmitAddItem = async (values: {notes: string}) => {
-    const data = {notes: values.notes, folder: selectedFolder};
+    const data = {notes: values.notes, folder: selectedFolder?.id || ''};
     if (!product) {
       setNotification({
         type: 'error',
@@ -170,7 +173,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       <div
                         className="pr-8 text-ellipsis whitespace-nowrap overflow-hidden relative cursor-pointer w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
                         onClick={() => setShowList(prev => !prev)}>
-                        {selectedFolder ? selectedFolder : 'Select value'}
+                        {paceholder ? paceholder : 'Select value'}
                         <img
                           className={cn(
                             'absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all',
@@ -184,6 +187,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                         <FolderSelect
                           setShowList={setShowList}
                           setSelectedFolder={setSelectedFolder}
+                          setPlaceHolder={setPlaceHolder}
                         />
                       )}
                     </div>

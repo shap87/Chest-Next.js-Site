@@ -9,12 +9,33 @@ import ProductContent from './ProductContent';
 interface Props {
   product: Product;
   onClose: () => void;
+  onMarkPurchased: (productId: string, isPurchased: boolean) => void;
+  onProductDelete: (productId: string) => void;
+  onProductMove: (productId: string, folderId: string) => void;
+  onEditProductNote: (productId: string, note: string) => void;
+  onShareClick: (link: string) => void;
 }
 
-const ProductDetails: React.FC<Props> = ({product, onClose}) => {
+const ProductDetails: React.FC<Props> = ({
+  product,
+  onClose,
+  onMarkPurchased,
+  onProductDelete,
+  onProductMove,
+  onEditProductNote,
+  onShareClick,
+}) => {
   return (
     <div>
-      <ProductHeader product={product as Product} onClose={onClose} />
+      <ProductHeader
+        product={product as Product}
+        onClose={onClose}
+        onMarkPurchased={onMarkPurchased}
+        onProductDelete={onProductDelete}
+        onProductMove={onProductMove}
+        onEditProductNote={onEditProductNote}
+        onShareClick={onShareClick}
+      />
       <div className="flex flex-col md:flex-row divide-y md:divide-x">
         <div className="md:w-[52%]">
           <ProductContent product={product} />

@@ -1,4 +1,6 @@
-import React, {Fragment} from 'react';
+import {Product} from '../../types/Product';
+
+import React, {Fragment, useState} from 'react';
 import {Menu, Transition} from '@headlessui/react';
 import cn from 'classnames';
 //components
@@ -6,11 +8,24 @@ import DeleteIcon from '../icons/DeleteIcon';
 import CreditCardCheckIcon from '../icons/CreditCardCheckIcon';
 
 interface Props {
-  productId: string;
+  isPurchased: boolean;
+  onMarkPurchased: () => void;
+  onProductDelete: () => void;
+  onOpenMoveFolderModal: () => void;
+  onOpenEditNoteModal: () => void;
+  onShareClick: () => void;
   align?: 'left' | 'right';
 }
 
-const ProductMenu: React.FC<Props> = ({align}) => {
+const ProductMenu: React.FC<Props> = ({
+  align,
+  isPurchased,
+  onMarkPurchased,
+  onProductDelete,
+  onOpenMoveFolderModal,
+  onOpenEditNoteModal,
+  onShareClick,
+}) => {
   return (
     <Menu as="div" className="relative">
       <Menu.Button>
@@ -36,28 +51,26 @@ const ProductMenu: React.FC<Props> = ({align}) => {
           <div className="py-1 divide-y">
             <Menu.Item
               as="li"
+              onClick={onMarkPurchased}
               className="text-green-500 stroke-green-500 hover:stroke-main-500">
-              Mark Purchased
+              {isPurchased ? 'Unmark Purchased' : 'Mark Purchased'}
               <CreditCardCheckIcon className="" />
             </Menu.Item>
-            <Menu.Item as="li">
-              Make Private
-              <img src="/lock-black.svg" alt="" />
-            </Menu.Item>
-            <Menu.Item as="li">
+            <Menu.Item as="li" onClick={onOpenEditNoteModal}>
               Edit Note
               <img src="/edit-with-border.svg" alt="" />
             </Menu.Item>
-            <Menu.Item as="li">
+            <Menu.Item as="li" onClick={onOpenMoveFolderModal}>
               Move
               <img src="/switch.svg" alt="" />
             </Menu.Item>
-            <Menu.Item as="li">
+            <Menu.Item as="li" onClick={onShareClick}>
               Share
               <img src="/share.svg" alt="" />
             </Menu.Item>
             <Menu.Item
               as="li"
+              onClick={onProductDelete}
               className="text-red-500 stroke-red-500 hover:stroke-main-500">
               Delete
               <DeleteIcon className="" />

@@ -78,6 +78,9 @@ textarea {
         &.arrow {
           @apply left-2 top-5 w-2.5;
         }
+        &.lock {
+          @apply static inline ml-2;
+        }
       }
       ul {
         li {

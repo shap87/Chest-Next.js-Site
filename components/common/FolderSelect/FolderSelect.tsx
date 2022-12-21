@@ -5,12 +5,14 @@ import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
 interface IFolderSelect {
   setShowList: (value: boolean) => void;
-  setSelectedFolder: (value: string) => void;
+  setSelectedFolder: (value: FolderType) => void;
+  setPlaceHolder: (value: string) => void;
 }
 
 export const FolderSelect = ({
   setShowList,
   setSelectedFolder,
+  setPlaceHolder,
 }: IFolderSelect) => {
   const {folders} = useAppSelector(state => state.folders);
   return (
@@ -21,6 +23,7 @@ export const FolderSelect = ({
             folder={folder}
             setShowList={setShowList}
             setSelectedFolder={setSelectedFolder}
+            setPlaceHolder={setPlaceHolder}
           />
         </li>
       ))}
