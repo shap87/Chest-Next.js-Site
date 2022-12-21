@@ -5,7 +5,7 @@ const EmptyNotification = () => {
   return (
     <div className="py-12 px-4 flex flex-col justify-center items-center text-center gap-8">
       <Image
-        src={'/base-illustration.svg'}
+        src="/base-illustration.svg"
         alt="alert icon"
         className="items-center"
         width={200}

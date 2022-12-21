@@ -1,52 +1,49 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import cn from 'classnames';
-import { useAuthUser } from '@react-query-firebase/auth';
-import { useFirestoreQueryData } from '@react-query-firebase/firestore';
-import { query, collection, where } from 'firebase/firestore';
-
+import {
+  deleteDoc,
+  doc,
+  getFirestore,
+  Timestamp,
+  updateDoc,
+} from 'firebase/firestore';
+// hooks
+import {useFirebase} from '../../../../context/firebase';
+import useWindowSize from '../../../../hooks/useWindowSize';
 // components
-import { H6, Paragraph } from '../../../common';
-import { SelectedPanel } from '../SelectedPanel/SelectedPanel';
-import { useAuth, useFirestore } from '../../../../context/firebase';
-import { useWindowSize } from '../../../../utils/useWindowSize';
+import {H6, Paragraph} from '../../../common';
+import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
+import {AddNewSubFolderModal} from '../../../dialogs';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
-
-// TODO: to refactor the types, add createdAt/Entity
-interface IFolder {
-  id: string;
-  userId: string;
-  imageUrl: string;
-  name: string;
-  visibility: 0 | 1;
-  parent: string;
-  numItems: number;
-  viewItems: number;
-}
+import {useAppDispatch, useAppSelector} from '../../../../hooks/redux';
+import {
+  FolderType,
+  setSelectedFolders,
+} from '../../../../store/modules/folders/foldersSlice';
+import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
+// import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
-  const { width } = useWindowSize();
+  const firebaseApp = useFirebase();
+
+  const dispatch = useAppDispatch();
+  const {folders, selectedFolders} = useAppSelector(state => state.folders);
+  const {width} = useWindowSize();
 
   const [showAll, setShowAll] = useState(false);
   const [count, setCount] = useState(6);
-  const [selectedFolders, setSelectedFolders] = useState<{ [key: string]: IFolder; }>({});
+  const [parentFolder, setParentFolder] = useState<FolderType>();
 
-  const auth = useAuth();
-  const firestore = useFirestore();
-  const user = useAuthUser(['user'], auth);
+  const [showNewSubFolderModal, setShowNewSubFolderModal] =
+    useState<boolean>(false);
+  const [showEditFolderModal, setShowEditFolderModal] =
+    useState<boolean>(false);
 
-  // Define a query reference using the Firebase SDK
-  const ref = query(
-    collection(firestore, 'folders'),
-    where('userId', '==', user.data?.uid ?? ''),
-  );
-
-  // Provide the query to the hook
-  const foldersQuery = useFirestoreQueryData(
-    ['folders', { userId: user.data?.uid }],
-    ref,
-  );
+  useEffect(() => {
+    console.log('Current folders:', folders);
+  }, [folders]);
 
   useEffect(() => {
     if (width < 640) {
@@ -60,13 +57,47 @@ export const Folders = () => {
     }
   }, [width]);
 
-  if (foldersQuery.isLoading) {
-    return <div className="container">
-      <div>Loading...</div>
-    </div>;
-  }
+  // if (foldersQuery.isLoading) {
+  //   return (
+  //     <div className="container">
+  //       <div>Loading...</div>
+  //     </div>
+  //   );
+  // }
 
-  const countSelected = Object.keys(selectedFolders).length;
+  const countSelected = Object.keys(selectedFolders).length || 0;
+
+  const handleDeleteFolder = (folder: FolderType) => {
+    const db = getFirestore(firebaseApp);
+    if (folder.children.length > 0) {
+      folder.children.forEach(subFolder => {
+        deleteDoc(doc(db, 'folders', subFolder.id));
+      });
+    }
+
+    deleteDoc(doc(db, 'folders', folder.id));
+
+    if (selectedFolders[folder.id]) {
+      const updatedSelectedFolders = {} as {[key: string]: FolderType};
+      Object.keys(selectedFolders).forEach(folderId => {
+        if (folderId !== folder.id) {
+          updatedSelectedFolders[folderId] = selectedFolders[folderId];
+        }
+      });
+
+      dispatch(setSelectedFolders(updatedSelectedFolders));
+    }
+  };
+
+  const handleChangePrivacy = (folderId: string, isPrivate: boolean) => {
+    const db = getFirestore(firebaseApp);
+    updateDoc(doc(db, 'folders', folderId), {
+      private: !isPrivate,
+      updatedAt: Timestamp.fromDate(new Date()),
+    });
+  };
+
+  console.log('selectedFolders', selectedFolders);
 
   return (
     <>
@@ -74,11 +105,9 @@ export const Folders = () => {
         <div className="container">
           {countSelected ? (
             <SelectedPanel
-              selectAll={() => {
-              }}
-              removeSelected={() => {
-              }}
-              countSelected={countSelected}
+              type="folder"
+              total={1}
+              totalSelected={countSelected}
             />
           ) : null}
           <div className="flex justify-between items-center">
@@ -90,7 +119,7 @@ export const Folders = () => {
                 Hide
                 <img
                   className="w-3 ml-2 opacity-60 rotate-180 group-hover:rotate-0 transition-all"
-                  src={'/arrow-select.svg'}
+                  src="/arrow-select.svg"
                   alt="arrow select"
                 />
               </div>
@@ -101,7 +130,7 @@ export const Folders = () => {
                 Show All
                 <img
                   className="w-3 ml-2 opacity-60 group-hover:rotate-180 transition-all"
-                  src={'/arrow-select.svg'}
+                  src="/arrow-select.svg"
                   alt="arrow select"
                 />
               </div>
@@ -109,11 +138,11 @@ export const Folders = () => {
           </div>
           <div
             className={cn(
-              'flex flex-wrap items-center justify-between gap-y-12',
+              'flex flex-wrap items-center gap-y-12',
               styles.folders,
             )}>
-            {foldersQuery.data
-              ?.slice(0, showAll ? foldersQuery.data?.length ?? Infinity : count)
+            {folders
+              ?.slice(0, showAll ? folders?.length ?? Infinity : count)
               ?.map(folder => {
                 const selected = Object.prototype.hasOwnProperty.call(
                   selectedFolders,
@@ -124,27 +153,61 @@ export const Folders = () => {
                     key={folder.id}
                     className={cn(styles.folder, {
                       [styles.selected]: selected,
-                    })}
-                    onClick={() => {
-                      if (!selected) {
-                        setSelectedFolders({
-                          ...selectedFolders,
-                          [folder.id]: folder,
-                        });
-                      } else {
-                        // Remove folder from selected
-                        const { [folder.id]: omitted, ...rest } = selectedFolders;
-                        setSelectedFolders(rest);
-                      }
-                    }}>
-                    <div className={styles.settings}>
+                    })}>
+                    <div className={cn(styles.settings, 'group')}>
                       <img
                         className="w-1 group-hover:opacity-60 transition-all"
-                        src={'/dots.svg'}
+                        src="/dots.svg"
                         alt=""
                       />
+                      <ul
+                        className="list hidden left-0 group-hover:block"
+                        onClick={() => setParentFolder(folder)}>
+                        <li onClick={() => setShowNewSubFolderModal(true)}>
+                          New Sub folder
+                          <img src="/folder.svg" alt="" />
+                        </li>
+                        <li onClick={() => setShowEditFolderModal(true)}>
+                          Edit Folder
+                          <img src="/edit-with-border.svg" alt="" />
+                        </li>
+                        <li
+                          onClick={() =>
+                            handleChangePrivacy(folder.id, folder.private)
+                          }>
+                          {folder.private ? 'Make Public' : 'Make Private'}
+                          <img src="/lock-black.svg" alt="" />
+                        </li>
+                        <li>
+                          Share
+                          <img src="/share.svg" alt="" />
+                        </li>
+                        <li
+                          className="text-red-500"
+                          onClick={() => handleDeleteFolder(folder)}>
+                          Delete
+                          <img src="/trash.svg" alt="" />
+                        </li>
+                      </ul>
                     </div>
-                    <span className={styles.checkbox} />
+                    <span
+                      className={styles.checkbox}
+                      onClick={() => {
+                        if (!selected) {
+                          dispatch(
+                            setSelectedFolders({
+                              ...selectedFolders,
+                              [folder.id]: folder,
+                            }),
+                          );
+                        } else {
+                          // Remove folder from selected
+                          const {[folder.id]: omitted, ...rest} =
+                            selectedFolders;
+                          dispatch(setSelectedFolders(rest));
+                        }
+                      }}
+                    />
                     <img
                       className={styles.image}
                       src={folder.imageUrl}
@@ -155,10 +218,10 @@ export const Folders = () => {
                         <H6>{folder.name}</H6>
                         <Paragraph>{folder.numItems} items</Paragraph>
                       </div>
-                      {folder.visibility === 1 && (
+                      {folder.private && (
                         <img
                           className={styles.lock}
-                          src={'/lock.svg'}
+                          src="/lock.svg"
                           alt="private"
                         />
                       )}
@@ -169,6 +232,28 @@ export const Folders = () => {
           </div>
         </div>
       </section>
+      {showNewSubFolderModal && (
+        <AddNewSubFolderModal
+          parentFolder={{
+            id: parentFolder?.id || '',
+            name: parentFolder?.name || '',
+          }}
+          show={showNewSubFolderModal}
+          onClose={() => setShowNewSubFolderModal(false)}
+        />
+      )}
+      {showEditFolderModal && (
+        <EditFolderModal
+          parentFolder={{
+            id: parentFolder?.id || '',
+            name: parentFolder?.name || '',
+            private: !!parentFolder?.private,
+          }}
+          show={showEditFolderModal}
+          selectedFolders={selectedFolders}
+          onClose={() => setShowEditFolderModal(false)}
+        />
+      )}
     </>
   );
 };

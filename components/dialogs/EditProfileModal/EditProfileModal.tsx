@@ -2,13 +2,15 @@
 import {FC, useState, useEffect} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
+import {useAppDispatch} from '../../../hooks/redux';
 import * as yup from 'yup';
 import cn from 'classnames';
 
 import {useFirebase} from '../../../context/firebase';
+import {getUser} from '../../../store/modules/user/actionCreator';
 
 // components
-import {Button, ModalBaseLayout} from '../../common';
+import {Alert, Button, ModalBaseLayout} from '../../common';
 import CheckIcon from '../../icons/CheckIcon';
 
 interface EditProfileProps {
@@ -28,13 +30,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
   userData,
 }) => {
   const firebaseApp = useFirebase();
+  const dispatch = useAppDispatch();
 
-  const [showSavedMessage, setShowSavedMessage] = useState<boolean>();
+  const [showSavedMessage, setShowSavedMessage] = useState<string>('');
   const [avatar, setAvatar] = useState<any>(null);
   const [file, setFile] = useState<Blob | null>(null);
 
   useEffect(() => {
-    setShowSavedMessage(false);
+    setShowSavedMessage('');
   }, [show]);
 
   useEffect(() => {
@@ -55,9 +58,11 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       updatedAt: Timestamp.fromDate(new Date()),
     });
 
-    setShowSavedMessage(true);
+    dispatch(getUser(firebaseApp));
+
+    setShowSavedMessage('Profile saved');
     setTimeout(() => {
-      setShowSavedMessage(false);
+      setShowSavedMessage('');
     }, 2000);
   };
 
@@ -66,19 +71,15 @@ export const EditProfileModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./edit.svg'}
+      icon="/edit.svg"
       title="Edit profile">
-      <div
-        className={`w-full flex justify-center absolute -top-20 ${
-          showSavedMessage ? '' : 'hidden'
-        }`}>
-        <div className="w-[185px] bg-[#FFF4FA] p-2 flex flex-row justify-center items-center border-[1px] border-[#FF9AD4] rounded-[10px]">
-          <img className="w-[18px] h-[13px]" src={'./check-pink.svg'} alt="" />
-          <h4 className="font-['Inter-Semibold'] text-lg text-[#FF0098] ml-4">
-            Profile saved
-          </h4>
-        </div>
-      </div>
+      {showSavedMessage && (
+        <Alert
+          showSavedMessage={showSavedMessage}
+          iconWidth="w-4"
+          icon="/check-pink.svg"
+        />
+      )}
       <div className="w-full flex flex-col items-center">
         <Formik
           validationSchema={validationSchemaEditProfile}
@@ -105,14 +106,14 @@ export const EditProfileModal: FC<EditProfileProps> = ({
                   ) : (
                     <img
                       className="w-[66px] h-[66px] border-2 border-white drop-shadow-md rounded-full"
-                      src={'./images/avatar.png'}
+                      src="/images/avatar.png"
                       alt="Avatar"
                     />
                   )}
                   <div className="bg-[#FFF4FA] w-[27px] h-[27px] flex justify-center items-center absolute bottom-0 -right-3 rounded-full group-hover:opacity-50 transition-all">
                     <img
                       className="w-[19px] h-[18px]"
-                      src={'./upload-cloud.svg'}
+                      src="/upload-cloud.svg"
                       alt="Avatar"
                     />
                   </div>

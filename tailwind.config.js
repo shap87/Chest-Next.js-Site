@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -10,6 +12,9 @@ module.exports = {
       center: true,
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         primary: '#475467',
         second: '#344054',
@@ -27,7 +32,6 @@ module.exports = {
           800: '#B60168',
           900: '#A3015C',
         },
-        danger: '#B42318',
       },
     },
   },

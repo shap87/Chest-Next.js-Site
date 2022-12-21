@@ -1,17 +1,24 @@
+import FetchedProduct from '../types/FetchedProduct';
+import {Product} from '../types/Product';
+import Folder, {Visibility} from '../types/Folder';
+
 import uuid from 'react-uuid';
 import {FirebaseApp} from 'firebase/app';
 import {getAuth} from 'firebase/auth';
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
+  query,
   setDoc,
   Timestamp,
+  where,
 } from 'firebase/firestore';
-import {getFunctions, httpsCallable} from 'firebase/functions';
 
 import {generateUsernameHelper} from '../utils/helpers/generateUsernameHelper';
+import {chunk} from '../utils/helpers/ArrayUtils';
 
 // ! Change later
 const profilePictireURL_Example =
@@ -44,7 +51,12 @@ class FirebaseService {
     });
   }
 
-  async addNewFolder(app: FirebaseApp, name: string, isPrivate: boolean) {
+  async addNewFolder(
+    app: FirebaseApp,
+    name: string,
+    isPrivate: boolean,
+    parentFolder: string = '',
+  ) {
     const user = getAuth(app).currentUser;
     if (!user) return;
 
@@ -52,9 +64,7 @@ class FirebaseService {
 
     const uniqueId = uuid();
 
-    console.log('New folder', uniqueId);
-
-    await setDoc(doc(db, 'folders', uniqueId), {
+    const newFodler = {
       name,
       private: isPrivate,
       id: uniqueId,
@@ -65,35 +75,112 @@ class FirebaseService {
       visibility: 1,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
-    });
+      parent: parentFolder ? parentFolder : null,
+    };
+
+    console.log('New folder', newFodler);
+
+    await setDoc(doc(db, 'folders', uniqueId), newFodler);
   }
 
-  async addNewItem(app: FirebaseApp, url: string) {
-    const functions = getFunctions(app);
-    const result = await httpsCallable(functions, 'fetchProductData')({url});
-
-    if (!result?.data) return;
-
+  async addNewItem(
+    app: FirebaseApp,
+    product: FetchedProduct,
+    additionalData: {notes: string; folder: string},
+  ) {
     const db = getFirestore(app);
-
-    const fetchedData: any = result.data;
     const uniqueId = uuid();
 
     console.log('New product', uniqueId);
 
-    await setDoc(doc(db, 'products', uniqueId), {
+    const newProductItem = {
       id: uniqueId,
-      productUrl: url,
-      description: fetchedData?.description ?? null,
-      brand: fetchedData?.brand ?? '',
-      title: fetchedData?.title ?? null,
-      priceHistory: [fetchedData?.price] ?? null,
-      priceCurrency: fetchedData.priceCurrency ?? null,
+      productUrl: product.url,
+      description: product?.description ?? null,
+      brand: product?.brand ?? '',
+      title: product?.title ?? null,
+      priceHistory: [product?.price] ?? null,
+      priceCurrency: product.priceCurrency ?? null,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
-      parent: null, // Folder id
-    });
+      parent: additionalData.folder, // Folder userId
+      notes: additionalData.notes,
+    };
+
+    console.log('newProductItem', newProductItem);
+
+    // await setDoc(doc(db, 'products', uniqueId), newProductItem);
   }
+
+  async getUser(app: FirebaseApp) {
+    const user = getAuth(app).currentUser;
+    if (!user) return;
+
+    const db = getFirestore(app);
+    const querySnapshot = await getDoc(doc(db, 'users', user?.uid!));
+    const data = querySnapshot.data();
+
+    console.log(data);
+
+    return {
+      username: data?.username,
+      name: data?.name,
+      uid: user?.uid!,
+    };
+  }
+
+  getFolder = async (app: FirebaseApp, id?: string) => {
+    const db = getFirestore(app);
+    const querySnapshot = await getDoc(doc(db, 'folders', id!));
+    return querySnapshot.data() as Folder;
+  };
+
+  isItemPublic = async (
+    app: FirebaseApp,
+    parentId: string,
+  ): Promise<boolean> => {
+    // if the parentId is undefined or empty string, set as public
+    if (!parentId || parentId.length === 0) return true;
+
+    const currentFolder = await this.getFolder(app, parentId);
+
+    return currentFolder?.visibility === Visibility.Public;
+  };
+
+  getHomeFeed = async (
+    app: FirebaseApp,
+    userIds: string[],
+    hoursAgo: number,
+    gap: number,
+  ) => {
+    const db = getFirestore(app);
+    const oldest = new Date(new Date().getTime() - hoursAgo * 60 * 60 * 1000);
+    const start = new Date(
+      new Date().getTime() - (hoursAgo - gap) * 60 * 60 * 1000,
+    );
+
+    const batchProducts = await Promise.all(
+      chunk(userIds, 10).map(
+        async chunkedUserIds =>
+          await (
+            await getDocs(
+              query(
+                collection(db, 'products'),
+                where('createdAt', '>', oldest),
+                where('createdAt', '<', start),
+                where('userId', 'in', chunkedUserIds),
+              ),
+            )
+          ).docs.map(d => d.data() as Product),
+      ),
+    );
+
+    const allProducts: Product[] = batchProducts.flat();
+
+    return allProducts.filter(
+      async product => await this.isItemPublic(app, product.parent),
+    );
+  };
 }
 
 export default new FirebaseService();

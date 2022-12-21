@@ -29,7 +29,7 @@ export const SettingsModal: FC<EditProfileProps> = ({
       show={show}
       maxWidth="673"
       onClose={onClose}
-      icon={'./settings.svg'}
+      icon="/settings.svg"
       title="Settings">
       <div className="w-full flex flex-col items-center py-10 md:py-24 max-w-[250px] mx-auto">
         <Button
@@ -43,11 +43,11 @@ export const SettingsModal: FC<EditProfileProps> = ({
             });
           }}>
           Sign out
-          <img className="group-hover:invert" src={'./sign-out.svg'} alt="" />
+          <img className="group-hover:invert" src="/sign-out.svg" alt="" />
         </Button>
         <Button classname="w-full group" icon="icon-right" color="red">
           Delete my account
-          <DeleteIcon className="stroke-danger group-hover:stroke-white" />
+          <DeleteIcon className="stroke-red-500 group-hover:stroke-white" />
         </Button>
       </div>
     </ModalBaseLayout>
