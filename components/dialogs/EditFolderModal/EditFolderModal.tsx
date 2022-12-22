@@ -7,11 +7,7 @@ import {doc, getFirestore, Timestamp, updateDoc} from 'firebase/firestore';
 import {useFirebase} from '../../../context/firebase';
 
 import {Button, H6, ModalBaseLayout, Paragraph, Toggle} from '../../common';
-import {
-  FolderType,
-  setSelectedFolders,
-} from '../../../store/modules/folders/foldersSlice';
-import {useAppDispatch} from '../../../hooks/redux';
+import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
 interface EditFolderModalProps {
   show: boolean;
@@ -20,10 +16,9 @@ interface EditFolderModalProps {
     id: string;
     name: string;
     private: boolean;
+    children: FolderType[];
   };
-  selectedFolders: {
-    [key: string]: FolderType;
-  };
+  hideCheckbox?: boolean;
 }
 
 const validationSchemaEditProfile = yup.object().shape({
@@ -33,11 +28,10 @@ const validationSchemaEditProfile = yup.object().shape({
 const EditFolderModal: FC<EditFolderModalProps> = ({
   show,
   parentFolder,
-  selectedFolders,
   onClose,
+  hideCheckbox,
 }) => {
   const firebaseApp = useFirebase();
-  const dispatch = useAppDispatch();
   const [isPrivate, setIsPrivate] = useState<boolean>(parentFolder.private);
 
   const handleSubmit = async (values: {name: string}) => {
@@ -48,19 +42,17 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
       updatedAt: Timestamp.fromDate(new Date()),
     });
 
-    if (selectedFolders[parentFolder.id]) {
-      const updatedSelectedFolders = {} as {[key: string]: FolderType};
-      Object.keys(selectedFolders).forEach(folderId => {
-        updatedSelectedFolders[folderId] = {...selectedFolders[folderId]};
-        if (folderId === parentFolder.id) {
-          updatedSelectedFolders[folderId].name = values.name;
-          updatedSelectedFolders[folderId].private = isPrivate;
-        }
+    if (
+      parentFolder.children.length > 0 &&
+      isPrivate !== parentFolder.private
+    ) {
+      parentFolder.children.forEach(folder => {
+        updateDoc(doc(db, 'folders', folder.id), {
+          private: isPrivate,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
       });
-
-      dispatch(setSelectedFolders(updatedSelectedFolders));
     }
-
     onClose();
   };
 
@@ -70,7 +62,7 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
       maxWidth="673"
       onClose={onClose}
       icon="/folder-empty.svg"
-      title="Edit folder">
+      title="Rename folder">
       <div className="w-full flex flex-col items-center">
         <Formik
           validationSchema={validationSchemaEditProfile}
@@ -103,18 +95,20 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
                     />
                   </div>
                 </div>
-                <div className="flex items-center justify-center mb-6 md:mb-12 gap-3">
-                  <img className="w-5" src="/lock-black.svg" alt="" />
-                  <Paragraph classname="font-medium !mb-0">
-                    Make private
-                  </Paragraph>
-                  <Toggle
-                    value={isPrivate}
-                    onChange={e => {
-                      setIsPrivate(e.currentTarget.checked);
-                    }}
-                  />
-                </div>
+                {!hideCheckbox && (
+                  <div className="flex items-center justify-center mb-6 md:mb-12 gap-3">
+                    <img className="w-5" src="/lock-black.svg" alt="" />
+                    <Paragraph classname="font-medium !mb-0">
+                      Make private
+                    </Paragraph>
+                    <Toggle
+                      value={isPrivate}
+                      onChange={e => {
+                        setIsPrivate(e.currentTarget.checked);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               <Button
                 disabled={!isValid}
@@ -122,7 +116,7 @@ const EditFolderModal: FC<EditFolderModalProps> = ({
                 color="pink"
                 classname="w-full max-w-[220px] group"
                 icon="icon-right">
-                Edit Folder
+                Rename folder
               </Button>
             </Form>
           )}

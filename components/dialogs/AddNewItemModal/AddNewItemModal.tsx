@@ -3,6 +3,9 @@ import {FC, useState} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as yup from 'yup';
 import cn from 'classnames';
+import {useFirebase} from '../../../context/firebase';
+import firebaseService from '../../../services/firebase.service';
+import {getFunctions, httpsCallable} from 'firebase/functions';
 
 // components
 import {
@@ -15,12 +18,10 @@ import {
   Notification,
   Paragraph,
 } from '../../common';
-import {useFirebase} from '../../../context/firebase';
-import firebaseService from '../../../services/firebase.service';
+import CheckIcon from '../../icons/CheckIcon';
 import PlusIcon from '../../icons/PlusIcon';
-import {getFunctions, httpsCallable} from 'firebase/functions';
-import FetchedProduct from '../../../types/FetchedProduct';
 
+import FetchedProduct from '../../../types/FetchedProduct';
 import {FolderType} from '../../../store/modules/folders/foldersSlice';
 
 interface AddNewItemModalProps {
@@ -47,14 +48,35 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
   const [showSavedMessage, setShowSavedMessage] = useState<string>('');
   const [product, setProduct] = useState<FetchedProduct>();
 
+  const handleClose = () => {
+    setStep('paste-url');
+    onClose();
+  };
+
   const handleSubmitPasteUrl = async (values: {url: string}) => {
-    setLoading(true);
-    const functions = getFunctions(firebaseApp);
-    const result = await httpsCallable(
-      functions,
-      'fetchProductData',
-    )({url: values.url});
-    if (!result?.data) {
+    try {
+      setLoading(true);
+      const functions = getFunctions(firebaseApp);
+      const result = await httpsCallable(
+        functions,
+        'fetchProductData',
+      )({url: values.url});
+      if (!result?.data) {
+        setLoading(false);
+        setNotification({
+          type: 'error',
+          message: 'Failed to send data, please try again.',
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000);
+        return;
+      }
+
+      setProduct(result.data as FetchedProduct);
+      setStep('add-folder');
+      setLoading(false);
+    } catch {
       setLoading(false);
       setNotification({
         type: 'error',
@@ -63,12 +85,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
       setTimeout(() => {
         setNotification(null);
       }, 3000);
-      return;
     }
-
-    setProduct(result.data as FetchedProduct);
-    setStep('add-folder');
-    setLoading(false);
   };
   const handleSubmitAddItem = async (values: {notes: string}) => {
     const data = {notes: values.notes, folder: selectedFolder?.id || ''};
@@ -104,6 +121,13 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
       });
   };
 
+  const price = product?.price?.toLocaleString('en-US', {
+    style: 'currency',
+    currency: product?.priceCurrency ?? 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -111,7 +135,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
       <ModalBaseLayout
         show={show}
         maxWidth="673"
-        onClose={onClose}
+        onClose={handleClose}
         icon="/plus-black.svg"
         title="Add new item">
         {showSavedMessage && (
@@ -195,19 +219,19 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       <div className="w-[48%] h-[144px]">
                         <img
                           className="rounded-md h-full overflow-hidden"
-                          src="/images/sweater.jpg"
+                          src={product?.image || ''}
                           alt=""
                         />
                       </div>
                       <div className="w-[49%]">
                         <H6 classname="!text-[15px] text-[#475467] !leading-tight !mb-2">
-                          Basic hooded sweatshirt in pink
+                          {product?.title}
                         </H6>
                         <Paragraph classname="!text-sm text-[#98A2B3]">
                           freepeople.com
                         </Paragraph>
                         <H6 classname="!text-[17px] text-[#475467] !mb-0">
-                          $52
+                          {price}
                         </H6>
                       </div>
                     </div>
@@ -232,21 +256,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                     classname="w-full max-w-[120px] group"
                     icon="icon-right">
                     Done
-                    <svg
-                      width="15"
-                      height="11"
-                      viewBox="0 0 15 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        className="group-hover:stroke-[#FF0098]"
-                        d="M14.1663 1L4.99967 10.1667L0.833008 6"
-                        stroke="white"
-                        strokeWidth="1.66667"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <CheckIcon className="stroke-white group-hover:stroke-main-500" />
                   </Button>
                 </Form>
               )}
