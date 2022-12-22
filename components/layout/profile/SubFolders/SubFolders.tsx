@@ -8,23 +8,28 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {useFirebase} from '../../../../context/firebase';
-import {useAppSelector} from '../../../../hooks/redux';
+import {useAppDispatch, useAppSelector} from '../../../../hooks/redux';
 
 // components
 import {H6, Paragraph} from '../../../common';
-
-//  assets
-import styles from '../../../../styles/profile.module.scss';
-import {FolderType} from '../../../../store/modules/folders/foldersSlice';
 import DotsHorizontalIcon from '../../../icons/DotsHorizontalIcon';
 import EyeIcon from '../../../icons/EyeIcon';
 import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
 
+//  assets
+import styles from '../../../../styles/profile.module.scss';
+import {
+  FolderType,
+  setSelectedSubfolders,
+} from '../../../../store/modules/folders/foldersSlice';
+
 export const SubFolders = () => {
   const firebaseApp = useFirebase();
-  const {selectedFolders, folders} = useAppSelector(state => state.folders);
+  const {selectedFolders, folders, selectedSubfolders} = useAppSelector(
+    state => state.folders,
+  );
+  const dispatch = useAppDispatch();
 
-  const [selected, setSelected] = useState<number | null>(null);
   const [subFolders, setSubFolders] = useState<FolderType[]>([]);
   const [headerTitle, setHeaderTitle] = useState<string>('');
   const [showList, setShowList] = useState<string>('');
@@ -32,11 +37,58 @@ export const SubFolders = () => {
   const [showEditFolderModal, setShowEditFolderModal] =
     useState<boolean>(false);
 
-  const onSubfolderSelect = (index: number) => {
-    if (selected === index) {
-      return setSelected(null);
+  useEffect(() => {
+    const selectedIds = Object.keys(selectedSubfolders);
+
+    const updatedSelectedSubfolders = {} as {[key: string]: FolderType};
+    //update subfolders data if folders changes
+    selectedIds.forEach(id => {
+      folders.forEach(parent => {
+        if (parent.children) {
+          const folder = parent.children.find(folder => folder.id === id);
+          if (folder) {
+            updatedSelectedSubfolders[folder.id] = {...folder};
+          }
+        }
+      });
+    });
+
+    dispatch(setSelectedSubfolders(updatedSelectedSubfolders));
+  }, [folders]);
+
+  useEffect(() => {
+    const subIds = Object.keys(selectedSubfolders);
+
+    const updatedSubs = {} as {[key: string]: FolderType};
+    //remove selected subfolders if parent not selected
+    subIds.forEach(subId => {
+      const parent = selectedFolders[selectedSubfolders[subId].parent ?? ''];
+      if (parent) {
+        updatedSubs[subId] = {...selectedSubfolders[subId]};
+      }
+    });
+
+    dispatch(setSelectedSubfolders(updatedSubs));
+  }, [selectedFolders]);
+
+  const onSubfolderSelect = (folder: FolderType) => {
+    const selected = Object.prototype.hasOwnProperty.call(
+      selectedSubfolders,
+      folder.id,
+    );
+
+    if (!selected) {
+      dispatch(
+        setSelectedSubfolders({
+          ...selectedSubfolders,
+          [folder.id]: folder,
+        }),
+      );
+    } else {
+      // Remove folder from selected
+      const {[folder.id]: omitted, ...rest} = selectedSubfolders;
+      dispatch(setSelectedSubfolders(rest));
     }
-    setSelected(index);
   };
 
   const getIsChangePrivateDisabled = (parentId: string | null) => {
@@ -92,7 +144,10 @@ export const SubFolders = () => {
                   className={cn(
                     styles.subFolder,
                     {
-                      [styles.selected]: selected === index,
+                      [styles.selected]: Object.prototype.hasOwnProperty.call(
+                        selectedSubfolders,
+                        folder.id,
+                      ),
                     },
                     'group relative',
                   )}
@@ -156,7 +211,7 @@ export const SubFolders = () => {
                   <Paragraph>{folder.numItems}</Paragraph>
                   <span
                     className={cn(styles.checkbox)}
-                    onClick={() => onSubfolderSelect(index)}
+                    onClick={() => onSubfolderSelect(folder)}
                   />
                 </div>
               ))
