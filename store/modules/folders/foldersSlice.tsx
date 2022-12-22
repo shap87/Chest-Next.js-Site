@@ -20,6 +20,9 @@ export interface FolderState {
   selectedFolders: {
     [key: string]: FolderType;
   };
+  selectedSubfolders: {
+    [key: string]: FolderType;
+  };
   loading: boolean;
   folderError: any;
 }
@@ -27,6 +30,7 @@ export interface FolderState {
 const initialState: FolderState = {
   folders: [] as FolderType[],
   selectedFolders: {},
+  selectedSubfolders: {},
   loading: false,
   folderError: '',
 };
@@ -46,10 +50,19 @@ export const foldersSlice = createSlice({
     ) {
       state.selectedFolders = action.payload;
     },
+    setSelectedSubfolders(
+      state,
+      action: PayloadAction<{
+        [key: string]: FolderType;
+      }>,
+    ) {
+      state.selectedSubfolders = action.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const {setFolders, setSelectedFolders} = foldersSlice.actions;
+export const {setFolders, setSelectedFolders, setSelectedSubfolders} =
+  foldersSlice.actions;
 
 export default foldersSlice.reducer;
