@@ -23,6 +23,7 @@ import {
   setSelectedFolders,
 } from '../../../../store/modules/folders/foldersSlice';
 import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
+import EyeIcon from '../../../icons/EyeIcon';
 // import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
@@ -43,6 +44,18 @@ export const Folders = () => {
 
   useEffect(() => {
     console.log('Current folders:', folders);
+    const selectedIds = Object.keys(selectedFolders);
+
+    const updatedSelectedFolders = {} as {[key: string]: FolderType};
+
+    selectedIds.forEach(id => {
+      const folder = folders.find(folder => folder.id === id);
+      if (folder) {
+        updatedSelectedFolders[folder.id] = {...folder};
+      }
+    });
+
+    dispatch(setSelectedFolders(updatedSelectedFolders));
   }, [folders]);
 
   useEffect(() => {
@@ -76,25 +89,25 @@ export const Folders = () => {
     }
 
     deleteDoc(doc(db, 'folders', folder.id));
-
-    if (selectedFolders[folder.id]) {
-      const updatedSelectedFolders = {} as {[key: string]: FolderType};
-      Object.keys(selectedFolders).forEach(folderId => {
-        if (folderId !== folder.id) {
-          updatedSelectedFolders[folderId] = selectedFolders[folderId];
-        }
-      });
-
-      dispatch(setSelectedFolders(updatedSelectedFolders));
-    }
   };
 
-  const handleChangePrivacy = (folderId: string, isPrivate: boolean) => {
+  const handleChangePrivacy = async (
+    folder: FolderType,
+    isPrivate: boolean,
+  ) => {
     const db = getFirestore(firebaseApp);
-    updateDoc(doc(db, 'folders', folderId), {
-      private: !isPrivate,
+    await updateDoc(doc(db, 'folders', folder.id), {
+      private: isPrivate,
       updatedAt: Timestamp.fromDate(new Date()),
     });
+    if (folder.children.length > 0) {
+      folder.children.forEach(sub => {
+        updateDoc(doc(db, 'folders', sub.id), {
+          private: isPrivate,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      });
+    }
   };
 
   console.log('selectedFolders', selectedFolders);
@@ -168,15 +181,20 @@ export const Folders = () => {
                           <img src="/folder.svg" alt="" />
                         </li>
                         <li onClick={() => setShowEditFolderModal(true)}>
-                          Edit Folder
+                          Rename
                           <img src="/edit-with-border.svg" alt="" />
                         </li>
                         <li
+                          className="items-center"
                           onClick={() =>
-                            handleChangePrivacy(folder.id, folder.private)
+                            handleChangePrivacy(folder, !folder.private)
                           }>
                           {folder.private ? 'Make Public' : 'Make Private'}
-                          <img src="/lock-black.svg" alt="" />
+                          {folder.private ? (
+                            <EyeIcon className="w-4" />
+                          ) : (
+                            <img src="/lock-black.svg" alt="" />
+                          )}
                         </li>
                         <li>
                           Share
@@ -237,6 +255,7 @@ export const Folders = () => {
           parentFolder={{
             id: parentFolder?.id || '',
             name: parentFolder?.name || '',
+            private: !!parentFolder?.private,
           }}
           show={showNewSubFolderModal}
           onClose={() => setShowNewSubFolderModal(false)}
@@ -248,9 +267,9 @@ export const Folders = () => {
             id: parentFolder?.id || '',
             name: parentFolder?.name || '',
             private: !!parentFolder?.private,
+            children: parentFolder?.children || [],
           }}
           show={showEditFolderModal}
-          selectedFolders={selectedFolders}
           onClose={() => setShowEditFolderModal(false)}
         />
       )}
