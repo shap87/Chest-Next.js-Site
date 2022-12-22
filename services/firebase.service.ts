@@ -88,6 +88,9 @@ class FirebaseService {
     product: FetchedProduct,
     additionalData: {notes: string; folder: string},
   ) {
+    const user = getAuth(app).currentUser;
+    if (!user) return;
+
     const db = getFirestore(app);
     const uniqueId = uuid();
 
@@ -96,20 +99,30 @@ class FirebaseService {
     const newProductItem = {
       id: uniqueId,
       productUrl: product.url,
+      imageUrl: product.image ?? '',
       description: product?.description ?? null,
       brand: product?.brand ?? '',
       title: product?.title ?? null,
-      priceHistory: [product?.price] ?? null,
+      price: product?.price ?? null,
       priceCurrency: product.priceCurrency ?? null,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
       parent: additionalData.folder, // Folder userId
-      notes: additionalData.notes,
+      note: additionalData.notes,
+      userId: user.uid,
     };
 
     console.log('newProductItem', newProductItem);
 
-    // await setDoc(doc(db, 'products', uniqueId), newProductItem);
+    await setDoc(doc(db, 'products', uniqueId), newProductItem);
+
+    if (product.price) {
+      const id = uuid();
+      setDoc(doc(db, `products/${uniqueId}/priceHistory`, id), {
+        createdAt: Timestamp.fromDate(new Date()),
+        price: product.price,
+      });
+    }
   }
 
   async getUser(app: FirebaseApp) {
