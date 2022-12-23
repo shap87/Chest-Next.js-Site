@@ -197,7 +197,7 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
                       <div
                         className="pr-8 text-ellipsis whitespace-nowrap overflow-hidden relative cursor-pointer w-full text-base py-2 px-3 border border-[#D0D5DD] text-black rounded-md transition-all hover:opacity-70"
                         onClick={() => setShowList(prev => !prev)}>
-                        {paceholder ? paceholder : 'Select value'}
+                        {paceholder ? paceholder : 'Select folder'}
                         <img
                           className={cn(
                             'absolute right-2 top-1/2 -translate-y-1/2 w-3 transition-all',

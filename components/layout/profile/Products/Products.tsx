@@ -1,7 +1,6 @@
 import type {Product} from '../../../../types/Product';
 
-import {useState} from 'react';
-import {getAuth} from 'firebase/auth';
+import {useEffect, useMemo, useState} from 'react';
 import {useFirestoreInfiniteQuery} from '@react-query-firebase/firestore';
 import {
   query,
@@ -14,6 +13,7 @@ import {
   doc,
   Timestamp,
   deleteDoc,
+  getDocs,
 } from 'firebase/firestore';
 import InfiniteScroll from 'react-infinite-scroller';
 // hooks
@@ -31,19 +31,55 @@ import {MoveProductModal} from '../../../dialogs';
 export const Products = () => {
   const app = useFirebase();
   const {user} = useAppSelector(state => state.user);
+  const {folders, selectedFolders, selectedSubfolders} = useAppSelector(
+    state => state.folders,
+  );
   const router = useRouter();
   const isPublic = !!router.query.userId;
 
   const firestore = useFirestore();
 
+  const queryParams = useMemo(() => {
+    let ids = [''];
+
+    const subfolderIds = Object.keys(selectedSubfolders);
+
+    if (subfolderIds.length > 0) {
+      return subfolderIds;
+    }
+
+    const folderIds = Object.keys(selectedFolders);
+
+    if (folderIds.length > 0) {
+      ids = folderIds;
+      folderIds.forEach(folderId => {
+        if (selectedFolders[folderId].children) {
+          const childrenIds = selectedFolders[folderId].children.map(
+            sub => sub.id,
+          );
+          ids = [...ids, ...childrenIds];
+        }
+      });
+      return ids;
+    }
+
+    folders.forEach(folder => {
+      ids.push(folder.id);
+      folder.children.forEach(sub => ids.push(sub.id));
+    });
+
+    return ids;
+  }, [selectedFolders, selectedSubfolders, folders]);
+
   const ref = query(
     collection(firestore, 'products'),
     where('userId', '==', isPublic ? router.query.userId : user.uid ?? ''),
+    where('parent', 'in', queryParams.slice(0, 10)), //slice is a temp solution
     limit(9),
   );
 
   const productsQuery = useFirestoreInfiniteQuery(
-    ['products', {userId: user?.uid}],
+    ['products', {userId: user?.uid, parent: queryParams}],
     ref,
     snapshot => {
       const lastDocument = snapshot.docs[snapshot.docs.length - 1];
@@ -87,6 +123,54 @@ export const Products = () => {
     p.docs.map(docSnapshot => docSnapshot.data()),
   );
 
+  const updateFolderItemsNum = async () => {
+    //get all user products to update items count
+    const q = query(
+      collection(firestore, 'products'),
+      where('userId', '==', isPublic ? router.query.userId : user.uid ?? ''),
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    const allProducts = [] as Product[];
+
+    querySnapshot.forEach(doc => {
+      allProducts.push(doc.data() as Product);
+    });
+
+    folders.forEach(f => {
+      let parentFolderProductsCount = 0;
+      allProducts?.forEach(p => {
+        if (p.parent === f.id) {
+          parentFolderProductsCount++;
+        }
+      });
+      f.children.forEach(sub => {
+        let childFolderProductsCount = 0;
+        allProducts?.forEach(p => {
+          if (p.parent === sub.id) {
+            parentFolderProductsCount++;
+            childFolderProductsCount++;
+          }
+        });
+
+        if (childFolderProductsCount !== sub.numItems) {
+          updateDoc(doc(firestore, 'folders', sub.id), {
+            numItems: childFolderProductsCount,
+            updatedAt: Timestamp.fromDate(new Date()),
+          });
+        }
+      });
+
+      if (parentFolderProductsCount !== f.numItems) {
+        updateDoc(doc(firestore, 'folders', f.id), {
+          numItems: parentFolderProductsCount,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      }
+    });
+  };
+
   const onProductUpdate = async (
     productId: string,
     fieldsToUpdate: Partial<Omit<Product, 'id'>>,
@@ -105,7 +189,7 @@ export const Products = () => {
         },
       });
     }
-    productsQuery.refetch();
+    await productsQuery.refetch();
   };
 
   const onProductDelete = async (productId: string) => {
@@ -135,8 +219,9 @@ export const Products = () => {
     setSelectedProducts({});
   };
 
-  const onProductMove = (productId: string, folderId: string) => {
-    onProductUpdate(productId, {parent: folderId});
+  const onProductMove = async (productId: string, folderId: string) => {
+    await onProductUpdate(productId, {parent: folderId});
+    updateFolderItemsNum();
     if (product) {
       setProduct({...product, parent: folderId});
     }

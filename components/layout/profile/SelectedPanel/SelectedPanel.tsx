@@ -63,13 +63,6 @@ export const SelectedPanel: React.FC<SelectedPanelProps> = ({
           <Button
             classname="group w-[48%] md:w-auto"
             icon="icon-left"
-            onClick={onAddToFolder}>
-            <PlusIcon className="stroke-second group-hover:stroke-white" />
-            Move to folder
-          </Button>
-          <Button
-            classname="group w-[48%] md:w-auto"
-            icon="icon-left"
             color="red"
             onClick={onDelete}>
             <DeleteIcon className="stroke-red-500 group-hover:stroke-white" />
