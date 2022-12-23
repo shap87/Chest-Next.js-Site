@@ -1,5 +1,8 @@
 .btn {
   @apply select-none inline-flex items-center justify-center px-3 py-2 text-sm md:text-base font-semibold border-2 text-primary border-gray-300 rounded-lg transition-all hover:border-primary hover:bg-primary hover:text-white no-underline gap-1 md:gap-2;
+  &.dark-grey {
+    @apply border-primary bg-primary text-white hover:bg-white hover:text-primary hover:border-gray-300;
+  }
   &.pink {
     @apply bg-main-500 text-white border-main-500 hover:bg-transparent hover:text-main-500;
   }

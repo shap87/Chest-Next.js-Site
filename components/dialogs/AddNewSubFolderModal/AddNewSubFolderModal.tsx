@@ -7,14 +7,7 @@ import firebaseService from '../../../services/firebase.service';
 import {useFirebase} from '../../../context/firebase';
 
 // components
-import {
-  Button,
-  H6,
-  ModalBaseLayout,
-  Paragraph,
-  Toggle,
-  Notification,
-} from '../../common';
+import {Button, H6, ModalBaseLayout} from '../../common';
 import PlusIcon from '../../icons/PlusIcon';
 
 interface AddNewSubFolderModalProps {
@@ -38,27 +31,11 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({
 }) => {
   const firebaseApp = useFirebase();
 
-  const [isPrivate, setIsPrivate] = useState<boolean>(parentFolder.private);
-
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: string;
-  } | null>(null);
-
   const handleSubmit = async (values: {name: string}) => {
-    if (parentFolder.private && !isPrivate) {
-      setNotification({
-        type: 'error',
-        message: "Parent folder is private, so sub-folder can't be public.",
-      });
-      return setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-    }
     await firebaseService.addNewFolder(
       firebaseApp,
       values.name,
-      isPrivate,
+      parentFolder.private,
       parentFolder.id,
     );
     onClose();
@@ -66,7 +43,6 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({
 
   return (
     <>
-      {notification && <Notification notification={notification} />}
       <ModalBaseLayout
         show={show}
         maxWidth="673"
@@ -105,22 +81,6 @@ export const AddNewSubFolderModal: FC<AddNewSubFolderModalProps> = ({
                         component="p"
                       />
                     </div>
-                  </div>
-                  <div
-                    className={`flex items-center justify-center mb-6 md:mb-12 gap-3 ${
-                      parentFolder.private ? 'opacity-50' : ''
-                    }`}>
-                    <img className="w-5" src="/lock-black.svg" alt="" />
-                    <Paragraph classname="font-medium !mb-0">
-                      Make private
-                    </Paragraph>
-                    <Toggle
-                      value={isPrivate}
-                      onChange={e => {
-                        setIsPrivate(e.currentTarget.checked);
-                      }}
-                      disabled={parentFolder.private}
-                    />
                   </div>
                 </div>
                 <Button

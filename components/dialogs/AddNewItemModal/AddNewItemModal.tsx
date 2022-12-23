@@ -105,6 +105,11 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
       .then(() => {
         setLoading(false);
         setShowSavedMessage('Item saved to your chest!');
+        onClose();
+        setStep('paste-url');
+        setSelectedFolder(null);
+        setProduct(undefined);
+        setPlaceHolder('');
         setTimeout(() => {
           setShowSavedMessage('');
         }, 3000);
@@ -132,19 +137,21 @@ export const AddNewItemModal: FC<AddNewItemModalProps> = ({show, onClose}) => {
     <>
       {loading && <LoadingSpinner />}
       {notification && <Notification notification={notification} />}
+      {showSavedMessage && (
+        <div className="w-full fixed top-40 z-50">
+          <Alert
+            showSavedMessage={showSavedMessage}
+            iconWidth="w-8"
+            icon="/chest.svg"
+          />
+        </div>
+      )}
       <ModalBaseLayout
         show={show}
         maxWidth="673"
         onClose={handleClose}
         icon="/plus-black.svg"
         title="Add new item">
-        {showSavedMessage && (
-          <Alert
-            showSavedMessage={showSavedMessage}
-            iconWidth="w-8"
-            icon="/chest.svg"
-          />
-        )}
         <div className="w-full flex flex-col items-center">
           {step === 'paste-url' && (
             <Formik
