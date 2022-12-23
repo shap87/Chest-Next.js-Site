@@ -17,6 +17,7 @@ interface SelectedPanelProps {
   onAddToFolder?: () => void;
   onDelete?: () => void;
   onMarkPurchased?: () => void;
+  hideMoveButton?: boolean;
 }
 
 export const SelectedPanel: React.FC<SelectedPanelProps> = ({
@@ -28,6 +29,7 @@ export const SelectedPanel: React.FC<SelectedPanelProps> = ({
   onAddToFolder,
   onDelete,
   onMarkPurchased,
+  hideMoveButton,
 }) => {
   return (
     <div
@@ -60,6 +62,15 @@ export const SelectedPanel: React.FC<SelectedPanelProps> = ({
           </Button>
         )}
         <div className="flex justify-between md:justify-end gap-4">
+          {!hideMoveButton && (
+            <Button
+              classname="group w-[48%] md:w-auto"
+              icon="icon-left"
+              onClick={onAddToFolder}>
+              <PlusIcon className="stroke-second group-hover:stroke-white" />
+              Move to folder
+            </Button>
+          )}
           <Button
             classname="group w-[48%] md:w-auto"
             icon="icon-left"

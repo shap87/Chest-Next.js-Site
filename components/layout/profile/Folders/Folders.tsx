@@ -119,6 +119,7 @@ export const Folders = () => {
           {countSelected ? (
             <SelectedPanel
               type="folder"
+              hideMoveButton
               total={1}
               totalSelected={countSelected}
             />

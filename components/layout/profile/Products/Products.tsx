@@ -201,8 +201,9 @@ export const Products = () => {
       setSelectedProducts(rest);
     }
 
-    productsQuery.refetch();
+    await productsQuery.refetch();
     setProduct(null);
+    updateFolderItemsNum();
   };
 
   const onDeleteSelectedProducts = async () => {
@@ -215,8 +216,9 @@ export const Products = () => {
     });
 
     await Promise.all(requests);
-    productsQuery.refetch();
+    await productsQuery.refetch();
     setSelectedProducts({});
+    updateFolderItemsNum();
   };
 
   const onProductMove = async (productId: string, folderId: string) => {
@@ -247,7 +249,8 @@ export const Products = () => {
 
     await Promise.all(requests);
     setSelectedProducts(updatedSelected);
-    productsQuery.refetch();
+    await productsQuery.refetch();
+    updateFolderItemsNum();
   };
 
   const onMarkPurchased = (productId: string, isPurchased: boolean) => {
