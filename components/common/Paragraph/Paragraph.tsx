@@ -1,5 +1,5 @@
-import cn from 'classnames';
+import cn from "classnames";
 
-export const Paragraph = ({children, className}: any) => {
-  return <p className={cn('text-base mb-2', className)}>{children}</p>;
-};
+export const Paragraph = ({ children, classname }: any) => {
+  return <p className={cn('text-base mb-2', classname)}>{children}</p>
+}
