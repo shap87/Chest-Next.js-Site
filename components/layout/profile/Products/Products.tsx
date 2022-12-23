@@ -74,7 +74,7 @@ export const Products = () => {
   const ref = query(
     collection(firestore, 'products'),
     where('userId', '==', isPublic ? router.query.userId : user.uid ?? ''),
-    where('parent', 'in', queryParams),
+    where('parent', 'in', queryParams.slice(0, 10)), //slice is a temp solution
     limit(9),
   );
 
@@ -201,8 +201,9 @@ export const Products = () => {
       setSelectedProducts(rest);
     }
 
-    productsQuery.refetch();
+    await productsQuery.refetch();
     setProduct(null);
+    updateFolderItemsNum();
   };
 
   const onDeleteSelectedProducts = async () => {
@@ -215,8 +216,9 @@ export const Products = () => {
     });
 
     await Promise.all(requests);
-    productsQuery.refetch();
+    await productsQuery.refetch();
     setSelectedProducts({});
+    updateFolderItemsNum();
   };
 
   const onProductMove = async (productId: string, folderId: string) => {
@@ -247,7 +249,8 @@ export const Products = () => {
 
     await Promise.all(requests);
     setSelectedProducts(updatedSelected);
-    productsQuery.refetch();
+    await productsQuery.refetch();
+    updateFolderItemsNum();
   };
 
   const onMarkPurchased = (productId: string, isPurchased: boolean) => {

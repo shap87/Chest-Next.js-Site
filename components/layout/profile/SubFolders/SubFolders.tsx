@@ -22,6 +22,7 @@ import {
   FolderType,
   setSelectedSubfolders,
 } from '../../../../store/modules/folders/foldersSlice';
+import {AddNewSubFolderModal} from '../../../dialogs';
 
 export const SubFolders = () => {
   const firebaseApp = useFirebase();
@@ -35,6 +36,8 @@ export const SubFolders = () => {
   const [showList, setShowList] = useState<string>('');
   const [subfolder, setSubfolder] = useState<FolderType | null>(null);
   const [showEditFolderModal, setShowEditFolderModal] =
+    useState<boolean>(false);
+  const [showNewSubFolderModal, setShowNewSubFolderModal] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -215,11 +218,13 @@ export const SubFolders = () => {
                   />
                 </div>
               ))
-            ) : (
-              <div className={cn(styles.subFolder, 'justify-center')}>
+            ) : Object.keys(selectedFolders).length > 0 ? (
+              <div
+                className={cn(styles.subFolder, 'justify-center')}
+                onClick={() => setShowNewSubFolderModal(true)}>
                 <H6>+ Create Subfoloder</H6>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
@@ -234,6 +239,18 @@ export const SubFolders = () => {
           show={showEditFolderModal}
           onClose={() => setShowEditFolderModal(false)}
           hideCheckbox
+        />
+      )}
+      {showNewSubFolderModal && (
+        <AddNewSubFolderModal
+          parentFolder={{
+            id: selectedFolders[Object.keys(selectedFolders)[0]]?.id || '',
+            name: selectedFolders[Object.keys(selectedFolders)[0]]?.name || '',
+            private:
+              !!selectedFolders[Object.keys(selectedFolders)[0]]?.private,
+          }}
+          show={showNewSubFolderModal}
+          onClose={() => setShowNewSubFolderModal(false)}
         />
       )}
     </>
