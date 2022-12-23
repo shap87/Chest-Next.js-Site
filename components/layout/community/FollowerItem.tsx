@@ -1,5 +1,6 @@
 import User from '../../../types/User';
-import {Button} from '../../common';
+
+import FollowButton from '../../FollowButton';
 
 const FollowerItem: React.FC<{user: User; following: boolean}> = ({
   user,
@@ -21,12 +22,7 @@ const FollowerItem: React.FC<{user: User; following: boolean}> = ({
           </span>
         </div>
       </div>
-      <Button
-        htmlType="button"
-        color={!following ? 'light-pink' : undefined}
-        classname="!w-[100px] !py-1">
-        {following ? 'Following' : 'Follow'}
-      </Button>
+      <FollowButton userId={user?.id!} className="!w-[100px] !py-1" />
     </div>
   );
 };
