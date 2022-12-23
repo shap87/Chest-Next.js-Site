@@ -36,7 +36,7 @@ export const SubfoldersPrivacyModal: FC<SubfoldersPrivacyModalProps> = ({
         <H6 classname="mb-2">{`Subfolders will become ${
           parentFolder?.private ? 'public' : 'private'
         } too`}</H6>
-        <Paragraph className="!text-sm">
+        <Paragraph classname="!text-sm">
           Subfolders and items inherit the privacy of the parent folder.
         </Paragraph>
         <div className="w-full flex justify-between mt-6">

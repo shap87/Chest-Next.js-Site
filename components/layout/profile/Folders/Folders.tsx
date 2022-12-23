@@ -55,7 +55,10 @@ export const Folders = () => {
   const [deleteFolderDelay, setDeleteFodlerDelay] = useState<number | null>(
     null,
   );
-  const [folderToDelete, setFolderToDelete] = useState<FolderType | null>(null);
+  const [deleteSelectedFoldersDelay, setDeleteSelectedFodlersDelay] = useState<
+    number | null
+  >(null);
+  const [foldersToDelete, setFoldersToDelete] = useState<FolderType[]>([]);
 
   useEffect(() => {
     console.log('Current folders:', folders);
@@ -96,6 +99,7 @@ export const Folders = () => {
   const countSelected = Object.keys(selectedFolders).length || 0;
 
   const deleteFolderFromServer = useCallback(async () => {
+    const folderToDelete = foldersToDelete[0];
     if (folderToDelete) {
       const db = getFirestore(firebaseApp);
 
@@ -110,13 +114,18 @@ export const Folders = () => {
 
     setNotification(null);
     setDeleteFodlerDelay(null);
-    setFolderToDelete(null);
-  }, [firebaseApp, folderToDelete]);
+    setFoldersToDelete([]);
+  }, [firebaseApp, foldersToDelete]);
 
   useTimeout(deleteFolderFromServer, deleteFolderDelay);
 
   const handleDeleteFolder = (folder: FolderType) => {
-    setFolderToDelete(folder);
+    setFoldersToDelete([folder]);
+
+    if (selectedFolders[folder.id]) {
+      const {[folder.id]: omitted, ...rest} = selectedFolders;
+      dispatch(setSelectedFolders(rest));
+    }
 
     setNotification({
       icon: <TrashIcon className="w-8" />,
@@ -126,10 +135,55 @@ export const Folders = () => {
     setDeleteFodlerDelay(5000);
   };
 
+  const deleteFoldersFromServer = useCallback(async () => {
+    const requests = [] as Promise<void>[];
+
+    if (foldersToDelete.length > 0) {
+      const db = getFirestore(firebaseApp);
+
+      foldersToDelete.forEach(f => {
+        if (f.children.length > 0) {
+          f.children.forEach(subFolder => {
+            deleteDoc(doc(db, 'folders', subFolder.id));
+          });
+        }
+
+        requests.push(deleteDoc(doc(db, 'folders', f.id)));
+      });
+    }
+
+    await Promise.all(requests);
+
+    setNotification(null);
+    setDeleteSelectedFodlersDelay(null);
+    setFoldersToDelete([]);
+  }, [dispatch, firebaseApp, foldersToDelete]);
+
+  useTimeout(deleteFoldersFromServer, deleteSelectedFoldersDelay);
+
+  const handleDeleteSelectedFolders = () => {
+    const folders = [] as FolderType[];
+
+    Object.keys(selectedFolders).forEach(id =>
+      folders.push(selectedFolders[id]),
+    );
+
+    dispatch(setSelectedFolders({}));
+    setFoldersToDelete(folders);
+
+    setNotification({
+      icon: <TrashIcon className="w-8" />,
+      message: 'Folders deleted',
+    });
+
+    setDeleteSelectedFodlersDelay(5000);
+  };
+
   const undoFolderDeletion = () => {
     setNotification(null);
     setDeleteFodlerDelay(null);
-    setFolderToDelete(null);
+    setDeleteSelectedFodlersDelay(null);
+    setFoldersToDelete([]);
   };
 
   const handleChangePrivacy = async (
@@ -175,7 +229,8 @@ export const Folders = () => {
             showSavedMessage={notification.message}
             iconWidth="w-8"
             icon={notification.icon}>
-            {notification.message === 'Folder deleted' && (
+            {(notification.message === 'Folder deleted' ||
+              notification.message === 'Folders deleted') && (
               <Button
                 classname="ml-2"
                 color="light-pink"
@@ -194,6 +249,7 @@ export const Folders = () => {
               hideMoveButton
               total={1}
               totalSelected={countSelected}
+              onDelete={handleDeleteSelectedFolders}
             />
           ) : null}
           <div className="flex justify-between items-center">
@@ -229,7 +285,7 @@ export const Folders = () => {
             )}>
             {folders
               ?.slice(0, showAll ? folders?.length ?? Infinity : count)
-              ?.filter(f => f.id !== folderToDelete?.id)
+              ?.filter(f => !foldersToDelete.find(fol => fol.id === f.id))
               ?.map(folder => {
                 const selected = Object.prototype.hasOwnProperty.call(
                   selectedFolders,
