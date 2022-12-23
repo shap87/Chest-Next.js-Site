@@ -5,3 +5,4 @@ export {AddNewItemModal} from './AddNewItemModal/AddNewItemModal';
 export {AddNewSubFolderModal} from './AddNewSubFolderModal/AddNewSubFolderModal';
 export {MoveProductModal} from './MoveProductModal/MoveProductModal';
 export {EditProductNoteModal} from './EditProductNoteModal/EditProductNoteModal';
+export {SubfoldersPrivacyModal} from './SubfoldersPrivacyModal/SubfoldersPrivacyModal';

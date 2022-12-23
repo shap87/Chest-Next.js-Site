@@ -1,11 +1,11 @@
 // libs
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as yup from 'yup';
 import cn from 'classnames';
 
 // components
-import {Button, ModalBaseLayout} from '../../common';
+import {Button, ModalBaseLayout, Paragraph, Toggle} from '../../common';
 import {useFirebase} from '../../../context/firebase';
 import firebaseService from '../../../services/firebase.service';
 import PlusIcon from '../../icons/PlusIcon';
@@ -22,8 +22,9 @@ const validationSchemaEditProfile = yup.object().shape({
 export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
   const firebaseApp = useFirebase();
 
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+
   const handleSubmit = async (values: {name: string}) => {
-    const isPrivate = false;
     await firebaseService.addNewFolder(firebaseApp, values.name, isPrivate);
 
     onClose();
@@ -62,6 +63,18 @@ export const AddNewFolderModal: FC<EditProfileProps> = ({show, onClose}) => {
                     className="error-message"
                     name="name"
                     component="p"
+                  />
+                </div>
+                <div className="flex items-center justify-center mb-6 md:mb-12 gap-3">
+                  <img className="w-5" src="/lock-black.svg" alt="" />
+                  <Paragraph classname="font-medium !mb-0">
+                    Make private
+                  </Paragraph>
+                  <Toggle
+                    value={isPrivate}
+                    onChange={e => {
+                      setIsPrivate(e.currentTarget.checked);
+                    }}
                   />
                 </div>
               </div>

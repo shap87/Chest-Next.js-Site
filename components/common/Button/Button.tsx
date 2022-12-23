@@ -9,7 +9,7 @@ interface IButton {
   children: any;
   href?: string;
   classname?: string;
-  color?: 'pink' | 'light-pink' | 'red' | 'green' | undefined;
+  color?: 'pink' | 'light-pink' | 'red' | 'green' | 'dark-grey' | undefined;
   target?: string;
   icon?: 'icon-left' | 'icon-right';
   disabled?: boolean;

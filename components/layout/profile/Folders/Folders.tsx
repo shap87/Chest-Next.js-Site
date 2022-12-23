@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import cn from 'classnames';
 import {
   deleteDoc,
@@ -10,10 +10,11 @@ import {
 // hooks
 import {useFirebase} from '../../../../context/firebase';
 import useWindowSize from '../../../../hooks/useWindowSize';
+import {useRouter} from 'next/router';
 // components
-import {H6, Paragraph} from '../../../common';
+import {Alert, Button, H6, Paragraph} from '../../../common';
 import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
-import {AddNewSubFolderModal} from '../../../dialogs';
+import {AddNewSubFolderModal, SubfoldersPrivacyModal} from '../../../dialogs';
 
 // assets
 import styles from '../../../../styles/profile.module.scss';
@@ -24,10 +25,14 @@ import {
 } from '../../../../store/modules/folders/foldersSlice';
 import EditFolderModal from '../../../dialogs/EditFolderModal/EditFolderModal';
 import EyeIcon from '../../../icons/EyeIcon';
+import TrashIcon from '../../../icons/TrashIcon';
+import useTimeout from '../../../../hooks/useTimeout';
 // import MoveFolderModal from '../../../dialogs/MoveFolder/MoveFolder';
 
 export const Folders = () => {
   const firebaseApp = useFirebase();
+  const router = useRouter();
+  const {user} = useAppSelector(state => state.user);
 
   const dispatch = useAppDispatch();
   const {folders, selectedFolders} = useAppSelector(state => state.folders);
@@ -41,6 +46,16 @@ export const Folders = () => {
     useState<boolean>(false);
   const [showEditFolderModal, setShowEditFolderModal] =
     useState<boolean>(false);
+  const [showSubfoldersPrivacyModal, setShowSubfoldersPrivacyModal] =
+    useState<boolean>(false);
+  const [notification, setNotification] = useState<{
+    message: string;
+    icon: string | React.ReactNode;
+  } | null>(null);
+  const [deleteFolderDelay, setDeleteFodlerDelay] = useState<number | null>(
+    null,
+  );
+  const [folderToDelete, setFolderToDelete] = useState<FolderType | null>(null);
 
   useEffect(() => {
     console.log('Current folders:', folders);
@@ -80,15 +95,41 @@ export const Folders = () => {
 
   const countSelected = Object.keys(selectedFolders).length || 0;
 
-  const handleDeleteFolder = (folder: FolderType) => {
-    const db = getFirestore(firebaseApp);
-    if (folder.children.length > 0) {
-      folder.children.forEach(subFolder => {
-        deleteDoc(doc(db, 'folders', subFolder.id));
-      });
+  const deleteFolderFromServer = useCallback(async () => {
+    if (folderToDelete) {
+      const db = getFirestore(firebaseApp);
+
+      if (folderToDelete.children.length > 0) {
+        folderToDelete.children.forEach(subFolder => {
+          deleteDoc(doc(db, 'folders', subFolder.id));
+        });
+      }
+
+      await deleteDoc(doc(db, 'folders', folderToDelete.id));
     }
 
-    deleteDoc(doc(db, 'folders', folder.id));
+    setNotification(null);
+    setDeleteFodlerDelay(null);
+    setFolderToDelete(null);
+  }, [firebaseApp, folderToDelete]);
+
+  useTimeout(deleteFolderFromServer, deleteFolderDelay);
+
+  const handleDeleteFolder = (folder: FolderType) => {
+    setFolderToDelete(folder);
+
+    setNotification({
+      icon: <TrashIcon className="w-8" />,
+      message: 'Folder deleted',
+    });
+
+    setDeleteFodlerDelay(5000);
+  };
+
+  const undoFolderDeletion = () => {
+    setNotification(null);
+    setDeleteFodlerDelay(null);
+    setFolderToDelete(null);
   };
 
   const handleChangePrivacy = async (
@@ -110,10 +151,41 @@ export const Folders = () => {
     }
   };
 
+  const onShareClick = async (folderId: string) => {
+    const link = `${window.location.origin}/profile/${
+      router.query.userId ?? user.uid
+    }/${folderId}`;
+    await navigator.clipboard.writeText(link);
+    setNotification({
+      icon: './share-link.svg',
+      message: 'Folder link copied',
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
   console.log('selectedFolders', selectedFolders);
 
   return (
     <>
+      {notification && (
+        <div className="w-full fixed top-40 z-50">
+          <Alert
+            showSavedMessage={notification.message}
+            iconWidth="w-8"
+            icon={notification.icon}>
+            {notification.message === 'Folder deleted' && (
+              <Button
+                classname="ml-2"
+                color="light-pink"
+                onClick={undoFolderDeletion}>
+                Undo
+              </Button>
+            )}
+          </Alert>
+        </div>
+      )}
       <section className="py-4 md:py-8">
         <div className="container">
           {countSelected ? (
@@ -157,6 +229,7 @@ export const Folders = () => {
             )}>
             {folders
               ?.slice(0, showAll ? folders?.length ?? Infinity : count)
+              ?.filter(f => f.id !== folderToDelete?.id)
               ?.map(folder => {
                 const selected = Object.prototype.hasOwnProperty.call(
                   selectedFolders,
@@ -187,9 +260,7 @@ export const Folders = () => {
                         </li>
                         <li
                           className="items-center"
-                          onClick={() =>
-                            handleChangePrivacy(folder, !folder.private)
-                          }>
+                          onClick={() => setShowSubfoldersPrivacyModal(true)}>
                           {folder.private ? 'Make Public' : 'Make Private'}
                           {folder.private ? (
                             <EyeIcon className="w-4" />
@@ -197,7 +268,7 @@ export const Folders = () => {
                             <img src="/lock-black.svg" alt="" />
                           )}
                         </li>
-                        <li>
+                        <li onClick={() => onShareClick(folder.id)}>
                           Share
                           <img src="/share.svg" alt="" />
                         </li>
@@ -272,6 +343,14 @@ export const Folders = () => {
           }}
           show={showEditFolderModal}
           onClose={() => setShowEditFolderModal(false)}
+        />
+      )}
+      {showSubfoldersPrivacyModal && (
+        <SubfoldersPrivacyModal
+          parentFolder={parentFolder}
+          changePrivacy={handleChangePrivacy}
+          show={showSubfoldersPrivacyModal}
+          onClose={() => setShowSubfoldersPrivacyModal(false)}
         />
       )}
     </>

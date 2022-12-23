@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 
 interface ModalBaseLayoutProps {
   title: React.ReactNode;
-  icon: string;
+  icon: string | React.ReactNode;
   maxWidth?: string;
   show: any;
   children: React.ReactNode;
@@ -25,7 +25,11 @@ export const ModalBaseLayout: FC<ModalBaseLayoutProps> = ({
           className="w-full relative bg-white p-[24px] pl-[14px] pt-[14px] border-2 border-solid border-slate-100 rounded-lg">
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row items-center justify-start ">
-              <img className="w-5 h-5" src={icon} alt="" />
+              {typeof icon === 'string' ? (
+                <img className="w-5 h-5" src={icon} alt="" />
+              ) : (
+                icon
+              )}
               <p className="text-[#667085] text-lg font-semibold ml-2.5">
                 {title}
               </p>
