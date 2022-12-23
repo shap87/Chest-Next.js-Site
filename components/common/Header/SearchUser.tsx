@@ -1,6 +1,7 @@
 import type User from '../../../types/User';
 
-import {Fragment, useState} from 'react';
+import {useRouter} from 'next/router';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import {Dialog, Popover, Transition} from '@headlessui/react';
 import debounce from 'lodash.debounce';
 import {useFirestoreQueryData} from '@react-query-firebase/firestore';
@@ -34,6 +35,13 @@ const SearchUser = () => {
   const {width} = useWindowSize();
   const isMobile = width && width < 640;
 
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.blur();
+  }, [router.asPath]);
+
   return (
     <>
       {/* Search user mobile  */}
@@ -60,8 +68,12 @@ const SearchUser = () => {
                 </div>
               </div>
               <div className="p-6 divide-y">
-                {usersQuery.data?.map(user => (
-                  <UserItem key={user.uid} user={user as User} />
+                {usersQuery.data?.map((user, index) => (
+                  <UserItem
+                    key={`user-mobile-${index}-${user.uid}`}
+                    user={user as User}
+                    handleClick={() => router.replace(`/profile/${user.id}`)}
+                  />
                 ))}
               </div>
             </Dialog.Panel>
@@ -72,6 +84,7 @@ const SearchUser = () => {
       <Popover as="label" className="hidden md:block w-96 relative">
         <SearchIcon className="stroke-primary absolute z-10 w-4 left-4 top-1/2 -translate-y-1/2" />
         <input
+          ref={inputRef}
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
           onChange={onSearchDebounce}
@@ -82,15 +95,19 @@ const SearchUser = () => {
         <Transition
           show={open}
           as={Fragment}
-          enter="transition ease-out duration-100"
+          enter="transition ease-out duration-50"
           enterFrom="transform opacity-0 scale-95"
           enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
+          leave="transition ease-in duration-50"
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95">
           <Popover.Panel className="absolute right-0 z-10 mt-2 p-5 w-96 max-h-96 origin-top-right rounded-lg bg-white shadow-lg focus:outline-none divide-y overflow-y-auto">
-            {usersQuery.data?.map(user => (
-              <UserItem key={user.uid} user={user as User} />
+            {usersQuery.data?.map((user, index) => (
+              <UserItem
+                key={`user-desktop-${index}-${user.uid}`}
+                user={user as User}
+                handleClick={() => router.replace(`/profile/${user.id}`)}
+              />
             ))}
           </Popover.Panel>
         </Transition>

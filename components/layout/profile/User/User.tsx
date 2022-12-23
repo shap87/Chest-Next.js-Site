@@ -1,17 +1,14 @@
 // libs
 import {useState} from 'react';
 import cn from 'classnames';
-import {
-  useFirestoreDocumentData,
-  useFirestoreQueryData,
-} from '@react-query-firebase/firestore';
-import {query, collection, doc} from 'firebase/firestore';
+import {useFirestoreDocumentData} from '@react-query-firebase/firestore';
+import {doc} from 'firebase/firestore';
 // hooks
 import {useFirestore} from '../../../../context/firebase';
 import {useRouter} from 'next/router';
 import {useAppSelector} from '../../../../hooks/redux';
 // components
-import {Button, H5, H6, LoadingSpinner} from '../../../common';
+import {H5, H6, LoadingSpinner} from '../../../common';
 import {
   AddNewFolderModal,
   AddNewItemModal,
@@ -20,6 +17,7 @@ import {
 } from '../../../dialogs';
 // assets
 import styles from '../../../../styles/profile.module.scss';
+import FollowButton from '../../../FollowButton';
 
 export const User = () => {
   const {user} = useAppSelector(state => state.user);
@@ -27,17 +25,6 @@ export const User = () => {
   const isPublic = !!router.query.userId;
 
   const firestore = useFirestore();
-  const followingRef = query(
-    collection(firestore, `users/${user?.uid}/following`),
-  );
-  const followingQuery = useFirestoreQueryData(
-    `users/${user?.uid}/following`,
-    user?.uid ? followingRef : undefined,
-  );
-
-  const isFollowing =
-    (followingQuery.data?.findIndex(u => u.uid === user?.uid) ?? -1) > -1;
-
   const userQuery = useFirestoreDocumentData(
     ['users', router.query.userId],
     isPublic
@@ -117,12 +104,10 @@ export const User = () => {
 
               {isPublic && (
                 <div className="absolute md:relative right-4 flex flex-grow-0 gap-4 ml-0 md:ml-6">
-                  <Button
-                    htmlType="button"
-                    classname="!w-auto md:!px-6"
-                    color={!isFollowing ? 'light-pink' : undefined}>
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </Button>
+                  <FollowButton
+                    userId={router.query.userId! as string}
+                    className="!w-auto md:!px-6"
+                  />
                   <button
                     className="border-2 rounded-lg px-3 border-gray-200"
                     onClick={handleShareProfile}>

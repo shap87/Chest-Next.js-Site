@@ -20,6 +20,11 @@ const interval = 12;
 export const savedAsLinkPicture =
   'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fsaved-as-link.png?alt=media&token=a95d66a9-4f9e-45d7-ad9f-7a4ec6bc5e20';
 
+const uniqById = (data: Product[]): Product[] =>
+  Array.from(
+    data.reduce((map, d) => map.set(d.id, d), new Map()).entries(),
+  ).map(e => e[1]);
+
 export default function Community() {
   const app = useFirebase();
   const {user} = useAppSelector(state => state.user);
@@ -60,7 +65,7 @@ export default function Community() {
         (product: Product) => product.imageUrl !== savedAsLinkPicture,
       ),
     ];
-    setProducts(updatedProducts);
+    setProducts(uniqById(updatedProducts));
   };
 
   useEffect(() => {
