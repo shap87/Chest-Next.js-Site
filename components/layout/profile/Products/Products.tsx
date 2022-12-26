@@ -27,6 +27,7 @@ import ProductDetails from '../../../Products/ProductDetails';
 import ProductCard from '../../../Products/ProductCard';
 import {SelectedPanel} from '../SelectedPanel/SelectedPanel';
 import {MoveProductModal} from '../../../dialogs';
+import {folderImageUrl_Example} from '../../../../services/firebase.service';
 
 export const Products = () => {
   const app = useFirebase();
@@ -123,7 +124,7 @@ export const Products = () => {
     p.docs.map(docSnapshot => docSnapshot.data()),
   );
 
-  const updateFolderItemsNum = async () => {
+  const updateFolderData = async () => {
     //get all user products to update items count
     const q = query(
       collection(firestore, 'products'),
@@ -168,8 +169,55 @@ export const Products = () => {
           updatedAt: Timestamp.fromDate(new Date()),
         });
       }
+
+      //folder thumbnail update
+      const currentImage = f.imageUrl;
+
+      if (
+        parentFolderProductsCount === 0 &&
+        currentImage !== folderImageUrl_Example
+      ) {
+        updateDoc(doc(firestore, 'folders', f.id), {
+          imageUrl: folderImageUrl_Example,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      for (let i = 0; i < allProducts.length; i++) {
+        if (allProducts[i].parent === f.id) {
+          const productImage = allProducts[i].imageUrl;
+          if (currentImage !== productImage) {
+            updateDoc(doc(firestore, 'folders', f.id), {
+              imageUrl: productImage,
+              updatedAt: Timestamp.fromDate(new Date()),
+            });
+          }
+          return;
+        }
+      }
+
+      f.children.forEach(sub => {
+        for (let i = 0; i < allProducts.length; i++) {
+          if (allProducts[i].parent === sub.id) {
+            const productImage = allProducts[i].imageUrl;
+            if (currentImage !== productImage) {
+              updateDoc(doc(firestore, 'folders', f.id), {
+                imageUrl: productImage,
+                updatedAt: Timestamp.fromDate(new Date()),
+              });
+            }
+            return;
+          }
+        }
+      });
     });
   };
+
+  useEffect(() => {
+    if (products?.length !== undefined) {
+      updateFolderData();
+    }
+  }, [products?.length]);
 
   const onProductUpdate = async (
     productId: string,
@@ -203,7 +251,6 @@ export const Products = () => {
 
     await productsQuery.refetch();
     setProduct(null);
-    updateFolderItemsNum();
   };
 
   const onDeleteSelectedProducts = async () => {
@@ -218,12 +265,11 @@ export const Products = () => {
     await Promise.all(requests);
     await productsQuery.refetch();
     setSelectedProducts({});
-    updateFolderItemsNum();
   };
 
   const onProductMove = async (productId: string, folderId: string) => {
     await onProductUpdate(productId, {parent: folderId});
-    updateFolderItemsNum();
+    updateFolderData();
     if (product) {
       setProduct({...product, parent: folderId});
     }
@@ -250,7 +296,7 @@ export const Products = () => {
     await Promise.all(requests);
     setSelectedProducts(updatedSelected);
     await productsQuery.refetch();
-    updateFolderItemsNum();
+    updateFolderData();
   };
 
   const onMarkPurchased = (productId: string, isPurchased: boolean) => {

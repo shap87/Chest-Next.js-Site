@@ -23,7 +23,7 @@ import {chunk} from '../utils/helpers/ArrayUtils';
 // ! Change later
 const profilePictireURL_Example =
   'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fuser.png?alt=media&token=b1f74d09-46bd-45de-8930-c5c23440613a';
-const folderImageUrl_Example =
+export const folderImageUrl_Example =
   'https://firebasestorage.googleapis.com/v0/b/chestr-app.appspot.com/o/constants%2Fdefault-folder.png?alt=media&token=e0dd49a0-d3ab-41b6-95ca-3a1dc02cdf8f';
 
 class FirebaseService {
